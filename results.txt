@@ -1,0 +1,21 @@
+hello
+
+  |>   [a Sails app]
+\___/  For help, see: http://links.sailsjs.org/docs
+
+Tip: Use `sails.config` to access your app's runtime configuration.
+
+0 Models:
+
+
+0 Controllers:
+
+
+0 Hooks:
+
+
+
+
+  County Committee Extractor
+    PDF Extractor
+MEMBER COUNT:  4592
