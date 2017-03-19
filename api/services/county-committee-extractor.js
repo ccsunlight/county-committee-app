@@ -1,3 +1,14 @@
+/**
+ *
+ * This service etracts members from documents.
+ * 
+ * Currently only works with PARTY POSITION CERTIFIED LIST in NYC
+ *
+ * author     (Jonathan Crockett)
+ * 
+ */
+
+
 var Xray = require('x-ray');
 
 var x = Xray();
@@ -272,29 +283,33 @@ exports.getAllCSVFilePaths = function(callback) {
 }
 
 
-exports.getCountyCommitteeMembersFromCertifiedListPDF = function(pathToPDF, callback) {
-
+exports.getCCMembersFromCertifiedListPDF = function(pathToPDF, callback) {
+    
     var path = require('path')
     var filePath = pathToPDF;
-    var extract = require('pdf-text-extract')
+    var extract = require('pdf-text-extract');
+
     extract(filePath, function(err, pages) {
+        
         if (err) {
-            console.dir(err)
-            return
+            console.log('woo', err)
+            //return
         }
         // console.dir(pages[2]);
         // 
+        // 
+        console.log('yayay');
 
         var ccMembers = [];
         pages.forEach(function(page, index) {
-            ccMembers = ccMembers.concat(extractCountyCommmitteeMembersFromPage(page));
+            ccMembers = ccMembers.concat(extractCCMembersFromPage(page));
         })
 
         console.log('MEMBER COUNT: ', ccMembers.length);
 
         callback(ccMembers);
 
-    })
+    });
 
 }
 
@@ -319,7 +334,7 @@ function findCCMemberFooterRow(row) {
 
 
 
-function extractCCMemberDataFromRow(row) {
+function extractCCMemberDataFromRow(row, county) {
 
     var cc_member = {
         petition_number: undefined,
@@ -331,7 +346,9 @@ function extractCCMemberDataFromRow(row) {
         ed_ad: undefined,
         electoral_district: undefined,
         assembly_district: undefined,
-        data_source: undefined
+        data_source: undefined,
+        county: county,
+        state: 'NY'
     }
 
     //
@@ -399,19 +416,23 @@ function extractCCMemberDataFromRow(row) {
 
 }
 
+
 function ccExtractionException(message) {
     this.message = message;
     this.name = 'CCMemberException';
 }
 
-function extractCountyCommmitteeMembersFromPage(page) {
-
+function extractCCMembersFromPage(page) {
 
     var rows = page.match(/(.+)/g);
 
+    var county = extractCountyFromPage(page);
+
+   // console.log('county', county);
+
     var headerRowIndex = rows.findIndex(findCCMemberHeaderRow);
     var footerRowIndex = rows.findIndex(findCCMemberFooterRow);
-
+    console.log(rows);
     if (headerRowIndex > 0 && footerRowIndex > 0) {
         var ccMemberRows = rows.slice(headerRowIndex + 1, footerRowIndex);
 
@@ -421,7 +442,7 @@ function extractCountyCommmitteeMembersFromPage(page) {
         ccMemberRows.forEach(function(memberRow, index) {
 
             try {
-                ccMembers.push(extractCCMemberDataFromRow(memberRow));
+                ccMembers.push(extractCCMemberDataFromRow(memberRow, county));
             } catch (e) {
                 errors.push(e);
             }
@@ -429,9 +450,18 @@ function extractCountyCommmitteeMembersFromPage(page) {
         });
 
         //console.log(errors);
-
+        console.log(ccMembers);
         return ccMembers;
 
     }
 
+}
+
+
+function extractCountyFromPage(page) {
+    var match = page.match(/IN THE CITY OF NEW YORK\s+(.+), .+Party/);
+    
+    if (match) {
+        return match[1];
+    }
 }

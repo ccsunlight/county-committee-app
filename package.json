@@ -10,6 +10,7 @@
   "dependencies": {
     "chai": "^3.5.0",
     "console.table": "^0.8.0",
+    "db-migrate": "^0.10.0-beta.20",
     "ejs": "~0.8.4",
     "fast-csv": "^2.4.0",
     "get-csv": "^3.0.3",
@@ -23,6 +24,7 @@
     "grunt-contrib-less": "0.11.1",
     "grunt-contrib-uglify": "~0.4.0",
     "grunt-contrib-watch": "~0.5.3",
+    "grunt-db-migrate": "^0.3.0",
     "grunt-mocha-test": "^0.13.2",
     "grunt-sails-linker": "~0.9.5",
     "grunt-sync": "~0.0.4",
@@ -32,6 +34,7 @@
     "rc": "~0.5.0",
     "sails": "~0.11.0",
     "sails-disk": "~0.10.0",
+    "sails-mongo": "^0.12.2",
     "swagger-sails-hook": "^0.1.0",
     "x-ray": "^2.3.2"
   },
@@ -40,7 +43,7 @@
     "supertest": "^0.15.0"
   },
   "scripts": {
-    "start": "node app.js",
+    "start": "node node_modules/.bin/sails lift",
     "debug": "node debug app.js",
     "test": "swagger project test"
   }
