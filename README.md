@@ -1,49 +1,46 @@
-
 # COUNTY COMMITTEE API
 
-### ALPHA PROTOTYPE 
-v0.0.1 
-
-### Requirements  
-- Node 4  
-- Mongo DB running  
-- Docker  
-
-You can run things without docker but you may have to tweak some settings.
-
-
-### Docker quickstart
-The below is if you want to use docker to load the app. It's not necessary if you have your own environment node and Mongo.
+### ALPHA PROTOTYPE
+v0.0.1
 
 Only tested on mac but should work on other OS's.
 
-1. bash ./spinup-cc-app.sh  
-If it works properly then you should have a bash prompt in the container
+### Docker quickstart
+The below is if you want to use docker to load the app. If you want to use your own environment's node and Mongo, see [running without docker](#running-without-docker).
 
-2. Run "npm start"
-Sails app should load. 
+1. Install [Docker.](https://www.docker.com/)
 
-3. Go to http://localhost:10010 to test it out
+1. Run "bash ./spinup-cc-app.sh". If it works properly then you should have a bash prompt in the container.
 
-4. Go to http://localhost:10010/countycommittee
+1. Run "npm start". The sails app should load.
+
+1. Go to http://localhost:10010 and http://localhost:10010/countycommittee to test it out.
 
 #### Optional
 You can also ssh into running container:
 docker exec -it cc-app /bin/bash
- 
 
-###  Import committee list 
+### Running without docker
+
+Requirements:
+
+- Node 4
+- Mongo DB running
+- Docker
+
+You'll have to tweak some settings.
+
+###  Import committee list
 You'll need to import a PDF to show any data.
 
 1. Save a text pdf of PARTY POSITION CERTIFIED LIST pdf in "import" folder
 
-2. run import-cc-pdf.js [filename]  
+1. run import-cc-pdf.js [filename]
 It will not overwrite the previous records so you'll have to delete them if you want to reimport
 
-3. Try it out.   
-http://localhost:10010/countycommittee  
-http://localhost:10010/countycommittee?state=NY  
-http://localhost:10010/  countycommittee?office_holder=Vacancy  
+1. Try it out:
+ * http://localhost:10010/countycommittee
+ * http://localhost:10010/countycommittee?state=NY
+ * http://localhost:10010/countycommittee?office_holder=Vacancy
 
-#### A [Swagger](https://www.npmjs.com/package/swagger) / [Sails](http://sailsjs.org) application 
-
+#### A [Swagger](https://www.npmjs.com/package/swagger) / [Sails](http://sailsjs.org) application
