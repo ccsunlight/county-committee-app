@@ -46,4 +46,7 @@ It will not overwrite the previous records so you'll have to delete them if you 
  * http://localhost:10010/countycommittee?state=NY
  * http://localhost:10010/countycommittee?office_holder=Vacancy
 
+More advanced querying:
+http://sailsjs.com/documentation/reference/blueprint-api/find-where
+
 #### A [Swagger](https://www.npmjs.com/package/swagger) / [Sails](http://sailsjs.org) application
