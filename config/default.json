@@ -1,0 +1,26 @@
+{
+  "host": "localhost",
+  "port": 3030,
+  "mongodb": "mongodb://localhost:27017/county-committee",
+  "public": "../public/",
+  "auth": {
+    "token": {
+      "secret": "+Seb6A9MbUk0po/J9sKkaUJeGSZXlX3O8oxB8zr0R+7K5tLVGe18lVPWt+3JIpVflKn2xCIk2UIVhN+s/7V6zg=="
+    },
+    "local": {},
+    "facebook": {
+      "clientID": "your facebook client id",
+      "clientSecret": "your facebook client secret",
+      "permissions": {
+        "scope": ["public_profile","email"]
+      }
+    },
+    "google": {
+      "clientID": "your google client id",
+      "clientSecret": "your google client secret",
+      "permissions": {
+        "scope": ["profile"]
+      }
+    }
+  }
+}
