@@ -1,0 +1,34 @@
+<head>
+	{{> amp_header}}
+	{{> amp_form}}
+	{{> amp_list}}
+	{{> amp_iframe}}
+</head>
+<body>
+  {{> addressform}}
+
+  <p>Results for: {{address}}</p>
+
+  <amp-list width="auto" height="500" layout="fixed-height" src="/get_json_stuff?address={{address}}">
+    <template type="amp-mustache" id="amp-template-id">
+			<!-- amp is using an internal mustache engine, so we need to escape the braces -->
+      	<p>Lat: \{{lat}}, Long: \{{long}}, AD: \{{ad}}, ED: \{{ed}}</p>
+
+      	<h3>Seats</h3>
+      	<ul>
+      	\{{^members}} No members found. \{{/members}}
+      	 \{{#members}}
+      	 	<li>\{{office}} &mdash; \{{office_holder}}</li>
+      	\{{/members}}
+      </ul>
+			<div class="downer">
+				<amp-iframe width="600" height="400" layout="responsive" sandbox="allow-scripts allow-popups" frameborder="0" src="/fusiontable?lat=\{{lat}}&long=\{{long}}&ad=\{{ad}}">
+					<!-- we need a placeholder img so that the iframe doesn't have to be 600px from the page top -->
+					<amp-img layout="fill" src="http://i.imgur.com/TYzy58b.jpg" placeholder></amp-img>
+				</amp-iframe>
+			</div>
+    </template>
+  </amp-list>
+
+
+</body>

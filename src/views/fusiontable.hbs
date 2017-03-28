@@ -1,0 +1,56 @@
+
+<head>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <meta charset="utf-8">
+  <title>Fusion Tables layers</title>
+  <style>
+    /* Always set the map height explicitly to define the size of the div
+     * element that contains the map. */
+    #map {
+      height: 100%;
+    }
+    /* Optional: Makes the sample page fill the window. */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script>
+    var lat = {{lat}};
+    var long = {{long}};
+    var AD = {{ad}};
+    var tableid = '11jgsAPWJLHQn83d5CAteQeD4KeBv1Dci0HNXpKXv';
+
+    function initMap() {
+      var map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: lat, lng: long},
+        zoom: 14
+      });
+
+      var marker = new google.maps.Marker({
+          position: {lat: lat, lng: long},
+          map: map,
+          title: 'Hello World!'
+        });
+
+
+      var ADMax = (AD+1)*1000
+      var ADMin = (AD*1000)-1
+
+      var layer = new google.maps.FusionTablesLayer({
+        query: {
+          select: 'geometry',
+          from: tableid,
+          where: 'elect_dist < ' + ADMax + ' AND elect_dist > ' + ADMin
+        }
+      });
+
+      layer.setMap(map);
+    }
+  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBm7PNpHOrvvGlE9_qkrUB11j4mTZWYM0&callback=initMap"></script>
+</body>
