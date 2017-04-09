@@ -6,8 +6,15 @@ const Client = require('node-rest-client').Client;
 const client = new Client();
 const countyCommittee = require('../services/county-committee/county-committee-model')
 
+
+// check to make sure our ED geometry is less than a week old
+// if not, redownload it from https://data.cityofnewyork.us/api/views/wwxk-38u4/rows.csv?accessType=DOWNLOAD
+// mongoimport it into the db
+// set this as a function that will run itself on startup and once per day
+
+
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', (req, res, next) => {
   res.render('index', {title: 'Index'});
 });
 
@@ -17,6 +24,7 @@ router.get('/', function(req, res, next) {
 
 
 const getLatLongFromAddress = (address, cb) => {
+  // TODO add a backup geocoder
   const apiKey = "AIzaSyBWT_tSznzz1oSNXAql54sSKGIAC4EyQGg";
   const url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&key=" + apiKey;
 
@@ -57,7 +65,7 @@ router.get('/get_address', (req, res, next) => {
 });
 
 
-router.get('/fusiontable', function(req, res, next) {
+router.get('/fusiontable', (req, res, next) => {
   res.render('fusiontable', {ad: req.query.ad, lat: req.query.lat, long: req.query.long});
 });
 
