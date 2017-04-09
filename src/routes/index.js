@@ -1,14 +1,14 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-var _ = require('lodash');
-var Client = require('node-rest-client').Client;
-var client = new Client();
-var countyCommittee = require('../services/county-committee/county-committee-model')
+const _ = require('lodash');
+const Client = require('node-rest-client').Client;
+const client = new Client();
+const countyCommittee = require('../services/county-committee/county-committee-model')
 
 
-var FUSIONTABLES_APIKEY = "AIzaSyDSNEqr9T9c4K-I8qnCcXB4Zc1no3ruPp4";
-var GEOCODING_APIKEY = "AIzaSyBWT_tSznzz1oSNXAql54sSKGIAC4EyQGg";
+const FUSIONTABLES_APIKEY = "AIzaSyDSNEqr9T9c4K-I8qnCcXB4Zc1no3ruPp4";
+const GEOCODING_APIKEY = "AIzaSyBWT_tSznzz1oSNXAql54sSKGIAC4EyQGg";
 
 
 /* GET home page. */
@@ -23,27 +23,27 @@ router.get('/', function(req, res, next) {
 // TODO add code minimizing
 
 
-var getInfoFromLatLong = function(lat, long, cb) {
-  var tableNum = "11jgsAPWJLHQn83d5CAteQeD4KeBv1Dci0HNXpKXv";
-  var url = "https://www.googleapis.com/fusiontables/v2/query?key=" + FUSIONTABLES_APIKEY + "&sql=SELECT elect_dist FROM " + tableNum + " WHERE ST_INTERSECTS(geometry, CIRCLE(LATLNG(" + lat + ", " + long + "), 0.05))";
+const getInfoFromLatLong = function(lat, long, cb) {
+  const tableNum = "11jgsAPWJLHQn83d5CAteQeD4KeBv1Dci0HNXpKXv";
+  const url = "https://www.googleapis.com/fusiontables/v2/query?key=" + FUSIONTABLES_APIKEY + "&sql=SELECT elect_dist FROM " + tableNum + " WHERE ST_INTERSECTS(geometry, CIRCLE(LATLNG(" + lat + ", " + long + "), 0.05))";
 
   client.get(url, function (data, response) {
     // console.log(data);
-    var raw = data.rows[0][0];
-    var ad = Number(_.join(_.slice(raw, 0, 2), ''));
-    var ed = Number(_.join(_.slice(raw, 2), ''));
+    const raw = data.rows[0][0];
+    const ad = Number(_.join(_.slice(raw, 0, 2), ''));
+    const ed = Number(_.join(_.slice(raw, 2), ''));
 
     cb(lat, long, ad, ed)
   });
 };
 
-var getInfoFromAddress = function(address, cb) {
-  var url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&key=" + GEOCODING_APIKEY;
+const getInfoFromAddress = function(address, cb) {
+  const url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "&key=" + GEOCODING_APIKEY;
 
   client.get(url, function (data, response) {
     // console.log(data);
-    var lat = data.results[0].geometry.location.lat;
-    var long = data.results[0].geometry.location.lng;
+    const lat = data.results[0].geometry.location.lat;
+    const long = data.results[0].geometry.location.lng;
     getInfoFromLatLong(lat, long, cb);
   });
 };
@@ -67,7 +67,7 @@ router.get('/get_json_stuff', function(req, res, next) {
           res.send({items:[{lat: lat, long: long, ad: ad, ed: ed, members: members}]});
 
       })
-    
+
     });
   }
 });
