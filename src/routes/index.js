@@ -112,11 +112,6 @@ router.get('/', (req, res, next) => {
   res.render('index', {title: 'Index'});
 });
 
-
-// TODO: add error handling
-// TODO: add https
-
-
 const getLatLongFromAddress = (address, cb) => {
   // TODO: add a backup geocoder
   const apiKey = 'AIzaSyBWT_tSznzz1oSNXAql54sSKGIAC4EyQGg';
