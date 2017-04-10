@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 const _ = require('lodash');
-const Client = require('node-rest-client').Client;
-const client = new Client();
+const RestClient = require('node-rest-client').Client;
+const client = new RestClient();
 const countyCommittee = require('../services/county-committee/county-committee-model')
 
 
