@@ -5,6 +5,7 @@ const _ = require('lodash');
 const bluebird = require('bluebird');
 const fs = bluebird.promisifyAll(require('fs'));
 const rp = require('request-promise');
+const download = require('download');
 
 const countyCommittee = require('../services/county-committee/county-committee-model');
 const edGeometry = require('../services/edGeometry/edGeometry-model');
@@ -25,8 +26,18 @@ const updateEdDb = async () => {
     const expireTime = (topDoc !== null) ? topDoc.createdAt + oneWeek : 0;
     if (expireTime > Date.now()) throw 'No need to update ED geometry DB';
 
-    // TODO: download some new geojson from https://data.cityofnewyork.us/api/geospatial/h2n3-98hq?method=export&format=GeoJSON
-    const data = await fs.readFileAsync('data/Election Districts.geojson');
+    const saveTo = 'downloads/Election_Districts.geojson';
+
+    try {
+      const geojsonFile = await download('https://data.cityofnewyork.us/api/geospatial/h2n3-98hq?method=export&format=GeoJSON');
+      await fs.writeFileAsync(saveTo, geojsonFile);
+    }
+    catch (err) {
+      // if the download fails, just rely on whatever we already have
+      console.log('ED geojson download failed!');
+    }
+
+    const data = await fs.readFileAsync(saveTo);
     const parsed = JSON.parse(data).features.map((x) => {
       return {
         ad: Number(x.properties.elect_dist.slice(0, 2)),
@@ -37,10 +48,11 @@ const updateEdDb = async () => {
 
     await edGeometry.insertMany(parsed);
     await edGeometry.deleteMany({createdAt: {$lt: expireTime}});
+
     console.log('Updated ED geometry DB');
   }
   catch (err) {
-    console.error(err);
+    console.log(err);
   }
 };
 updateEdDb();
@@ -88,7 +100,7 @@ router.get('/get_address', async (req, res, next) => {
     res.render('get_address', locals);
   }
   catch (err) {
-    console.error(err);
+    console.log(err);
   }
 });
 
