@@ -2,49 +2,46 @@ const express = require('express');
 const router = express.Router();
 
 const _ = require('lodash');
-const fs = require('fs');
-const RestClient = require('node-rest-client').Client;
-const client = new RestClient();
+const bluebird = require('bluebird');
+const fs = bluebird.promisifyAll(require('fs'));
+const rp = require('request-promise');
 
-const countyCommittee = require('../services/county-committee/county-committee-model')
-const edGeometry = require('../services/edGeometry/edGeometry-model')
+const countyCommittee = require('../services/county-committee/county-committee-model');
+const edGeometry = require('../services/edGeometry/edGeometry-model');
+
+
+const googleGeocodingApiKey = 'AIzaSyBWT_tSznzz1oSNXAql54sSKGIAC4EyQGg';
 
 
 // we need to update the db if there's nothing in it or if it's been more than a week
-// get the first doc to check the date
-const updateEdDb = () => {
-  const oneDay = 1000*60*60*24;
-  const oneWeek = oneDay*7;
-  setTimeout(updateEdDb, oneDay);
+const updateEdDb = async () => {
+  try {
+    const oneDay = 1000*60*60*24;
+    const oneWeek = oneDay*7;
+    setTimeout(updateEdDb, oneDay);
 
-  edGeometry.findOne({}, (err, topDoc) => {
-    // if our db is empty or if our
+    // get the first doc to check the date
+    const topDoc = await edGeometry.findOne({});
     const expireTime = (topDoc !== null) ? topDoc.createdAt + oneWeek : 0;
-    if (expireTime < Date.now()) {
-      // TODO: download some new geojson from https://data.cityofnewyork.us/api/geospatial/h2n3-98hq?method=export&format=GeoJSON
-      // read in our geojson
-      fs.readFile('data/Election Districts.geojson', (err, data) => {
-        let parsed = JSON.parse(data);
+    if (expireTime > Date.now()) throw 'No need to update ED geometry DB';
 
-        parsed = parsed.features.map((x) => {
-          return {
-            ad: Number(x.properties.elect_dist.slice(0, 2)),
-            ed: Number(x.properties.elect_dist.slice(2)),
-            geometry: {type: 'MultiPolygon', coordinates: x.geometry.coordinates}
-          };
-        });
+    // TODO: download some new geojson from https://data.cityofnewyork.us/api/geospatial/h2n3-98hq?method=export&format=GeoJSON
+    const data = await fs.readFileAsync('data/Election Districts.geojson');
+    const parsed = JSON.parse(data).features.map((x) => {
+      return {
+        ad: Number(x.properties.elect_dist.slice(0, 2)),
+        ed: Number(x.properties.elect_dist.slice(2)),
+        geometry: {type: 'MultiPolygon', coordinates: x.geometry.coordinates}
+      };
+    });
 
-        // insert our new polygons
-        edGeometry.insertMany(parsed, (err, result) => {
-          // delete our old entries
-          edGeometry.deleteMany({createdAt: {$lt: expireTime}}, (err, result) => {
-            console.log('updated ED DB');
-          });
-        });
-      });
-
-    }
-  });
+    await edGeometry.insertMany(parsed);
+    await edGeometry.deleteMany({createdAt: {$lt: expireTime}});
+    console.log('Updated ED DB');
+  }
+  catch (err) {
+    console.error(err);
+  }
 };
 updateEdDb();
 
@@ -66,34 +63,31 @@ const intersectQuery = (coordinates) => {
   };
 };
 
-router.get('/get_address', (req, res, next) => {
-  // TODO: add a backup geocoder
-  const address = req.query.address;
-  const apiKey = 'AIzaSyBWT_tSznzz1oSNXAql54sSKGIAC4EyQGg';
-  const url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=' + apiKey;
+router.get('/get_address', async (req, res, next) => {
+  try {
+    // TODO: add a backup geocoder
+    const address = req.query.address;
+    const uri = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=' + googleGeocodingApiKey;
 
-  client.get(url, (data, response) => {
-    // console.log(data);
-    const lat = data.results[0].geometry.location.lat;
-    const long = data.results[0].geometry.location.lng;
+    const data = await rp({uri: uri, json: true});
+    const [lat, long] = [data.results[0].geometry.location.lat, data.results[0].geometry.location.lng];
+    const geomDoc = await edGeometry.findOne(intersectQuery([lat, long]));
+    const [ad, ed] = [geomDoc.ad, geomDoc.ed];
+    const members = await countyCommittee.find({assembly_district: ad, electoral_district: ed});
 
-    edGeometry.findOne(intersectQuery([lat, long]), (err, geomDoc) => {
-      const ad = geomDoc.ad;
-      const ed = geomDoc.ed;
-
-      countyCommittee.find({assembly_district: ad, electoral_district: ed}, (members) => {
-        res.render('get_address', {
-          address: address,
-          lat: lat,
-          long: long,
-          ad: ad,
-          ed: ed,
-          members: members,
-          title: 'Address Search...'
-        });
-      });
+    res.render('get_address', {
+      address: address,
+      lat: lat,
+      long: long,
+      ad: ad,
+      ed: ed,
+      members: members,
+      title: 'Address Search...'
     });
-  });
+  }
+  catch (err) {
+    console.error(err);
+  }
 });
 
 
