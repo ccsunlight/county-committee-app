@@ -6,12 +6,19 @@ const bluebird = require('bluebird');
 const fs = bluebird.promisifyAll(require('fs'));
 const rp = require('request-promise');
 const download = require('download');
+const NodeGeocoder = require('node-geocoder');
 
 const countyCommittee = require('../services/county-committee/county-committee-model');
 const edGeometry = require('../services/edGeometry/edGeometry-model');
 
 
-const googleGeocodingApiKey = 'AIzaSyBWT_tSznzz1oSNXAql54sSKGIAC4EyQGg';
+const googleGeocoderOptions = {
+  provider: 'google',
+  apiKey: 'AIzaSyBWT_tSznzz1oSNXAql54sSKGIAC4EyQGg',
+  httpAdapter: 'https',
+  formatter: null
+};
+const googleGeocoder = NodeGeocoder(googleGeocoderOptions);
 
 
 // we need to update the db if there's nothing in it or if it's been more than a week
@@ -24,7 +31,7 @@ const updateEdDb = async () => {
     // get the first doc to check the date
     const topDoc = await edGeometry.findOne({});
     const expireTime = (topDoc !== null) ? topDoc.createdAt + oneWeek : 0;
-    if (expireTime > Date.now()) throw 'No need to update ED geometry DB';
+    if (expireTime > Date.now()) return;
 
     const saveTo = 'downloads/Election_Districts.geojson';
 
@@ -33,7 +40,7 @@ const updateEdDb = async () => {
       await fs.writeFileAsync(saveTo, geojsonFile);
     }
     catch (err) {
-      // if the download fails, just rely on whatever we already have
+      // if the download fails, just log it and fall back to whatever we already have
       console.log('ED geojson download failed!');
     }
 
@@ -77,13 +84,14 @@ const intersectQuery = (coordinates) => {
 
 router.get('/get_address', async (req, res, next) => {
   try {
-    // TODO: add a backup geocoder
     const address = req.query.address;
-    const uri = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=' + googleGeocodingApiKey;
 
-    const data = await rp({uri: uri, json: true});
-    const [lat, long] = [data.results[0].geometry.location.lat, data.results[0].geometry.location.lng];
+    data = await googleGeocoder.geocode(address);
+
+    const [lat, long] = [data[0].latitude, data[0].longitude];
     const geomDoc = await edGeometry.findOne(intersectQuery([lat, long]));
+    if (geomDoc === null) throw new Error('Not in NYC!');
+
     const [ad, ed] = [geomDoc.ad, geomDoc.ed];
     const members = await countyCommittee.find({assembly_district: ad, electoral_district: ed});
 
@@ -100,7 +108,16 @@ router.get('/get_address', async (req, res, next) => {
     res.render('get_address', locals);
   }
   catch (err) {
-    console.log(err);
+    if (err.message === 'Not in NYC!') {
+      console.log('TODO: send user to error page saying the address must be in NYC');
+    }
+    else if (err.name === 'HttpError') {
+      // thrown when the google geocoding api fails
+      console.log('TODO: send user to error page saying the service is currently down for maintenance');
+    }
+    else {
+      console.log(err);
+    }
   }
 });
 
