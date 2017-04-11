@@ -37,7 +37,7 @@ const updateEdDb = async () => {
 
     await edGeometry.insertMany(parsed);
     await edGeometry.deleteMany({createdAt: {$lt: expireTime}});
-    console.log('Updated ED DB');
+    console.log('Updated ED geometry DB');
   }
   catch (err) {
     console.error(err);
@@ -75,7 +75,7 @@ router.get('/get_address', async (req, res, next) => {
     const [ad, ed] = [geomDoc.ad, geomDoc.ed];
     const members = await countyCommittee.find({assembly_district: ad, electoral_district: ed});
 
-    res.render('get_address', {
+    const locals = {
       address: address,
       lat: lat,
       long: long,
@@ -83,7 +83,9 @@ router.get('/get_address', async (req, res, next) => {
       ed: ed,
       members: members,
       title: 'Address Search...'
-    });
+    };
+
+    res.render('get_address', locals);
   }
   catch (err) {
     console.error(err);
