@@ -17,10 +17,9 @@ const updateEdDb = () => {
   const oneWeek = oneDay*7;
   setTimeout(updateEdDb, oneDay);
 
-  edGeometry.findOne({}, (err, doc) => {
+  edGeometry.findOne({}, (err, topDoc) => {
     // if our db is empty or if our
-    let expireTime = 0;
-    if (doc !== null) { expireTime = doc.createdAt + oneWeek }
+    const expireTime = (topDoc !== null) ? topDoc.createdAt + oneWeek : 0;
     if (expireTime < Date.now()) {
       // TODO: download some new geojson from https://data.cityofnewyork.us/api/geospatial/h2n3-98hq?method=export&format=GeoJSON
       // read in our geojson
@@ -55,8 +54,8 @@ router.get('/', (req, res, next) => {
   res.render('index', {title: 'Index'});
 });
 
-const findIntersect = (coordinates, cb) => {
-  edGeometry.findOne({
+const intersectQuery = (coordinates) => {
+  return {
     geometry: {
       '$geoIntersects': {
         '$geometry': {
@@ -64,7 +63,7 @@ const findIntersect = (coordinates, cb) => {
         }
       }
     }
-  }, cb);
+  };
 };
 
 router.get('/get_address', (req, res, next) => {
@@ -78,9 +77,9 @@ router.get('/get_address', (req, res, next) => {
     const lat = data.results[0].geometry.location.lat;
     const long = data.results[0].geometry.location.lng;
 
-    findIntersect([lat, long], (err, doc) => {
-      const ad = doc.ad;
-      const ed = doc.ed;
+    edGeometry.findOne(intersectQuery([lat, long]), (err, geomDoc) => {
+      const ad = geomDoc.ad;
+      const ed = geomDoc.ed;
 
       countyCommittee.find({assembly_district: ad, electoral_district: ed}, (members) => {
         res.render('get_address', {
