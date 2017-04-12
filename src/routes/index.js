@@ -129,9 +129,14 @@ router.get('/fusiontable', (req, res, next) => {
 });
 
 router.get('/gmapsjs', co(function*(req, res, next) {
-  const [ad, lat, long] = [Number(req.query.ad), Number(req.query.lat), Number(req.query.long)];
-  const geomDocs = yield edGeometry.find({ad: ad});
-  res.render('gmapsjs', {ad: ad, lat: lat, long: long, geomDocs: JSON.stringify(geomDocs)});
+  try {
+    const [ad, lat, long] = [Number(req.query.ad), Number(req.query.lat), Number(req.query.long)];
+    const geomDocs = yield edGeometry.find({ad: ad});
+    res.render('gmapsjs', {ad: ad, lat: lat, long: long, geomDocs: JSON.stringify(geomDocs)});
+  }
+  catch (err) {
+    console.log(err);
+  }
 }));
 
 module.exports = router;
