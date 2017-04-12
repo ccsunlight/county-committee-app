@@ -3,6 +3,7 @@ const router = express.Router();
 
 const _ = require('lodash');
 const bluebird = require('bluebird');
+const co = bluebird.coroutine;
 const fs = bluebird.promisifyAll(require('fs'));
 const rp = require('request-promise');
 const download = require('download');
@@ -22,29 +23,29 @@ const googleGeocoder = NodeGeocoder(googleGeocoderOptions);
 
 
 // we need to update the db if there's nothing in it or if it's been more than a week
-const updateEdDb = async () => {
+const updateEdDb = co(function*() {
   try {
     const oneDay = 1000*60*60*24;
     const oneWeek = oneDay*7;
     setTimeout(updateEdDb, oneDay);
 
     // get the first doc to check the date
-    const topDoc = await edGeometry.findOne({});
+    const topDoc = yield edGeometry.findOne({});
     const expireTime = (topDoc !== null) ? topDoc.createdAt + oneWeek : 0;
     if (expireTime > Date.now()) return;
 
     const saveTo = 'downloads/Election_Districts.geojson';
 
     try {
-      const geojsonFile = await download('https://data.cityofnewyork.us/api/geospatial/h2n3-98hq?method=export&format=GeoJSON');
-      await fs.writeFileAsync(saveTo, geojsonFile);
+      const geojsonFile = yield download('https://data.cityofnewyork.us/api/geospatial/h2n3-98hq?method=export&format=GeoJSON');
+      yield fs.writeFileAsync(saveTo, geojsonFile);
     }
     catch (err) {
       // if the download fails, just log it and fall back to whatever we already have
       console.log('ED geojson download failed!');
     }
 
-    const data = await fs.readFileAsync(saveTo);
+    const data = yield fs.readFileAsync(saveTo);
     const parsed = JSON.parse(data).features.map((x) => {
       return {
         ad: Number(x.properties.elect_dist.slice(0, 2)),
@@ -53,15 +54,15 @@ const updateEdDb = async () => {
       };
     });
 
-    await edGeometry.insertMany(parsed);
-    await edGeometry.deleteMany({createdAt: {$lt: expireTime}});
+    yield edGeometry.insertMany(parsed);
+    yield edGeometry.deleteMany({createdAt: {$lt: expireTime}});
 
     console.log('Updated ED geometry DB');
   }
   catch (err) {
     console.log(err);
   }
-};
+});
 updateEdDb();
 
 
@@ -82,18 +83,18 @@ const intersectQuery = (coordinates) => {
   };
 };
 
-router.get('/get_address', async (req, res, next) => {
+router.get('/get_address', co(function*(req, res, next) {
   try {
     const address = req.query.address;
 
-    data = await googleGeocoder.geocode(address);
+    data = yield googleGeocoder.geocode(address);
 
     const [lat, long] = [data[0].latitude, data[0].longitude];
-    const geomDoc = await edGeometry.findOne(intersectQuery([lat, long]));
+    const geomDoc = yield edGeometry.findOne(intersectQuery([lat, long]));
     if (geomDoc === null) throw new Error('Not in NYC!');
 
     const [ad, ed] = [geomDoc.ad, geomDoc.ed];
-    const members = await countyCommittee.find({assembly_district: ad, electoral_district: ed});
+    const members = yield countyCommittee.find({assembly_district: ad, electoral_district: ed});
 
     const locals = {
       address: address,
@@ -119,7 +120,7 @@ router.get('/get_address', async (req, res, next) => {
       console.log(err);
     }
   }
-});
+}));
 
 
 router.get('/fusiontable', (req, res, next) => {
