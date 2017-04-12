@@ -46,7 +46,7 @@ const updateEdDb = co(function*() {
     }
 
     const data = yield fs.readFileAsync(saveTo);
-    const parsed = JSON.parse(data).features.map((x) => {
+    const parsed = yield bluebird.map(JSON.parse(data).features, (x) => {
       return {
         ad: Number(x.properties.elect_dist.slice(0, 2)),
         ed: Number(x.properties.elect_dist.slice(2)),
