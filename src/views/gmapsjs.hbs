@@ -2,6 +2,7 @@
   <title>Simple Map</title>
   <meta name="viewport" content="initial-scale=1.0">
   <meta charset="utf-8">
+
   <style>
     /* Always set the map height explicitly to define the size of the div
      * element that contains the map. */
@@ -15,6 +16,10 @@
       padding: 0;
     }
   </style>
+
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDllCUiwagZYbAgEG92cGnYYdMjwx7_XvY&callback=initMap" async defer></script>
+	<!-- TODO: fetch this from our server, instead -->
+	<script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.core.min.js"></script>
 </head>
 <body>
   <div id="map"></div>
@@ -57,17 +62,15 @@
 			// see if this fails when the response is slow (due to the lib below trying to call initMap before it's loaded)
 			var geomDocs = {{{geomDocs}}};
 
-			for (var i = 0; i < geomDocs.length; i++) {
-				var cur = geomDocs[i];
-				var singleEdCoords = cur.geometry.coordinates[0][0].map(function(x) {
-					return {lat: x[1], lng: x[0]};
-				})
+			_.forEach(geomDocs, function(doc) {
+				var singleEdCoords = _.map(doc.geometry.coordinates[0][0], function(oneCoord) {
+					return {lat: oneCoord[1], lng: oneCoord[0]};
+				});
 
-				makePolygon(singleEdCoords, 'AD: ' + cur.ad + ' ED: ' + cur.ed);
-			}
+				makePolygon(singleEdCoords, 'AD: ' + doc.ad + ' ED: ' + doc.ed);
+			});
 
     }
 
   </script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDllCUiwagZYbAgEG92cGnYYdMjwx7_XvY&callback=initMap" async defer></script>
 </body>
