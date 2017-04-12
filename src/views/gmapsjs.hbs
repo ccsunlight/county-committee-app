@@ -1,0 +1,73 @@
+<head>
+  <title>Simple Map</title>
+  <meta name="viewport" content="initial-scale=1.0">
+  <meta charset="utf-8">
+  <style>
+    /* Always set the map height explicitly to define the size of the div
+     * element that contains the map. */
+    #map {
+      height: 50%;
+    }
+    /* Optional: Makes the sample page fill the window. */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script>
+		var infoWindow;
+    var map;
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: {{lat}}, lng: {{long}} },
+        zoom: 12
+      });
+
+			infoWindow = new google.maps.InfoWindow;
+
+			new google.maps.Marker({
+        position: { lat: {{lat}}, lng: {{long}} },
+        map: map
+      });
+
+			// need to use this because the scope is screwy
+			var makePolygon = function(paths, contentString) {
+				new google.maps.Polygon({
+					paths: paths,
+					strokeColor: '#FF0000',
+					strokeOpacity: 0.8,
+					strokeWeight: 2,
+					fillColor: '#FF0000',
+					fillOpacity: 0.35,
+					map: map
+				})
+				.addListener('click', function(event) {
+					infoWindow.setContent(contentString);
+	        infoWindow.setPosition(event.latLng);
+
+	        infoWindow.open(map);
+				});
+			};
+
+			// see if this fails when the response is slow (due to the lib below trying to call initMap before it's loaded)
+			var geomDocs = {{{geomDocs}}};
+
+			for (var i = 0; i < geomDocs.length; i++) {
+				var cur = geomDocs[i];
+				var singleEdCoords = cur.geometry.coordinates[0][0].map(function(x) {
+					return {lat: x[1], lng: x[0]};
+				})
+
+				makePolygon(singleEdCoords, 'AD: ' + cur.ad + ' ED: ' + cur.ed);
+			}
+
+    }
+
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDllCUiwagZYbAgEG92cGnYYdMjwx7_XvY&callback=initMap" async defer></script>
+</body>

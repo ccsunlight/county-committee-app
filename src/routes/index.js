@@ -76,6 +76,7 @@ const intersectQuery = (coordinates) => {
     geometry: {
       '$geoIntersects': {
         '$geometry': {
+          // geojson expects its lat/long backwards (like long,lat)
           type: 'Point', coordinates: coordinates.reverse()
         }
       }
@@ -126,5 +127,11 @@ router.get('/get_address', co(function*(req, res, next) {
 router.get('/fusiontable', (req, res, next) => {
   res.render('fusiontable', {ad: req.query.ad, lat: req.query.lat, long: req.query.long});
 });
+
+router.get('/gmapsjs', co(function*(req, res, next) {
+  const [ad, lat, long] = [Number(req.query.ad), Number(req.query.lat), Number(req.query.long)];
+  const geomDocs = yield edGeometry.find({ad: ad});
+  res.render('gmapsjs', {ad: ad, lat: lat, long: long, geomDocs: JSON.stringify(geomDocs)});
+}));
 
 module.exports = router;
