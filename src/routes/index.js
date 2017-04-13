@@ -88,7 +88,7 @@ router.get('/get_address', co(function*(req, res, next) {
   try {
     const address = req.query.address;
 
-    data = yield googleGeocoder.geocode(address);
+    const data = yield googleGeocoder.geocode(address);
 
     const [lat, long] = [data[0].latitude, data[0].longitude];
     const geomDoc = yield edGeometry.findOne(intersectQuery([lat, long]));
