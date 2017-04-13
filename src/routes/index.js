@@ -86,13 +86,15 @@ const intersectQuery = (coordinates) => {
 
 router.get('/get_address', co(function*(req, res, next) {
   try {
+    if (! _.isString(req.query.address) || req.query.address === '') throw new Error('Empty address');
     const address = req.query.address;
 
     const data = yield googleGeocoder.geocode(address);
+    if (! data[0]) throw new Error('Bad address');
 
     const [lat, long] = [data[0].latitude, data[0].longitude];
     const geomDoc = yield edGeometry.findOne(intersectQuery([lat, long]));
-    if (geomDoc === null) throw new Error('Not in NYC!');
+    if (! geomDoc) throw new Error('Not in NYC');
 
     const [ad, ed] = [geomDoc.ad, geomDoc.ed];
     const members = yield countyCommittee.find({assembly_district: ad, electoral_district: ed});
@@ -110,14 +112,12 @@ router.get('/get_address', co(function*(req, res, next) {
     res.render('get_address', locals);
   }
   catch (err) {
-    if (err.message === 'Not in NYC!') {
-      console.log('TODO: send user to error page saying the address must be in NYC');
-    }
-    else if (err.name === 'HttpError') {
-      // thrown when the google geocoding api fails
-      console.log('TODO: send user to error page saying the service is currently down for maintenance');
-    }
+    if (err.message === 'Not in NYC') console.log('TODO: the address must be in NYC');
+    else if (err.name === 'HttpError') console.log('TODO: google geocoding service is currently down');
+    else if (err.message === 'Empty address') console.log('TODO: empty address entered');
+    else if (err.message === 'Bad address') console.log('TODO: bad address entered');
     else {
+      // TODO: send to a general error page like 'something went wrong!'
       console.log(err);
     }
   }
