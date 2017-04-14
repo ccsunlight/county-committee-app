@@ -47,7 +47,7 @@
 					strokeOpacity: 0.9,
 					strokeWeight: 2,
 					fillColor: color,
-					fillOpacity: 0.7,
+					fillOpacity: 0.8,
 					map: map
 				})
 				.addListener('click', function(event) {
@@ -59,17 +59,28 @@
 			};
 
 			var geomDocs = {{{geomDocs}}};
-      const filledColor = '#2825E3';
-      const vacantColor = '#E32525';
+      var filledColor = '#2825E3';
+      var vacantColor = '#E32525';
+      var nodataColor = '#FFFFFF';
 
 			_.forEach(geomDocs, function(doc) {
         var coordinates = doc.co;
         var ed = doc.ed;
         var numOfSeats = doc.ns;
-        var numOfVacancies = doc.nv;
-        var color = (numOfVacancies === 0) ? filledColor : vacantColor;
+        var numOfFilledSeats = doc.nf;
 
-        var infoString = 'Election District: ' + ed + '<br />Vacant Seats: ' + numOfVacancies + ' out of ' + numOfSeats;
+        var infoStringStart = 'Election District: ' + ed + '<br />';
+        var infoString, color;
+
+        if (numOfSeats === 0) {
+          infoString = infoStringStart + 'No seat data';
+          color = nodataColor;
+        }
+        else {
+          color = (numOfFilledSeats === numOfSeats) ? filledColor : vacantColor;
+          infoString = infoStringStart + 'Filled seats: ' + numOfFilledSeats + '<br />Vacant seats:' + (numOfSeats - numOfFilledSeats);
+        }
+
 				makePolygon(doc.co, color, infoString);
 			});
 
