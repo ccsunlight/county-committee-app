@@ -59,10 +59,18 @@
 			};
 
 			var geomDocs = {{{geomDocs}}};
+      const filledColor = '#2825E3';
+      const vacantColor = '#E32525';
 
 			_.forEach(geomDocs, function(doc) {
-        var infoString = 'Election District: ' + doc.ed + '<br />Vacant Seats: ' + doc.nv + ' out of ' + doc.ns;
-				makePolygon(doc.co, doc.cl, infoString);
+        var coordinates = doc.co;
+        var ed = doc.ed;
+        var numOfSeats = doc.ns;
+        var numOfVacancies = doc.nv;
+        var color = (numOfVacancies === 0) ? filledColor : vacantColor;
+
+        var infoString = 'Election District: ' + ed + '<br />Vacant Seats: ' + numOfVacancies + ' out of ' + numOfSeats;
+				makePolygon(doc.co, color, infoString);
 			});
 
     }

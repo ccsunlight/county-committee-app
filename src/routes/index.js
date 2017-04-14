@@ -132,9 +132,6 @@ router.get('/gmapsjs', co(function*(req, res, next) {
     const [ad, lat, long] = [Number(req.query.ad), Number(req.query.lat), Number(req.query.long)];
     const geomDocs = yield edGeometry.find({ad: ad});
 
-    const vacantColor = '#E32525';
-    const filledColor = '#2825E3';
-
     const cleanedGeomDocs = yield bb.map(geomDocs, co(function*(doc) {
       const singleEdCoords = yield bb.map(doc.geometry.coordinates[0][0], oneCoord => {
         return {lat: oneCoord[1], lng: oneCoord[0]}
@@ -145,15 +142,11 @@ router.get('/gmapsjs', co(function*(req, res, next) {
       const numOfSeats = _.size(memberDocs);
       const numOfVacancies = _.size(vacantDocs);
 
-      const color = (numOfVacancies === 0) ? filledColor : vacantColor;
-
       return {
         co: singleEdCoords,
-        ad: doc.ad,
         ed: doc.ed,
         ns: numOfSeats,
-        nv: numOfVacancies,
-        cl: color
+        nv: numOfVacancies
       };
     }));
 
