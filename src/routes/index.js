@@ -168,7 +168,7 @@ router.get('/gmapsjs', co(function*(req, res, next) {
       };
     }));
 
-    res.render('gmapsjs', {ad: ad, lat: lat, long: long, geomDocs: JSON.stringify(cleanedGeomDocs)});
+    res.render('gmapsjs', {ad: ad, lat: lat, long: long, geomDocs: JSON.stringify(cleanedGeomDocs), layout: ''});
   }
   catch (err) {
     console.log(err);

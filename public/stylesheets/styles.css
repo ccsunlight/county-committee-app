@@ -240,3 +240,21 @@ html, body {
 .address-button {
   right: 0;
 }
+
+.address-button {
+  right: 0;
+}
+
+.mdl-card__supporting-text {
+  text-align: center;
+}
+
+
+#address, .mdl-textfield__label {
+  font-size: 30px;
+  line-height: 40px;
+}
+
+.mdl-textfield {
+  width: 400px;
+}

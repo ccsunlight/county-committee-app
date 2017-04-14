@@ -1,27 +1,19 @@
-<head>
-	{{> material_design}}
-	{{> amp_header}}
-	{{> amp_form}}
-	{{> amp_iframe}}
-</head>
-<body>
-  {{> addressform}}
-
-  <p>Results for: {{address}}</p>
-	lat: {{lat}}, long: {{long}}, ad: {{ad}}, ed: {{ed}}
-
-	<h3>Seats</h3>
-	<ul>
-	{{^members}} No members found. {{/members}}
-	{{#members}}
-		<li>{{office}} &mdash; {{office_holder}}</li>
-	{{/members}}
-	</ul>
-
-
-	<amp-iframe width="600" height="400" layout="responsive" sandbox="allow-scripts allow-popups" frameborder="0" src="/gmapsjs?lat={{lat}}&long={{long}}&ad={{ad}}">
-		<!-- we need a placeholder img so that the iframe doesn't have to be 600px from the page top -->
-		<amp-img layout="fill" src="http://i.imgur.com/TYzy58b.jpg" placeholder></amp-img>
-	</amp-iframe>
-
-</body>
+<div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--9-col-tablet mdl-cell--4-col-phone">
+						<div class="mdl-card__supporting-text">
+							<h4>County Committe Finder</h4>
+							<form class="search-form" method="GET"  class="mdl-textfield mdl-js-textfield" action="get_address" target="_top">
+								<div class="mdl-textfield mdl-js-textfield">
+									<input class="mdl-textfield__input" type="search" id="address"  name="address" />
+									<label class="mdl-textfield__label" value="{{address}}" for="address">Enter your address</label>
+									<button class="address-button mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-button--right" act>
+									Go!
+									</button>
+								</div>
+							</div>
+						</div>
+						<div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--9-col-tablet mdl-cell--4-col-phone">
+							<div class="mdl-card__supporting-text">
+							<iframe width="600" height="400" layout="responsive" sandbox="allow-scripts allow-popups" frameborder="0" src="/gmapsjs?lat={{lat}}&long={{long}}&ad={{ad}}">
+							</iframe>
+						</div>
+					</div>
