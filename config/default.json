@@ -2,7 +2,7 @@
   "host": "localhost",
   "port": "3030",
   "mongodb": "mongodb://172.17.0.2:27017/county-committee",
-  "public": "../public/",
+  "public": "../public",
    "auth": {
     "token": {
       "secret": "+Seb6A9MbUk0po/J9sKkaUJeGSZXlX3O8oxB8zr0R+7K5tLVGe18lVPWt+3JIpVflKn2xCIk2UIVhN+s/7V6zg=="

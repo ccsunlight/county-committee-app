@@ -1,8 +1,13 @@
-<!-- TODO can we add address autocomplete? -->
+<form class="search-form" method="GET"  class="mdl-textfield mdl-js-textfield" action="get_address" target="_top">
+ <div class="mdl-textfield mdl-js-textfield">
+    <input class="mdl-textfield__input" type="search" id="address"  name="address" />
+    <label class="mdl-textfield__label" value="{{address}}" for="sample1">Enter your address</label>
+    <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" act>
+  		Go!
+	</button>  
 
-<div>
-  <form class="search-form" method="GET" action="get_address" target="_top">
-    <input class="search-box" type="search" value="{{address}}" placeholder="Enter Your Address..." name="address">
-    <input class="search-button ampstart-btn caps" type="submit" value="Go!">
-  </form>
-</div>
+
+	</div>
+</form>
+
+
