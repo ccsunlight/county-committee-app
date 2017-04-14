@@ -29,7 +29,7 @@
     function initMap() {
       map = new google.maps.Map(document.getElementById('map'), {
         center: { lat: {{lat}}, lng: {{long}} },
-        zoom: 12
+        zoom: 14
       });
 
 			infoWindow = new google.maps.InfoWindow;
@@ -40,14 +40,14 @@
       });
 
 			// need to use this because the scope is screwy
-			var makePolygon = function(paths, contentString) {
+			var makePolygon = function(paths, color, contentString) {
 				new google.maps.Polygon({
 					paths: paths,
-					strokeColor: '#FF0000',
-					strokeOpacity: 0.8,
+					strokeColor: color,
+					strokeOpacity: 0.9,
 					strokeWeight: 2,
-					fillColor: '#FF0000',
-					fillOpacity: 0.35,
+					fillColor: color,
+					fillOpacity: 0.7,
 					map: map
 				})
 				.addListener('click', function(event) {
@@ -61,11 +61,7 @@
 			var geomDocs = {{{geomDocs}}};
 
 			_.forEach(geomDocs, function(doc) {
-				var singleEdCoords = _.map(doc.geometry.coordinates[0][0], function(oneCoord) {
-					return {lat: oneCoord[1], lng: oneCoord[0]};
-				});
-
-				makePolygon(singleEdCoords, 'AD: ' + doc.ad + ' ED: ' + doc.ed);
+				makePolygon(doc.coordinates, doc.color, 'AD: ' + doc.ad + ' ED: ' + doc.ed);
 			});
 
     }
