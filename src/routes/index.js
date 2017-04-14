@@ -138,15 +138,15 @@ router.get('/gmapsjs', co(function*(req, res, next) {
       });
 
       const memberDocs = yield countyCommittee.find({assembly_district: doc.ad, electoral_district: doc.ed});
-      const vacantDocs = _.filter(memberDocs, x => x.office_holder === 'Vacancy');
+      const filledDocs = _.filter(memberDocs, x => x.office_holder !== 'Vacancy');
       const numOfSeats = _.size(memberDocs);
-      const numOfVacancies = _.size(vacantDocs);
+      const numOfFilledSeats = _.size(filledDocs);
 
       return {
         co: singleEdCoords,
         ed: doc.ed,
         ns: numOfSeats,
-        nv: numOfVacancies
+        nf: numOfFilledSeats
       };
     }));
 
