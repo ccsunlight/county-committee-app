@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 
 const _ = require('lodash');
-const bluebird = require('bluebird');
-const co = bluebird.coroutine;
-const fs = bluebird.promisifyAll(require('fs'));
+const bb = require('bluebird');
+const co = bb.coroutine;
+const fs = bb.promisifyAll(require('fs'));
 const rp = require('request-promise');
 const download = require('download');
 const NodeGeocoder = require('node-geocoder');
@@ -46,7 +46,7 @@ const updateEdDb = co(function*() {
     }
 
     const data = yield fs.readFileAsync(saveTo);
-    const parsed = yield bluebird.map(JSON.parse(data).features, (x) => {
+    const parsed = yield bb.map(JSON.parse(data).features, (x) => {
       return {
         ad: Number(x.properties.elect_dist.slice(0, 2)),
         ed: Number(x.properties.elect_dist.slice(2)),
@@ -132,6 +132,18 @@ router.get('/gmapsjs', co(function*(req, res, next) {
   try {
     const [ad, lat, long] = [Number(req.query.ad), Number(req.query.lat), Number(req.query.long)];
     const geomDocs = yield edGeometry.find({ad: ad});
+
+    const cleaned = yield bb.map(geomDocs, co(function*(doc) {
+      const singleEdCoords = yield bb.map(doc.geometry.coordinates[0][0], oneCoord => {
+        return {lat: oneCoord[1], lng: oneCoord[0]}
+      });
+      return {
+        coordinates: singleEdCoords,
+        ad: doc.ad,
+        ed: doc.ed
+      };
+    }));
+    console.log(cleaned);
     res.render('gmapsjs', {ad: ad, lat: lat, long: long, geomDocs: JSON.stringify(geomDocs)});
   }
   catch (err) {
