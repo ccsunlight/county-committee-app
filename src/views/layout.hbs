@@ -2,19 +2,17 @@
 <html lang="en">
 	{{> head}}
 	<body class="mdl-demo mdl-color--grey-100 mdl-color-text--grey-700 mdl-base">
-	<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-		{{> header}}
-		<main class="mdl-layout__content">
-		<div class="mdl-layout__tab-panel is-active" id="overview">
+		<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+			{{> header}}
+			<main class="mdl-layout__content">
+				<div class="mdl-layout__tab-panel is-active" id="overview">
 
-			{{{body}}}
+					{{{body}}}
+
+				</div>
+				{{> footer}}
+			</main>
 
 		</div>
-			{{> footer}}
-		</main>
-
-	</div>
-
-	<script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-</body>
+	</body>
 </html>

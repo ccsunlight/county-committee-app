@@ -68,7 +68,7 @@ updateEdDb();
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
-  res.render('index', {title: 'Index'});
+  res.render('index', {});
 });
 
 const intersectQuery = (coordinates) => {
@@ -105,8 +105,7 @@ router.get('/get_address', co(function*(req, res, next) {
       long: long,
       ad: ad,
       ed: ed,
-      members: members,
-      title: 'Address Search...'
+      members: members
     };
 
     res.render('get_address', locals);
