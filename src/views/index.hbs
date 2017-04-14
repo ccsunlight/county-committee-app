@@ -1,15 +1,14 @@
-<head>
-	{{> amp_header}}
-	{{> amp_form}}
-</head>
-<body>
-	<div class="center-card">
-		<p><h1>{{title}}</h1></p>
-		<p />
-
-		{{> addressform}}
-
-		<p />
-		<div>TODO Display overall CC stats here</div>
+<div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--9-col-tablet mdl-cell--4-col-phone">
+	<div class="mdl-card__supporting-text ">
+		<h2>County Committe Lookup</h2>
+		<form class="search-form" method="GET"  action="get_address" target="_top">
+			<div class="mdl-textfield mdl-js-textfield">
+				<input class="mdl-textfield__input" type="address" id="address" name="address" />
+				<label class="mdl-textfield__label" value="{{address}}" for="address">Enter your address</label>
+			</div>
+			<button class="address-button mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-button--right" act>
+			Go!
+			</button>
+		</form>
 	</div>
-</body>
+</div>

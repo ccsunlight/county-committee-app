@@ -7,7 +7,7 @@
     /* Always set the map height explicitly to define the size of the div
      * element that contains the map. */
     #map {
-      height: 50%;
+      height: 100%;
     }
     /* Optional: Makes the sample page fill the window. */
     html, body {
@@ -59,9 +59,18 @@
 			};
 
 			var geomDocs = {{{geomDocs}}};
+      const filledColor = '#2825E3';
+      const vacantColor = '#E32525';
 
 			_.forEach(geomDocs, function(doc) {
-				makePolygon(doc.coordinates, doc.color, 'AD: ' + doc.ad + ' ED: ' + doc.ed);
+        var coordinates = doc.co;
+        var ed = doc.ed;
+        var numOfSeats = doc.ns;
+        var numOfVacancies = doc.nv;
+        var color = (numOfVacancies === 0) ? filledColor : vacantColor;
+
+        var infoString = 'Election District: ' + ed + '<br />Vacant Seats: ' + numOfVacancies + ' out of ' + numOfSeats;
+				makePolygon(doc.co, color, infoString);
 			});
 
     }
