@@ -61,7 +61,8 @@
 			var geomDocs = {{{geomDocs}}};
 
 			_.forEach(geomDocs, function(doc) {
-				makePolygon(doc.coordinates, doc.color, 'AD: ' + doc.ad + ' ED: ' + doc.ed);
+        var infoString = 'Election District: ' + doc.ed + '<br />Vacant Seats: ' + doc.nv + ' out of ' + doc.ns;
+				makePolygon(doc.co, doc.cl, infoString);
 			});
 
     }

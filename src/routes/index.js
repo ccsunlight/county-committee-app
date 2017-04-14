@@ -123,48 +123,37 @@ router.get('/get_address', co(function*(req, res, next) {
   }
 }));
 
-
 router.get('/fusiontable', (req, res, next) => {
   res.render('fusiontable', {ad: req.query.ad, lat: req.query.lat, long: req.query.long});
 });
-
-
-// given an array of bools, tell us whether it is full of all true, all false, or a mixture
-const allOrMixed = (col) => {
-  if (_.isEmpty(col)) return 'false';
-
-  const result = _.keys(_.countBy(col, Boolean));
-  if (result.length > 1) return 'mixed';
-  return result[0];
-}
-
 
 router.get('/gmapsjs', co(function*(req, res, next) {
   try {
     const [ad, lat, long] = [Number(req.query.ad), Number(req.query.lat), Number(req.query.long)];
     const geomDocs = yield edGeometry.find({ad: ad});
 
-    const colors = {
-      true: '#2825E3', // fully filled
-      mixed: '#B225E3', // both full and vacant seats
-      false: '#E32525' // fully vacant
-    };
+    const vacantColor = '#E32525';
+    const filledColor = '#2825E3';
 
     const cleanedGeomDocs = yield bb.map(geomDocs, co(function*(doc) {
       const singleEdCoords = yield bb.map(doc.geometry.coordinates[0][0], oneCoord => {
         return {lat: oneCoord[1], lng: oneCoord[0]}
       });
 
-      const members = yield countyCommittee.find({assembly_district: doc.ad, electoral_district: doc.ed});
-      const vacancies = yield bb.map(members, member => member.office_holder === 'Vacancy')
+      const memberDocs = yield countyCommittee.find({assembly_district: doc.ad, electoral_district: doc.ed});
+      const vacantDocs = _.filter(memberDocs, x => x.office_holder === 'Vacancy');
+      const numOfSeats = _.size(memberDocs);
+      const numOfVacancies = _.size(vacantDocs);
 
-      const color = colors[allOrMixed(vacancies)];
+      const color = (numOfVacancies === 0) ? filledColor : vacantColor;
 
       return {
-        coordinates: singleEdCoords,
+        co: singleEdCoords,
         ad: doc.ad,
         ed: doc.ed,
-        color: color
+        ns: numOfSeats,
+        nv: numOfVacancies,
+        cl: color
       };
     }));
 
