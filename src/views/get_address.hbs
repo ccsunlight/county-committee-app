@@ -1,6 +1,11 @@
 {{> addressform}}
 <div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--9-col-tablet mdl-cell--4-col-phone">
 	<div class="mdl-card__supporting-text">
-		<iframe width="600" height="400" layout="responsive" sandbox="allow-scripts allow-popups" frameborder="0" src="/gmapsjs?lat={{lat}}&long={{long}}&ad={{ad}}"></iframe>
+		<iframe id="map" width="600" height="400" sandbox="allow-scripts allow-popups" frameborder="0" src="about:blank" data-src="/gmapsjs?lat={{lat}}&long={{long}}&ad={{ad}}"></iframe>
 	</div>
+	<script>
+	window.onload = function() { 
+		document.getElementById('map').src = document.getElementById('map').getAttribute('data-src');
+	}
+	</script>
 </div>
