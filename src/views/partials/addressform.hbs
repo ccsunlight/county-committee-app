@@ -1,13 +1,25 @@
-<form class="search-form" method="GET"  class="mdl-textfield mdl-js-textfield" action="get_address" target="_top">
- <div class="mdl-textfield mdl-js-textfield">
-    <input class="mdl-textfield__input" type="search" id="address"  name="address" />
-    <label class="mdl-textfield__label" value="{{address}}" for="sample1">Enter your address</label>
-    <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" act>
-  		Go!
-	</button>  
+<div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--9-col-tablet mdl-cell--4-col-phone">
+	<div class="mdl-card__supporting-text ">
+		<h2>County Committee Lookup</h2>
+		<form class="search-form" method="GET"  action="get_address" target="_top">
+		  <div class="mdl-textfield mdl-js-textfield">
+		    <input id="autocomplete" class="mdl-textfield__input" type="address" id="address" name="address" />
+		    <label class="mdl-textfield__label" value="{{address}}" for="address">Enter your address</label>
+		  </div>
+		  <button class="address-button mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-button--right" act>
+		  Go!
+		  </button>
+		</form>
 
+		<script>
+		function initAutocomplete() {
+			var options = {
+				componentRestrictions: {country: 'us'}
+			};
+			var autocomplete = new google.maps.places.Autocomplete((document.getElementById('autocomplete')), options);
+		}
+		</script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDllCUiwagZYbAgEG92cGnYYdMjwx7_XvY&libraries=places&callback=initAutocomplete"></script>
 
 	</div>
-</form>
-
-
+</div>
