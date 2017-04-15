@@ -1,11 +1,15 @@
 {
   "host": "county-committee-app.feathersjs.com",
-  "port": 80,
-  "mongodb": "DATABASE_URL",
+  "port": 3030,
+  "mongodb": "mongodb://172.17.0.2:27017/county-committee",
   "public": "../public",
   "auth": {
     "token": {
       "secret": "FEATHERS_AUTH_SECRET"
+    },
+    "site_access": {
+      "username": "ccuser",
+      "password": "sunl1ght" 
     },
     "local": {},
     "facebook": {

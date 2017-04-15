@@ -24,6 +24,12 @@ hbs.registerPartials(__dirname + '/views/partials');
 
 app.configure(configuration(path.join(__dirname, '..')));
 
+// Site access auth for demo purposes
+if (app.get('env') === 'development') {
+  const basicAuth = require('basic-auth-connect');
+  app.use(basicAuth(app.get('auth').site_access.username,app.get('auth').site_access.password));
+}
+
 app.use(compress())
   .options('*', cors())
   .use(cors())
@@ -37,5 +43,7 @@ app.use(compress())
   .configure(socketio())
   .configure(services)
   .configure(middleware);
+
+
 
 module.exports = app;

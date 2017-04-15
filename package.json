@@ -23,6 +23,7 @@
     "mocha": "mocha test/ --recursive"
   },
   "dependencies": {
+    "basic-auth-connect": "^1.0.0",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
     "compression": "^1.6.2",
