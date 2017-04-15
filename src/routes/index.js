@@ -181,42 +181,5 @@ router.get('/county-committee/:county', co(function*(req, res, next) {
 
 }));
 
-router.get('/fusiontable', (req, res, next) => {
-  res.render('fusiontable', {ad: req.query.ad, lat: req.query.lat, long: req.query.long});
-});
-
-
-router.get('/gmapsjs', co(function*(req, res, next) {
-  try {
-
-    const [ad, lat, long] = [Number(req.query.ad), Number(req.query.lat), Number(req.query.long)];
-    const geomDocs = yield edGeometry.find({ad: ad});
-    
-
-    const cleanedGeomDocs = yield bb.map(geomDocs, co(function*(doc) {
-      const singleEdCoords = yield bb.map(doc.geometry.coordinates[0][0], oneCoord => {
-        return {lat: oneCoord[1], lng: oneCoord[0]}
-      });
-
-      const memberDocs = yield countyCommittee.find({assembly_district: doc.ad, electoral_district: doc.ed});
-      const filledDocs = _.filter(memberDocs, x => x.office_holder !== 'Vacancy');
-      const numOfSeats = _.size(memberDocs);
-      const numOfFilledSeats = _.size(filledDocs);
-
-      return {
-        co: singleEdCoords,
-        ed: doc.ed,
-        ns: numOfSeats,
-        nf: numOfFilledSeats
-      };
-    }));
-
-    res.render('gmapsjs', {ad: ad, lat: lat, long: long, geomDocs: JSON.stringify(cleanedGeomDocs), layout: ''});
-  }
-  catch (err) {
-    console.log(err);
-  }
-}));
-
 
 module.exports = router;
