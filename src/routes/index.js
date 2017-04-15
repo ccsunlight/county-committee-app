@@ -122,6 +122,33 @@ router.get('/get_address', co(function*(req, res, next) {
   }
 }));
 
+
+router.get('/county-committee/:county', co(function*(req, res, next) {
+
+    const members = yield countyCommittee.find({ county: new RegExp(req.params.county, "i") });
+    console.log(members[0].toObject());
+
+    const memberData = yield bb.map(members, co(function*(member) {
+      return {
+        ed: member.electoral_district,
+        ad: member.assembly_district,
+        office: member.office,
+        entry_type: member.entry_type,
+        office_holder: member.office_holder,
+        county: member.county,
+        petition_number: member.petition_number,
+        entry_type: member.entry_type
+      }
+    }));
+
+    memberData;
+
+    console.log(memberData);
+
+    res.render('table', { membersJSON: JSON.stringify(memberData.slice(50)), members: memberData.slice(0,50)});
+
+}));
+
 router.get('/fusiontable', (req, res, next) => {
   res.render('fusiontable', {ad: req.query.ad, lat: req.query.lat, long: req.query.long});
 });
