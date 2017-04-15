@@ -1,50 +1,5 @@
-<div id="cc-list-table" class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--9-col-tablet mdl-cell--4-col-phone ">
 
-<div class="mdl-card__supporting-text mdl-grid mdl-grid--no-spacing">
-  <ul class="pagination mdl-cell--12-col-desktop "></ul>
-  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
-    {{#each members}}
-    {{#if @first}}
-    <thead>
-      <tr>
-        {{#each this}}
-        <th class="sort" data-sort="{{@key}}">{{@key}}</th>
-        {{/each}}
-      </tr>
-    </thead>
-    <tbody  class="list" >
-      {{/if}}
-      <tr>
-        {{#each this}}
-        <td class="{{@key}}">{{this}}</td>
-        {{/each}}
-      </tr>
-      {{/each}}
-      
-    </tbody>
-  </table>
+<div class="mdl-cell mdl-cell--6-col">
+  {{> table}}
 </div>
-  </div>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.js"></script>
-  <script>
-    
-    var otherMembers = {{{membersJSON}}};
-   
-    var options = {
-      valueNames: Object.keys(otherMembers[0]),
-      pagination: true,
-      page: 25,
-      indexAsync: true
-    };
 
-    var ccList = new List('cc-list-table', options);
-
-    console.log(otherMembers.length);
-    console.log(Object.keys(otherMembers[0]));
-
-    ccList.add(otherMembers, function(items) {
-
-      console.log('All ' + items.length + ' were added!');
-    });
- 
-  </script>

@@ -121,13 +121,24 @@ router.get('/get_address', co(function*(req, res, next) {
       };
     }));
 
+    const memberData = yield bb.map(yourMembers, co(function*(member) {
+      return {
+        office: member.office,
+        entry_type: member.entry_type,
+        office_holder: member.office_holder,
+        petition_number: member.petition_number,
+        entry_type: member.entry_type
+      }
+    }));
+
+
     const locals = {
       address: address,
       lat: lat,
       long: long,
       ad: ad,
       ed: ed,
-      yourMembers: yourMembers,
+      members: memberData,
       cleanedAllGeomDocsInAd: JSON.stringify(cleanedAllGeomDocsInAd)
     };
 
@@ -164,9 +175,7 @@ router.get('/county-committee/:county', co(function*(req, res, next) {
       }
     }));
 
-    memberData;
-
-    console.log(memberData);
+    // console.log(memberData);
 
     res.render('table', { membersJSON: JSON.stringify(memberData.slice(50)), members: memberData.slice(0,50)});
 
@@ -175,6 +184,39 @@ router.get('/county-committee/:county', co(function*(req, res, next) {
 router.get('/fusiontable', (req, res, next) => {
   res.render('fusiontable', {ad: req.query.ad, lat: req.query.lat, long: req.query.long});
 });
+
+
+router.get('/gmapsjs', co(function*(req, res, next) {
+  try {
+
+    const [ad, lat, long] = [Number(req.query.ad), Number(req.query.lat), Number(req.query.long)];
+    const geomDocs = yield edGeometry.find({ad: ad});
+    
+
+    const cleanedGeomDocs = yield bb.map(geomDocs, co(function*(doc) {
+      const singleEdCoords = yield bb.map(doc.geometry.coordinates[0][0], oneCoord => {
+        return {lat: oneCoord[1], lng: oneCoord[0]}
+      });
+
+      const memberDocs = yield countyCommittee.find({assembly_district: doc.ad, electoral_district: doc.ed});
+      const filledDocs = _.filter(memberDocs, x => x.office_holder !== 'Vacancy');
+      const numOfSeats = _.size(memberDocs);
+      const numOfFilledSeats = _.size(filledDocs);
+
+      return {
+        co: singleEdCoords,
+        ed: doc.ed,
+        ns: numOfSeats,
+        nf: numOfFilledSeats
+      };
+    }));
+
+    res.render('gmapsjs', {ad: ad, lat: lat, long: long, geomDocs: JSON.stringify(cleanedGeomDocs), layout: ''});
+  }
+  catch (err) {
+    console.log(err);
+  }
+}));
 
 
 module.exports = router;
