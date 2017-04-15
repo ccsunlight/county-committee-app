@@ -65,11 +65,13 @@ const updateEdDb = co(function*() {
 });
 updateEdDb();
 
-
 /* GET home page. */
-router.get('/', (req, res, next) => {
-  res.render('index', {});
-});
+router.get('/', co(function*(req, res, next) {
+  const numOfSeats = yield countyCommittee.find({}).count();
+  const numOfVacancies = yield countyCommittee.find({office_holder: 'Vacancy'}).count();
+
+  res.render('index', {numOfFilledSeats: numOfSeats - numOfVacancies, numOfVacancies: numOfVacancies});
+}));
 
 const intersectQuery = (coordinates) => {
   return {

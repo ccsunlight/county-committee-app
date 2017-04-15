@@ -1,1 +1,33 @@
 {{> addressform}}
+
+<div class="mdl-card mdl-cell mdl-cell--6-col-desktop mdl-cell--6-col-tablet mdl-cell--6-col-phone">
+	<canvas id="myChart" width="5" height="5"></canvas>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
+<script>
+	var data = {
+		labels: [
+		  "Vacant",
+		  "Filled"
+		],
+		datasets: [
+	  {
+      data: [{{numOfVacancies}}, {{numOfFilledSeats}}],
+      backgroundColor: [
+        "#FF6384",
+        "#36A2EB"
+      ],
+      hoverBackgroundColor: [
+        "#FF6384",
+        "#36A2EB"
+      ]
+	  }]
+	};
+
+	var myPieChart = new Chart(document.getElementById("myChart"),{
+		type: 'pie',
+		data: data,
+		options: {}
+	});
+</script>
