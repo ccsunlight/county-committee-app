@@ -4,7 +4,7 @@ docker volume create cc-db-test-data
 # you can ignore error from this command
 docker stop cc-mongo || true && docker rm cc-mongo || true
 
-docker run --rm -it --name cc-mongo -p 27017:27017 -v cc-db-test-data:/data/db -d mongo
+docker run --rm -it --name cc-mongo -p 27017:27017 -v cc-db-test-data:/data/db -d mongo --auth
 
 # you can ignore error from this command
 docker stop cc-app || true && docker rm cc-app || true
