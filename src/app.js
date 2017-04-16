@@ -25,7 +25,7 @@ hbs.registerPartials(__dirname + '/views/partials');
 app.configure(configuration(path.join(__dirname, '..')));
 
 // Site access auth for demo purposes
-if (app.get('env') === 'development') {
+if (app.get('env') === 'production') {
   const basicAuth = require('basic-auth-connect');
   app.use(basicAuth(app.get('auth').site_access.username,app.get('auth').site_access.password));
 }
