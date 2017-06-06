@@ -267,3 +267,7 @@ html, body {
   display:inline-block;
   padding:5px;
 }
+
+#cc-member-table {
+  width: 100%;
+}
