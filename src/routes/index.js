@@ -145,6 +145,7 @@ router.get('/get_address', co(function*(req, res, next) {
     res.render('get_address', locals);
   }
   catch (err) {
+
     if (err.message === 'Not in NYC') console.log('TODO: the address must be in NYC');
     else if (err.name === 'HttpError') console.log('TODO: google geocoding service is currently down');
     else if (err.message === 'Empty address') console.log('TODO: empty address entered');
@@ -153,6 +154,13 @@ router.get('/get_address', co(function*(req, res, next) {
       // TODO: send to a general error page like 'something went wrong!'
       console.log(err);
     }
+
+    const locals = {
+      address: req.query.address,
+      error: err.message
+    };
+    res.render('get_address', locals);
+
   }
 }));
 
