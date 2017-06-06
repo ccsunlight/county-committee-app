@@ -2,13 +2,21 @@
 	<div class="mdl-card__supporting-text ">
 		<h2>County Committee Lookup</h2>
 		<form class="search-form" method="GET"  action="get_address" target="_top">
-		  <div class="mdl-textfield mdl-js-textfield">
-		    <input id="autocomplete" class="mdl-textfield__input" type="address" placeholder="Enter your address" id="address" name="address" />
-		  </div>
+			<div class="mdl-textfield mdl-js-textfield">
+			 <input id="autocomplete" class="mdl-textfield__input" type="address" placeholder="Enter your address" id="address" name="address"  value="{{address}}"/>
+
+				{{#if error}}
+			 	 <span class="mdl-textfield__error" style="visibility: visible;">{{error}}</span>
+			  		{{/if}}
+
+
+		  	</div>
+
+
 		  <button class="address-button mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-button--right" act>
 		  Lookup
 		  </button>
-		</form>
+		  </form>
 
 		<script>
 		function initAutocomplete() {
