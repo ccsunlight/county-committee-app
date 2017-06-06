@@ -10,6 +10,8 @@
 	var infoWindow;
 	var map;
 
+	console.log('whello');
+
 	function initGoogleMap() {
 		map = new google.maps.Map(document.getElementById('map'), {
 			center: { lat: {{lat}}, lng: {{long}} },
@@ -27,9 +29,9 @@
 		var makePolygon = function(paths, color, contentString) {
 			new google.maps.Polygon({
 				paths: paths,
-				strokeColor: color,
+				strokeColor: 333333,
 				strokeOpacity: 0.9,
-				strokeWeight: 2,
+				strokeWeight: 1,
 				fillColor: color,
 				fillOpacity: 0.8,
 				map: map
@@ -43,8 +45,9 @@
 		};
 
 		var cleanedAllGeomDocsInAd = {{{cleanedAllGeomDocsInAd}}};
-		var filledColor = '#2825E3';
-		var vacantColor = '#E32525';
+		var filledColor = '#1874CD';
+		var partiallyFilledColor = '#CAE1FF';
+		var vacantColor = '#EFEFEF';
 		var nodataColor = '#FFFFFF';
 
 		_.forEach(cleanedAllGeomDocsInAd, function(doc) {
@@ -61,9 +64,20 @@
 				color = nodataColor;
 			}
 			else {
-				color = (numOfFilledSeats === numOfSeats) ? filledColor : vacantColor;
+
+				console.log('yayaya');
+				if (numOfFilledSeats == numOfSeats) {
+					color = filledColor;
+				} else if (numOfFilledSeats > 0 && numOfFilledSeats < numOfSeats) {
+					color = partiallyFilledColor;
+				} else {
+					color = vacantColor;
+				}
+
 				infoString = infoStringStart + 'Filled seats: ' + numOfFilledSeats + '<br />Vacant seats:' + (numOfSeats - numOfFilledSeats);
 			}
+
+			console.log('woo', numOfFilledSeats, numOfSeats, color);
 
 			makePolygon(doc.co, color, infoString);
 		});
