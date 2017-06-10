@@ -23,6 +23,7 @@
     "mocha": "mocha test/ --recursive"
   },
   "dependencies": {
+    "admin-lte-express": "^1.4.2",
     "basic-auth-connect": "^1.0.0",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",

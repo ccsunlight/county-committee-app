@@ -1,6 +1,6 @@
 {
   "host": "localhost",
-  "port": "3030",
+  "port": "80",
   "mongodb": "mongodb://dev_cc_db_user:vNsxBfoo@172.17.0.2:27017/county-committee",
   "public": "../public",
    "auth": {
