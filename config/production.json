@@ -1,6 +1,6 @@
 {
   "host": "county-committee-app.feathersjs.com",
-  "port": "3030",
+  "port": "80",
   "mongodb": "mongodb://cc_db_user:P7usp){W[~a_g#Ep@172.17.0.2:27017/county-committee",
   "public": "../public",
   "auth": {
