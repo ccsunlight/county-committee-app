@@ -64,7 +64,18 @@ const countyCommitteeSchema = new Schema({
         required: true
     }
 
+},{
+  toObject: {
+  virtuals: true
+  },
+  toJSON: {
+  virtuals: true 
+  }
 });
+
+countyCommitteeSchema.virtual('id').get(function() {
+    return this._id;
+})
 
 const countyCommitteeModel = mongoose.model('county-committee', countyCommitteeSchema);
 

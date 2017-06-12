@@ -44,6 +44,6 @@ app.use(compress())
   .configure(services)
   .configure(middleware);
 
-
+console.log('Starting env: ', app.get('env')); 
 
 module.exports = app;
