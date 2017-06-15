@@ -11,7 +11,7 @@ const NodeGeocoder = require('node-geocoder');
 
 const countyCommittee = require('../services/county-committee/county-committee-model');
 const edGeometry = require('../services/edGeometry/edGeometry-model');
-
+const page = require('../services/page/page-model');
 
 const googleGeocoderOptions = {
   provider: 'google',
@@ -20,6 +20,8 @@ const googleGeocoderOptions = {
   formatter: null
 };
 const googleGeocoder = NodeGeocoder(googleGeocoderOptions);
+
+
 
 
 // we need to update the db if there's nothing in it or if it's been more than a week
@@ -188,6 +190,21 @@ router.get('/county-committee/:county', co(function*(req, res, next) {
     res.render('table', { membersJSON: JSON.stringify(memberData.slice(50)), members: memberData.slice(0,50)});
 
 }));
+
+
+
+/* GET home page. */
+router.get('/:page', co(function*(req, res, next) {
+  page.findOne({ 'alias': req.params.page}).then(function(data) {
+    if (data) {
+       res.render('page', data);
+    } else {
+      next();
+    }
+    
+  });
+}));
+
 
 
 module.exports = router;
