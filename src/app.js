@@ -30,10 +30,12 @@ if (app.get('env') === 'production') {
   app.use(basicAuth(app.get('auth').site_access.username,app.get('auth').site_access.password));
 }
 
+
 app.use(compress())
   .options('*', cors())
   .use(cors())
   .use(favicon( path.join(app.get('public'), 'favicon.ico') ))
+  .use('/cc-admin', serveStatic( app.get('public') + '/cc-admin/build' ))
   .use(routes)
   .use('/', serveStatic( app.get('public') ))
   .use(bodyParser.json())

@@ -8,6 +8,8 @@ const fs = bb.promisifyAll(require('fs'));
 const rp = require('request-promise');
 const download = require('download');
 const NodeGeocoder = require('node-geocoder');
+const serveStatic = require('feathers').static;
+
 
 const countyCommittee = require('../services/county-committee/county-committee-model');
 const edGeometry = require('../services/edGeometry/edGeometry-model');
@@ -190,7 +192,6 @@ router.get('/county-committee/:county', co(function*(req, res, next) {
     res.render('table', { membersJSON: JSON.stringify(memberData.slice(50)), members: memberData.slice(0,50)});
 
 }));
-
 
 
 /* GET home page. */
