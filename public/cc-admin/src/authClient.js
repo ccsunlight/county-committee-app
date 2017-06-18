@@ -1,5 +1,5 @@
 // in src/authClient.js
-import { AUTH_LOGIN, AUTH_LOGOUT, AUTH_ERROR, AUTH_CHECK } from 'admin-on-rest';
+/* import { AUTH_LOGIN, AUTH_LOGOUT, AUTH_ERROR, AUTH_CHECK } from 'admin-on-rest';
 
 export default (type, params) => {
     // called when the user attempts to log in
@@ -29,3 +29,4 @@ export default (type, params) => {
     }
     return Promise.reject('Unknown method');
 };
+*/

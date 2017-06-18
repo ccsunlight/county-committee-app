@@ -14,11 +14,16 @@ const userSchema = new Schema({
   googleId: { type: String },
   google: { type: Schema.Types.Mixed },
   email: {type: String, required: true, unique: true},
+  role: {type: String, required: true,enum: ['admin', 'editor', 'user'], unique: true},
   password: { type: String, required: true },
-  
   createdAt: { type: Date, 'default': Date.now },
   updatedAt: { type: Date, 'default': Date.now }
 });
+
+userSchema.virtual('id').get(function() {
+    return this._id;
+})
+
 
 const userModel = mongoose.model('user', userSchema);
 

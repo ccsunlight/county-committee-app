@@ -9,7 +9,8 @@ const rp = require('request-promise');
 const download = require('download');
 const NodeGeocoder = require('node-geocoder');
 const serveStatic = require('feathers').static;
-
+const auth = require('feathers-authentication');
+const local = require('feathers-authentication-local');
 
 const countyCommittee = require('../services/county-committee/county-committee-model');
 const edGeometry = require('../services/edGeometry/edGeometry-model');
@@ -22,7 +23,6 @@ const googleGeocoderOptions = {
   formatter: null
 };
 const googleGeocoder = NodeGeocoder(googleGeocoderOptions);
-
 
 
 
@@ -168,11 +168,11 @@ router.get('/get_address', co(function*(req, res, next) {
   }
 }));
 
-
+/*
 router.get('/county-committee/:county', co(function*(req, res, next) {
 
     const members = yield countyCommittee.find({ county: new RegExp(req.params.county, "i") });
-    console.log(members[0].toObject());
+  //  console.log(members[0].toObject());
 
     const memberData = yield bb.map(members, co(function*(member) {
       return {
@@ -192,6 +192,8 @@ router.get('/county-committee/:county', co(function*(req, res, next) {
     res.render('table', { membersJSON: JSON.stringify(memberData.slice(50)), members: memberData.slice(0,50)});
 
 }));
+*/
+
 
 
 /* GET home page. */

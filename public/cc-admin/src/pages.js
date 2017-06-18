@@ -11,7 +11,6 @@ export const PageList = (props) => (
                 <TextField source="alias" />
                 <TextField source="updatedAt" />
                 <TextField source="createdAt" />
-                <RichTextField source="content" />
 
                 <EditButton />        
             </Datagrid>
@@ -23,6 +22,21 @@ const PageTitle = ({ record }) => {
 };
 
 
+const toolbarProps = [
+    [{
+        header: [1, 2, 3, false]
+    }],
+    ['bold', 'italic', 'underline'],
+    ['image', 'video', 'link', 'code']
+];
+
+const quillModules = {
+    history: {
+      delay: 2000,
+      maxStack: 500,
+      userOnly: true
+    }
+  };
 
 export const PageEdit = (props) => (
     <Edit title={<PageTitle />} {...props}>
@@ -30,7 +44,7 @@ export const PageEdit = (props) => (
             <DisabledInput label="Id" source="id" />
             <TextInput source="title" />
             <TextInput source="alias" type="text" />
-            <RichTextInput source="content" />
+            <RichTextInput source="content" module={quillModules} theme="bubble" toolbar={toolbarProps}/>
         </SimpleForm>
     </Edit>
 );

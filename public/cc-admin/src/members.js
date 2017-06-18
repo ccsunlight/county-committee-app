@@ -22,8 +22,13 @@ const MemberTitle = ({ record }) => {
 
 const MemberFilter = (props) => (
     <Filter {...props}>
-        <TextInput label="Search" source="q" />
-        <TextInput label="Title" source="office_holder" defaultValue="Vacancy" />
+        <TextInput label="ED" source="electoral_district" />
+        <TextInput label="AD" source="assembly_district" />
+        <SelectInput source="county" choices={[
+            { id: 'Queens County', name: 'Queens' },
+           { id: 'Kings County', name: 'Brooklyn' },
+            { id: 'New York County', name: 'Manhattan' },
+        ]} />
     </Filter>
 );
 
@@ -36,7 +41,6 @@ export const MemberEdit = (props) => (
             <TextInput source="entry_type" />
             <TextInput source="electoral_district" />
             <TextInput source="assembly_district" />
-            
         </SimpleForm>
     </Edit>
 );

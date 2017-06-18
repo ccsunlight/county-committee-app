@@ -13,5 +13,15 @@ module.exports = function() {
     
     app.use(notFound());
     app.use(logger(app));
-    app.use(handler());
+    // Log the error
+	app.use(function (err, req, res, next) {
+
+	  if (err.code == 401) {
+	  	res.status(401).json({message: 'Incorrect username or password.'});
+	  } else {
+	  	next(err);
+		}
+	});
+
+   // app.use(handler());
 };

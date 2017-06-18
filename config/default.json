@@ -1,32 +1,32 @@
 {
   "host": "localhost",
-  "port": "3030",
+  "port": "80",
   "mongodb": "mongodb://172.17.0.2:27017/county-committee",
   "public": "../public",
-   "auth": {
-    "token": {
-      "secret": "+Seb6A9MbUk0po/J9sKkaUJeGSZXlX3O8oxB8zr0R+7K5tLVGe18lVPWt+3JIpVflKn2xCIk2UIVhN+s/7V6zg=="
+  "authentication": {
+    "secret": "99294186737032fedad37dc2e847912e1b9393f44a28101c986f6ba8b8bc0eaab48b5b4c5178f55164973c76f8f98f2523b860674f01c16a23239a2e7d7790ae9fa00b6de5cc0565e335c6f05f2e17fbee2e8ea0e82402959f1d58b2b2dc5272d09e0c1edf1d364e9911ecad8172bdc2d41381c9ab319de4979c243925c49165a9914471be0aa647896e981da5aec6801a6dccd1511da11b696d4f6cce3a4534dab9368661458a466661b1e12170ad21a4045ce1358138caf099fbc19e05532336b5626aa376bc158cf84c6a7e0e3dbbb3af666267c08de12217c9b55aea501e5c36011779ee9dd2e061d0523ddf71cb1d68f83ea5bb1299ca06003b77f0fc69",
+    "strategies": [
+      "jwt",
+      "local"
+    ],
+    "path": "/authentication",
+    "service": "users",
+    "jwt": {
+      "header": {
+        "type": "access"
+      },
+      "audience": "localhost",
+      "subject": "anonymous",
+      "issuer": "feathers",
+      "algorithm": "HS256",
+      "expiresIn": "1d"
     },
-    "site_access": {
-      "username": "ccuser",
-      "password": "sunl1ght" 
-    },
-    "local": {},
-    "facebook": {
-      "clientID": "your facebook client id",
-      "clientSecret": "your facebook client secret",
-      "permissions": {
-        "scope": ["public_profile","email"]
-      }
-    },
-    "google": {
-      "clientID": "your google client id",
-      "clientSecret": "your google client secret",
-      "permissions": {
-        "scope": ["profile"]
-      }
+    "session": true,
+    "local": {
+      "entity": "user",
+      "service": "user",
+      "usernameField": "email",
+      "passwordField": "password"
     }
-
-
   }
 }

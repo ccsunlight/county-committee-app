@@ -11,3 +11,5 @@ exports.myHook = function(options) {
     console.log('My custom global hook ran. Feathers is awesome!');
   };
 };
+
+
