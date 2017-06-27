@@ -17,8 +17,6 @@ exports.before = {
 
 function _idToId(hook) {
 
-      //console.log('_idToId', hook.result);
-
       if (hook.result) {
         if (hook.result.data) {
             hook.result.data.map(function(record) {

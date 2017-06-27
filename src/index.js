@@ -8,9 +8,8 @@ const path = require('path');
 const https = require('https');
 const appDir = path.dirname(require.main.filename);
 
-
-
 const server = app.listen(port);
+
 var certificateFilename = 'localhost.crt';
 var privateKeyFilename = 'localhost.key';
 

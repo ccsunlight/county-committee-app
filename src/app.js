@@ -17,20 +17,24 @@ const jwt = require('feathers-authentication-jwt');
 const auth = require('feathers-authentication');
 const errors = require('feathers-errors');
 const forceSSL = require('express-force-ssl');
-// const errorHandler = require('feathers-errors/handler');
-
+const errorHandler = require('feathers-errors/handler');
+// const acl = require('feathers-acl');
 const middleware = require('./middleware');
 const services = require('./services');
 const routes = require('./routes');
 const hbs = require('hbs');
 const app = feathers();
 
+
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 hbs.registerPartials(__dirname + '/views/partials');
 
 app.configure(configuration(path.join(__dirname, '..')));
+app.set('apiPath', '/' + app.get('api').basePath + '/' + app.get('api').version);
 
+const apiPath = app.get('apiPath');
 // Site access auth for demo purposes
 /*if (app.get('env') === 'production') {
   const basicAuth = require('basic-auth-connect');
@@ -38,20 +42,42 @@ app.configure(configuration(path.join(__dirname, '..')));
 }
 */
 
+const aclConfig = app.get('acl');
+
 const localConfig = {
     'entity': 'user',
-    'service': 'user',
+    'service': apiPath + '/user',
     'usernameField': 'email',
-    'passwordField': 'password'
+    'passwordField': 'password',
+    'payload': ['role']
 };
+
+//console.log('https://' + app.get('host'));
+//
+
 
 app.use(compress())
     .configure(rest())
+   /*  .configure(acl(aclConfig, {
+         denyNotAllowed: false,             // deny all routes without "allow" rules 
+         adminRoles: ['admin'],  // need for owner rule 
+         baseUrl: 'http://' + app.get('host'),
+         jwt: {
+           secret: 'supersecret',           // Default is 'Authorization' 
+           options: {}                     // options for 'jsonwebtoken' lib 
+         }
+       })) */
+       
     .configure(hooks())
     .use(bodyParser.json())
-    .use(bodyParser.urlencoded({ extended: true }))
+    .use(bodyParser.urlencoded({
+        extended: true
+    }))
     .use(forceSSL)
-    .configure(auth({ secret: 'supersecret' }))
+    .configure(auth({
+        path: apiPath + '/authentication',
+        secret: 'supersecret'
+    }))
     .configure(local(localConfig))
     .configure(jwt(localConfig))
     .options('*', cors())
@@ -63,6 +89,7 @@ app.use(compress())
     .configure(services)
     .configure(middleware)
     .configure(local(localConfig));
+
 // .configure(jwt())
 
 //.configure(auth({ secret: 'super secret'}));
@@ -70,38 +97,40 @@ app.use(compress())
 
 // .configure(auth());
 
-
-app.service('authentication').hooks({
-  before: {
-    create: [
-      // You can chain multiple strategies
-      auth.hooks.authenticate('local')
-    ],
-    remove: [
-      auth.hooks.authenticate('local')
-    ]
-  }
-});
-
-// Create a user that we can use to log in
-var User = {
-    email: 'ccuser@jon.com',
-    password: 'admin',
-    role: 'admin'
-};
-
-app.service('user').hooks({
+app.service(apiPath + '/authentication').hooks({
     before: {
-        create: local.hooks.hashPassword()
+        create: [
+            // You can chain multiple strategies
+            auth.hooks.authenticate(['jwt', 'local'])
+        ],
+        remove: [
+            auth.hooks.authenticate('jwt')
+        ]
     }
 });
 
-app.service('user').create(User).then(user => {
-    console.log('Created default user', user);
-}).catch(console.error);
 
 
-app.all('/authentication', auth.express.authenticate('local'))
+function hasRole(req, role) {
+
+    true;
+}
+
+app.service(apiPath + '/user').hooks({
+    before: {
+        all:  [local.hooks.hashPassword(), auth.hooks.authenticate('jwt'), function(req) { console.log(req) }],
+    }
+});
+
+app.service(apiPath + '/county-committee').hooks({
+    before: {
+        all:  [local.hooks.hashPassword(), auth.hooks.authenticate('jwt')],
+    }
+});
+
+
+
+//app.all(apiPath + '/authentication', auth.express.authenticate('jwt'))
 
 
 console.log('Starting env: ', app.get('env'));

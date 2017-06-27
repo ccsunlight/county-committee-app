@@ -6,12 +6,16 @@
   "dependencies": {
     "admin-on-rest": "^1.1.1",
     "aor-feathers-client": "^0.3.1",
+    "aor-permissions": "^1.0.2",
     "aor-rich-text-input": "^1.0.1",
     "feathers-client": "^2.2.0",
     "feathers-localstorage": "^1.0.0",
+    "jsonwebtoken": "^7.4.1",
+    "jwt-decode": "^2.2.0",
     "localstorage-memory": "^1.0.2",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
+    "react-if": "^2.1.0",
     "start": "^5.1.0",
     "yarnpkg": "^0.15.1"
   },

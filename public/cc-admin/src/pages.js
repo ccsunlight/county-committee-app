@@ -2,19 +2,22 @@
 import React from 'react';
 import { List, Edit, Filter, RichTextField, Create, SimpleList, Responsive,  Datagrid, ReferenceField, TextField, EditButton, DisabledInput, LongTextInput, ReferenceInput, SelectInput, SimpleForm, TextInput } from 'admin-on-rest';
 import RichTextInput from 'aor-rich-text-input';
-
+import { SwitchPermissions, Permission } from 'aor-permissions';
+import authClient from './feathersAuthClient';
+import {checkUserCanEdit} from './feathersAuthClient';
 
 export const PageList = (props) => (
-    <List {...props} title="Pages">
-            <Datagrid>
-                <TextField source="title" />
-                <TextField source="alias" />
-                <TextField source="updatedAt" />
-                <TextField source="createdAt" />
+     
+            <List {...props} title="Pages">
+                    <Datagrid>
+                        <TextField source="title" />
+                        <TextField source="alias" />
+                        <TextField source="updatedAt" />
+                        <TextField source="createdAt" />
 
-                <EditButton />        
-            </Datagrid>
-    </List>
+                        <EditButton />        
+                    </Datagrid>
+            </List>
 );
 
 const PageTitle = ({ record }) => {

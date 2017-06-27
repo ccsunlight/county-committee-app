@@ -1,20 +1,26 @@
 // in src/posts.js
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { List, Edit,Filter, Create, SimpleList, Responsive,  Datagrid, ReferenceField, TextField, EditButton, DisabledInput, LongTextInput, ReferenceInput, SelectInput, SimpleForm, TextInput } from 'admin-on-rest';
-
+import { WithPermission, SwitchPermissions,  Permission} from 'aor-permissions';
+import authClient from './feathersAuthClient';
+import {checkUserCanEdit} from './feathersAuthClient';
 
 export const MemberList = (props) => (
-    <List {...props} title="County Committee Members" filters={<MemberFilter />}>
-            <Datagrid>
-                <TextField source="office_holder" />
-                <TextField source="entry_type" />
-                <TextField source="electoral_district" />
-                <TextField source="assembly_district" />
-                <TextField source="county" /> 
-                <EditButton />        
-            </Datagrid>
-    </List>
+     
+                <List {...props} title="County Committee Members" filters={<MemberFilter />}>
+                        <Datagrid>
+                            <TextField source="office_holder" />
+                            <TextField source="entry_type" />
+                            <TextField source="electoral_district" />
+                            <TextField source="assembly_district" />
+                            <TextField source="county" /> 
+                            <EditButton />        
+                        </Datagrid>
+                </List>
 );
+
+
 
 const MemberTitle = ({ record }) => {
     return <span>Post {record ? `"${record.office_holder}"` : ''}</span>;

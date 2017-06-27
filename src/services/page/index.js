@@ -15,11 +15,13 @@ module.exports = function() {
     }
   };
 
+
+
   // Initialize our service with any options it requires
-  app.use('/page', service(options));
+  app.use(app.get('apiPath') + '/page', service(options));
 
   // Get our initialize service to that we can bind hooks
-  const pageService = app.service('/page');
+  const pageService = app.service(app.get('apiPath') + '/page');
 
   // Set up our before hooks
   pageService.before(hooks.before);
