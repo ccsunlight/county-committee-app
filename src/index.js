@@ -15,8 +15,8 @@ var certificateFilename = 'localhost.crt';
 var privateKeyFilename = 'localhost.key';
 
 if (app.get('env') === 'production') {
-    certificateFilename == 'ccsunlight.crt';
-    privateKeyFilename == 'ccsunlight.key';
+    certificateFilename == 'live/ccsunlight.org-0001/privkey.pem';
+    privateKeyFilename == 'live/ccsunlight.org-0001/fullchain.pem';
 }
 
 
