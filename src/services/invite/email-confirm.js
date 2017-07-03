@@ -5,9 +5,10 @@ const nev = require('email-verification')(mongoose);
 const bcrypt = require('bcrypt');
 const local = require('feathers-authentication-local');
 
+let tempModelGenerated = false;
 function nevInit(verifyMailOptions) {
 
-    const nevOptions = {
+    let nevOptions = {
         verificationURL: 'https://localhost/invite/confirm/${URL}',
         URLLength: 48,
         persistentUserModel: user,
@@ -43,22 +44,27 @@ function nevInit(verifyMailOptions) {
         return insertTempUser(hash, tempUserData, callback);
     };
 
-
-    // generating the model, pass the User model defined earlier
+    if (!tempModelGenerated) {
+  // generating the model, pass the User model defined earlier
     nev.generateTempUserModel(invite, function(err, info) {
 
         console.log('info', info);
-
+        tempModelGenerated = true;
     });
 
-}
+    }
 
+
+
+  
+
+}
 
 
 function sendInvite(data, password_for_email, callback) {
     console.log('sendInvite', data);
 
-    let newUser = invite(data);
+    let newUser = new invite(data);
 
     // saved!
 
@@ -76,7 +82,6 @@ function sendInvite(data, password_for_email, callback) {
         console.log('the callback');
         // some sort of error
         if (err) {
-
             console.log('error creating user', err);
             callback(err);
         }
@@ -127,6 +132,7 @@ function sendInvite(data, password_for_email, callback) {
 function confirmUser(url, callback) {
 
     console.log('confirm user', url);
+    
     nev.confirmTempUser(url, function(err, user) {
         if (err) {
             console.log(err);

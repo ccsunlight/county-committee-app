@@ -16,7 +16,7 @@ const countyCommittee = require('../services/county-committee/county-committee-m
 const edGeometry = require('../services/edGeometry/edGeometry-model');
 const page = require('../services/page/page-model');
 const confirm = require('../services/invite/email-confirm');
-
+const User = require('../services/user/user-model');
 
 const googleGeocoderOptions = {
     provider: 'google',

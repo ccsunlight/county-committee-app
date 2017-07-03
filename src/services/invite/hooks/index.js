@@ -5,6 +5,7 @@ const hooks = require('feathers-hooks');
 const auth = require('feathers-authentication').hooks;
 const confirm = require('../email-confirm');
 const local = require('feathers-authentication-local');
+const _hash = require('../hash');
 
 exports.before = {
     all: [
@@ -23,20 +24,20 @@ exports.before = {
             numbers: true
         });
 
-        hook.data.password = password;
-
         hook.params.password_for_email = password
+        return _hash(password).then(function(hashedPassword) {
+            hook.data.password = hashedPassword;
+            confirm.sendInvite(hook.data, hook.params.password_for_email, function(err, data) {
+                if (err) {
+                    console.log(err);
+                } else {
 
-    }, local.hooks.hashPassword(), function(hook) {
-
-        console.log('data', hook.data);
-        confirm.sendInvite(hook.data, hook.params.password_for_email, function(err, data) {
-            if (err) {
-                throw  err;
-            }
+                }
+            });
 
         });
 
+        
     }],
     update: [],
     patch: [],

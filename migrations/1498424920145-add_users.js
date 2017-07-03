@@ -2,30 +2,28 @@
 
 const app = require('../src/app');
 const apiPath = app.get('apiPath');
+const generator = require('generate-password');
+
+     
 /**
  * Make any changes you need to make to the database here
  */
 exports.up = function up(done) {
 
+
+    var password = generator.generate({
+            length: 10,
+            numbers: true
+        });
     // Create a user that we can use to log in
     var seedAdminData = {
-        email: 'ccadmin@jon.com',
-        password: '12345',
+        email: 'sadmin@ccsunlight.org',
+        password: password,
         role: 'admin',
         firstname: 'Seed',
         lastname: 'Admin'
     };
-
-    // Create a user that we can use to log in
-    var seedUserData = {
-        email: 'ccuser@jon.com',
-        password: '12345',
-        role: 'user',
-        firstname: 'Seed',
-        lastname: 'User'
-    };
     
-    seedUser(seedUserData);
     seedUser(seedAdminData);
 
     function seedUser(seedData) {
@@ -42,6 +40,11 @@ exports.up = function up(done) {
                 app.service(apiPath + '/user').create(seedData).then(user => {
                     console.log('Created default user', user);
 
+                console.log('Here are your admin user details. Save this somewhere secure: ');
+                console.log('un: ' + seedAdminData.email);
+                console.log('pw: ' + password);
+                done();
+
                 }).catch(console.error);
 
             } else {
@@ -50,13 +53,19 @@ exports.up = function up(done) {
 
                 app.service(apiPath + '/user').update(existingUser._id, seedData).then(user => {
                     console.log('Updated default user', user);
+                    console.log('Here are your admin user details. Save this somewhere secure: ');
+                    console.log('un: ' + seedAdminData.email);
+                    console.log('pw: ' + password);
+                    done();
                 })
 
             }
+
+            
         });
     }
 
-    done();
+   
 };
 
 /**

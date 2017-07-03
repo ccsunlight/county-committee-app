@@ -52,7 +52,6 @@
     "hbs": "^4.0.1",
     "migrate-mongoose": "^3.2.2",
     "mongoose": "^4.9.1",
-    "mongoose-migration": "^0.2.0",
     "node-geocoder": "^3.16.0",
     "nodemailer": "^4.0.1",
     "passport": "^0.3.2",
