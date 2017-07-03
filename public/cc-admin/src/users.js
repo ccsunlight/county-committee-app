@@ -26,7 +26,6 @@ const UserTitle = ({ record }) => {
 };
 
 
-
 export const UserEdit = (props) => (
     <Edit title={<UserTitle />} {...props}>
         <SimpleForm>
@@ -34,6 +33,11 @@ export const UserEdit = (props) => (
             <TextInput label="Email Address" source="email" type="email" />
             <TextInput label="Firstname" source="firstname" type="text" />
             <TextInput label="Lastname" source="lastname" type="text" />
+            <SelectInput source="role" choices={[
+                { id: 'admin', name: 'Admin' },
+                { id: 'user', name: 'User' },
+                { id: 'visitor', name: 'Visitor' },
+            ]} />
             <TextInput label="Change Password" source="changepassword" type="password" />
             <TextInput label="Confirm Password" source="confirmpassword" type="password" />
         </SimpleForm>

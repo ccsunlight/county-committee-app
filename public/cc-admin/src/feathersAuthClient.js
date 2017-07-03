@@ -36,6 +36,7 @@ export const checkUserHasAccess = (resource) => {
     console.log('checkUserHasAccess', resource.name,localStorage.getItem('role'));
     switch (resource.name) {
         case 'user':
+        case 'invite':
         return (localStorage.getItem('role') == 'admin');
         break;
        default: 
@@ -81,7 +82,7 @@ export default (client, options = {}) => (type, params) => {
                 .then(user => {
                     client.set('user', user);
                     console.log('User', client.get('user'));
-
+                    localStorage.setItem('userId', client.get('user').id);
                     localStorage.setItem('role', client.get('user').role)
 
                     return Promise.resolve();
@@ -94,12 +95,16 @@ export default (client, options = {}) => (type, params) => {
         case AUTH_ERROR:
             if (params.status === 401 || params.status === 403) {
                 localStorage.removeItem(storageKey);
+                localStorage.removeItem('userId');
+                localStorage.removeItem('role');
                 return Promise.reject();
             }
             return Promise.reject();
             //}
         case AUTH_LOGOUT:
-
+            localStorage.removeItem(storageKey);
+            localStorage.removeItem('userId');
+            localStorage.removeItem('role');
             return client.logout();
 
         case AUTH_CHECK:

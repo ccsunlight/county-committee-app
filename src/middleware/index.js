@@ -17,7 +17,7 @@ module.exports = function() {
 	app.use(function (err, req, res, next) {
 
 	  if (err.code == 401) {
-	  	res.status(401).json({message: 'Incorrect username or password.'});
+	  	res.status(401).json({message: 'Authentication failed.'});
 	  } else {
 	  	next(err);
 		}

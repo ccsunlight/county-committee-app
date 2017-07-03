@@ -58,7 +58,7 @@ const localConfig = {
 
 app.use(compress())
     .configure(rest())
-   /*  .configure(acl(aclConfig, {
+   /* .configure(acl(aclConfig, {
          denyNotAllowed: false,             // deny all routes without "allow" rules 
          adminRoles: ['admin'],  // need for owner rule 
          baseUrl: 'http://' + app.get('host'),
@@ -67,7 +67,6 @@ app.use(compress())
            options: {}                     // options for 'jsonwebtoken' lib 
          }
        })) */
-       
     .configure(hooks())
     .use(bodyParser.json())
     .use(bodyParser.urlencoded({
@@ -84,18 +83,16 @@ app.use(compress())
     .use(cors())
     .use(favicon(path.join(app.get('public'), 'favicon.ico')))
     .use('/cc-admin', serveStatic(app.get('public') + '/cc-admin/build'))
+    .configure(services)
     .use(routes)
     .use('/', serveStatic(app.get('public')))
-    .configure(services)
     .configure(middleware)
     .configure(local(localConfig));
 
-// .configure(jwt())
-
+//.configure(jwt());
 //.configure(auth({ secret: 'super secret'}));
-//.configure(auth())
-
-// .configure(auth());
+//.configure(auth());
+//.configure(auth());
 
 app.service(apiPath + '/authentication').hooks({
     before: {
@@ -111,10 +108,7 @@ app.service(apiPath + '/authentication').hooks({
 
 
 
-function hasRole(req, role) {
 
-    true;
-}
 
 app.service(apiPath + '/user').hooks({
     before: {
@@ -128,10 +122,8 @@ app.service(apiPath + '/county-committee').hooks({
     }
 });
 
-
-
-//app.all(apiPath + '/authentication', auth.express.authenticate('jwt'))
-
+// app.service(apiPath + '/invite').sendInvite({ email: 'joncrockett@gmail.com', role: 'admin'});
+// app.all(apiPath + '/authentication', auth.express.authenticate('jwt'))
 
 console.log('Starting env: ', app.get('env'));
 

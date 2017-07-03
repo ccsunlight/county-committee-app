@@ -33,7 +33,7 @@ function MenuItemWithAccess(props) {
 		    key={resource.name}
 		    value={resource.name}
 		    containerElement={<Link to={`/${resource.name}`} />}
-		    primaryText={inflection.titleize(inflection.humanize(inflection.pluralize(resource.name)))}
+		    primaryText={resource.options.label ? resource.options.label : inflection.titleize(inflection.humanize(inflection.pluralize(resource.name)))}
 		    leftIcon={<resource.icon />}
 		   onTouchTap={onMenuTap}  />
 	  );

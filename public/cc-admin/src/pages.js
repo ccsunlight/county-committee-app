@@ -54,7 +54,7 @@ export const PageEdit = (props) => (
 
 export const PageCreate = (props) => (
     <Create {...props}>
-        <SimpleForm>
+        <SimpleForm redirect="show">
             <TextInput source="title" />
             <TextInput source="alias" type="text" />
             <RichTextInput source="content" />

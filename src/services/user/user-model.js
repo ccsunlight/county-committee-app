@@ -14,10 +14,10 @@ const userSchema = new Schema({
   googleId: { type: String },
   google: { type: Schema.Types.Mixed },
   email: {type: String, required: true, unique: true},
-  role: {type: String, required: true, enum: ['admin', 'user', 'client']},
+  role: {type: String, required: true, enum: ['admin', 'user', 'visitor']},
   password: { type: String, required: true },
-  firstname: { type: String, required: true },
-  lastname: { type: String, required: true },
+  firstname: { type: String, required: false },
+  lastname: { type: String, required: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
