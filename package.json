@@ -20,6 +20,7 @@
     "test": "npm run jshint && npm run mocha",
     "jshint": "jshint src/. test/. --config",
     "start": "node src/",
+    "cert": "node cert/generate-cert.js",
     "mocha": "mocha test/ --recursive"
   },
   "dependencies": {
@@ -50,6 +51,7 @@
     "feathers-seeder": "^1.0.8",
     "feathers-socketio": "^1.5.2",
     "generate-password": "^1.3.0",
+    "greenlock-express": "^2.0.11",
     "hbs": "^4.0.1",
     "migrate-mongoose": "^3.2.2",
     "mongoose": "^4.9.1",
