@@ -5,11 +5,18 @@ const nev = require('email-verification')(mongoose);
 const bcrypt = require('bcrypt');
 const local = require('feathers-authentication-local');
 
+
+// @todo this is super hacky. Gotta clean this up at some point.
 let tempModelGenerated = false;
+
+
+
 function nevInit(verifyMailOptions) {
 
+    const app = require('../../app.js');
+    console.log('this is the host', app.get('host'));
     let nevOptions = {
-        verificationURL: 'https://localhost/invite/confirm/${URL}',
+        verificationURL: 'https://' + app.get('host') + '/invite/confirm/${URL}',
         URLLength: 48,
         persistentUserModel: user,
         tempUserModel: invite,
@@ -53,10 +60,6 @@ function nevInit(verifyMailOptions) {
     });
 
     }
-
-
-
-  
 
 }
 
