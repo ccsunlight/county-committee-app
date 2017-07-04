@@ -16,7 +16,7 @@ var privateKeyFilename = 'localhost.key';
 
 if (app.get('env') === 'production') {
 	console.log('production keys loading');
-    certificateFilename == 'live/cert.pem';
+    certificateFilename == 'live/fullchain.pem';
     privateKeyFilename == 'live/privkey.pem';
 }
 
