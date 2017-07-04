@@ -72,7 +72,7 @@ app.use(compress())
     .use(bodyParser.urlencoded({
         extended: true
     }))
-    .use(forceSSL)
+    //.use(forceSSL)
     .configure(auth({
         path: apiPath + '/authentication',
         secret: 'supersecret'

@@ -15,11 +15,10 @@ var certificateFilename = 'localhost.crt';
 var privateKeyFilename = 'localhost.key';
 
 if (app.get('env') === 'production') {
+	console.log('production keys loading');
     certificateFilename == 'live/ccsunlight.org-0001/privkey.pem';
     privateKeyFilename == 'live/ccsunlight.org-0001/fullchain.pem';
 }
-
-
 
 
 var privateKey = fs.readFileSync(appDir + '/../cert/' + privateKeyFilename);
