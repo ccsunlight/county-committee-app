@@ -271,3 +271,13 @@ html, body {
 #cc-member-table {
   width: 100%;
 }
+
+.logo-link, .logo-link .material-icons, .logo-link span  {
+  text-decoration: none;
+  vertical-align: bottom;
+  line-height: 20px;
+}
+
+.logo-link:hover, .mdl-navigation__link:hover {
+  opacity: .75;
+}
