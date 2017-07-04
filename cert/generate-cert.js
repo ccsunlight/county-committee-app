@@ -1,7 +1,7 @@
 
 
 require('greenlock-express').create({
-    server: 'https://acme-v01.api.letsencrypt.org/directory',
+    server: 'https://acme-staging.api.letsencrypt.org/directory',
     email: 'joncrockett@gmail.com',
     agreeTos: true,
     approveDomains: ['ccsunlight.org'],
