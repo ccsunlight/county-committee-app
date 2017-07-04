@@ -16,8 +16,8 @@ var privateKeyFilename = 'localhost.key';
 
 if (app.get('env') === 'production') {
 	console.log('production keys loading');
-    certificateFilename == 'live/ccsunlight.org-0001/privkey.pem';
-    privateKeyFilename == 'live/ccsunlight.org-0001/fullchain.pem';
+    certificateFilename == 'live/privkey.pem';
+    privateKeyFilename == 'live/fullchain.pem';
 }
 
 
