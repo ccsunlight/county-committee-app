@@ -16,10 +16,9 @@ var privateKeyFilename = 'localhost.key';
 
 if (app.get('env') === 'production') {
 	console.log('production keys loading');
-    certificateFilename == 'live/privkey.pem';
-    privateKeyFilename == 'live/cert.pem';
+    certificateFilename == 'live/cert.pem';
+    privateKeyFilename == 'live/privkey.pem';
 }
-
 
 var privateKey = fs.readFileSync(appDir + '/../cert/' + privateKeyFilename);
 var certificate = fs.readFileSync(appDir + '/../cert/' + certificateFilename);
