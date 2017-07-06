@@ -25,7 +25,7 @@ function nevInit(verifyMailOptions) {
         hashingFunction: null,
         passwordFieldName: 'password',
         URLFieldName: 'GENERATED_VERIFYING_URL',
-        expirationTime: 86400,
+        expirationTime: 86400 * 7,
         transportOptions: {
             service: 'Gmail',
             auth: {
