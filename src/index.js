@@ -10,7 +10,7 @@ const appDir = path.dirname(require.main.filename);
 const SMTPServer = require('smtp-server').SMTPServer;
 
 const server = app.listen(port);
-
+/*
 var certificateFilename = 'localhost.crt';
 var privateKeyFilename = 'localhost.key';
 
@@ -35,7 +35,7 @@ const smtpServer = new SMTPServer({
     cert: certificate
 });
 smtpServer.listen(465);
-
+*/
 server.on('listening', () =>
     console.log(`Feathers application started on ${app.get('host')}:${port}`)
 );

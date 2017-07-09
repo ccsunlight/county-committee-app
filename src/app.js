@@ -16,7 +16,7 @@ const local = require('feathers-authentication-local');
 const jwt = require('feathers-authentication-jwt');
 const auth = require('feathers-authentication');
 const errors = require('feathers-errors');
-const forceSSL = require('express-force-ssl');
+// const forceSSL = require('express-force-ssl');
 const errorHandler = require('feathers-errors/handler');
 // const acl = require('feathers-acl');
 const middleware = require('./middleware');
@@ -72,7 +72,7 @@ app.use(compress())
     .use(bodyParser.urlencoded({
         extended: true
     }))
-    .use(forceSSL)
+    //.use(forceSSL)
     .configure(auth({
         path: apiPath + '/authentication',
         secret: 'supersecret'
