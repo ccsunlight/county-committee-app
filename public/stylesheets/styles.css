@@ -53,10 +53,12 @@ html, body {
   background-color: white;
   height: 4px;
 }
+/*
 .mdl-demo main > .mdl-layout__tab-panel {
   padding: 8px;
   padding-top: 48px;
 }
+*/
 .mdl-demo .mdl-card {
   height: auto;
   display: -webkit-flex;
@@ -245,9 +247,10 @@ html, body {
   right: 0;
 }
 
-.mdl-card__supporting-text {
+#overview .mdl-card__supporting-text {
   text-align: center;
 }
+
 
 
 #address, .mdl-textfield__label {

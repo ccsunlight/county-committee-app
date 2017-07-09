@@ -5,15 +5,18 @@
 		<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
 			{{> header}}
 			<main class="mdl-layout__content">
-				<div class="mdl-layout__tab-panel is-active" id="overview">
+			
 
 					{{{body}}}
 
-				</div>
-				{{> footer}}
+			
+				
 			</main>
-
+			{{> footer}}
 		</div>
+
+		<script src="https://code.getmdl.io/1.3.0/material.js" defer></script>
+		<script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.core.min.js"></script>
 
 		<!-- FEEDBACK WIDGET -->
 		<script type="text/javascript">
@@ -31,4 +34,5 @@
 	</body>
 
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDllCUiwagZYbAgEG92cGnYYdMjwx7_XvY&libraries=places&callback=initGoogleApis"></script>
+
 </html>
