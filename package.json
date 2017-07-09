@@ -64,6 +64,7 @@
     "passport-google-token": "^0.1.2",
     "pdf-text-extract": "^1.5.0",
     "permission": "^1.0.4",
+    "pm2": "^2.5.0",
     "request": "^2.81.0",
     "request-promise": "^4.2.0",
     "serve-favicon": "^2.4.2",
