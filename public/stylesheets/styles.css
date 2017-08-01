@@ -271,6 +271,10 @@ html, body {
   padding:5px;
 }
 
+.mdl-card a {
+    color: #00BCD4;
+}
+
 #cc-member-table {
   width: 100%;
 }

@@ -9,8 +9,6 @@ const local = require('feathers-authentication-local');
 // @todo this is super hacky. Gotta clean this up at some point.
 let tempModelGenerated = false;
 
-
-
 function nevInit(verifyMailOptions) {
 
     const app = require('../../app.js');
@@ -44,7 +42,6 @@ function nevInit(verifyMailOptions) {
     };
 
     nev.configure(nevOptions, function(error, options) {});
-
 
     var myHasher = function(password, tempUserData, insertTempUser, callback) {
         var hash = bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
