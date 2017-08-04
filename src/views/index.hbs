@@ -1,5 +1,17 @@
 <div class="mdl-layout__tab-panel is-active" id="overview">
 	{{> addressform}}
 	{{> include_autocomplete}}
-	{{> cc_chart}}
+
+	<div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--12-col-tablet mdl-cell--12-col-phone">
+		<div class="mdl-grid">
+			<div class="mdl-cell mdl-cell--12-col">
+				<div class="mdl-card__supporting-text"><h3>County Committee Data</h3>
+				<small>This data is approximate for demo purposes. Source: NY BOE</small>
+				</div>
+			</div>
+
+		{{> cc_chart countySeatBreakdowns.[0]}}
+
+		{{> cc_chart countySeatBreakdowns.[1]}}
+	</div>
 </div>

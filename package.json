@@ -17,11 +17,11 @@
   },
   "scripts": {
     "dev": "nodemon -e js,json,hbs src/",
-    "test": "npm run jshint && npm run mocha",
+    "test": "npm run mocha",
     "jshint": "jshint src/. test/. --config",
     "start": "node src/",
     "cert": "node cert/generate-cert.js",
-    "mocha": "mocha test/ --recursive"
+    "mocha": "mocha test/services/county-committee/county-committee-extractor.js"
   },
   "dependencies": {
     "admin-lte-express": "^1.4.2",

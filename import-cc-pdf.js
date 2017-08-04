@@ -80,11 +80,11 @@ function importCCPDF(filename) {
 
                 })
 
-
             } else {
                 console.log('MEMBER ROW EMPTY', index, member)
             }
-        })
+            
+        });
 
 
 

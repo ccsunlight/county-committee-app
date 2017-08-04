@@ -232,6 +232,89 @@ exports.getEDElectionResultsFromCSV = function(filepath, callback) {
 
         });
 };
+
+
+exports.addCCMembers = function(members, callback) {
+
+    const countyCommitteeModel = require('../../../src/services/county-committee/county-committee-model');
+    let notMatched = [];
+    members.forEach(function(member, index) {
+        countyCommitteeModel.findOne({
+            office_holder: 'Vacancy',
+            assembly_district: parseInt(member.assembly_district, 10),
+            electoral_district: parseInt(member.electoral_district, 10),
+            office: member.office
+        }, function(err, record) {
+
+            if (err) return console.error(err);
+
+            if (record) {
+                record.office_holder = member.office_holder;
+                record.entry_type = 'Appointed';
+                record.data_source = member.data_source;
+                record.address = member.address;
+                record.data_source = member.data_source;
+                record.save();
+
+              //  console.log('record', record);
+            } else {
+                console.log(JSON.stringify(member))
+                notMatched.push(member);
+            }
+
+            if (index === members.length -1 ) {
+
+                callback(notMatched);
+            }
+        });
+    })
+}
+
+/**
+ * Goes through an election CSV and finds the winners 
+ *
+ * @param      {<type>}    filepath  The filepath
+ * @param      {Function}  callback  The callback
+ */
+exports.getCCMembersFromCSV = function(filepath, callback) {
+    // console.log('Extracting County Committee Members from: ', filepath);
+
+    var csv = require("fast-csv");
+
+    var ccMemberRows = [];
+
+    csv.fromPath(filepath, {
+            objectMode: true,
+            ignoreEmpty: true,
+            headers: true,
+            trim: true
+        })
+        .on("data", function(data) {
+
+            ccMemberRows.push(data);
+
+        })
+        .on("end", function() {
+            let ccMembers = ccMemberRows.map(function(row) {
+
+                return {
+                    assembly_district: row.AD,
+                    electoral_district: row.ED,
+                    office: row.SEX === 'M' ? 'Male County Committee' : 'Female County Committee',
+                    office_holder: row.OFFICE_HOLDER,
+                    address: row.ADDRESS + ' Brooklyn, NY ' + row.ZIPCODE,
+                    data_source: filepath
+                }
+
+            })
+
+            callback(ccMembers);
+
+        });
+};
+
+
+
 /*
 exports.extractEDandADfromCSV = function(filepath, callback) {
 
@@ -284,16 +367,16 @@ exports.getAllCSVFilePaths = function(callback) {
 
 
 exports.getCCMembersFromCertifiedListPDF = function(pathToPDF, callback) {
-    
+
     var path = require('path')
     var filePath = pathToPDF;
     var extract = require('pdf-text-extract');
 
     extract(filePath, function(err, pages) {
-        
+
         if (err) {
             console.log('woo', err)
-            //return
+                //return
         }
         // console.dir(pages[2]);
         // 
@@ -428,7 +511,7 @@ function extractCCMembersFromPage(page) {
 
     var county = extractCountyFromPage(page);
 
-   // console.log('county', county);
+    // console.log('county', county);
 
     var headerRowIndex = rows.findIndex(findCCMemberHeaderRow);
     var footerRowIndex = rows.findIndex(findCCMemberFooterRow);
@@ -460,7 +543,7 @@ function extractCCMembersFromPage(page) {
 
 function extractCountyFromPage(page) {
     var match = page.match(/IN THE CITY OF NEW YORK\s+(.+), .+Party/);
-    
+
     if (match) {
         return match[1];
     }

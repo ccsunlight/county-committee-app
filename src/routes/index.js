@@ -35,25 +35,34 @@ router.use('/invite/confirm/:confirm_code', function(req, res, next) {
 
         const Invite = require('../services/invite/invite-model');
 
-        Invite.remove({ email: registeredUser.email}, function(err) {
-            if (err) { 
+        Invite.remove({
+            email: registeredUser.email
+        }, function(err) {
+            if (err) {
                 console.log(err);
             } else {
                 console.log('invite deleted');
             }
         })
-        
-        req.data = { strategy: 'local', email: registeredUser.email, password: registeredUser.password }
+
+        req.data = {
+            strategy: 'local',
+            email: registeredUser.email,
+            password: registeredUser.password
+        }
         req.body = req.data;
 
-        next(); 
+        next();
     });
 
- 
-   
+
+
 });
 
-router.get('/invite/confirm/:confirm_code',auth.express.authenticate('local', { successRedirect: '/cc-admin/#/profile', failureRedirect: '/cc-admin/' }), function(req, res) {
+router.get('/invite/confirm/:confirm_code', auth.express.authenticate('local', {
+    successRedirect: '/cc-admin/#/profile',
+    failureRedirect: '/cc-admin/'
+}), function(req, res) {
 
     res.send('ok time to make a password');
 
@@ -128,16 +137,61 @@ updateEdDb();
 
 /* GET home page. */
 router.get('/', co(function*(req, res, next) {
-    const numOfSeats = yield countyCommittee.find({}).count();
-    const numOfVacancies = yield countyCommittee.find({
-        office_holder: 'Vacancy'
-    }).count();
+
+    let numOfSeats = yield countyCommittee.find({
+            county: 'Kings County'
+        }).count();
+
+        let numOfVacancies = yield countyCommittee.find({
+            office_holder: 'Vacancy',
+            county: 'Kings County'
+        }).count();
+
+
+    let countySeatBreakdowns = [
+        {
+            county: 'Kings',
+            numOfSeats: numOfSeats,
+            numOfFilledSeats: numOfSeats - numOfVacancies,
+            numOfVacancies: numOfVacancies
+        }
+    ];
+
+     numOfSeats = yield countyCommittee.find({
+            county: 'Queens County'
+        }).count();
+
+         numOfVacancies = yield countyCommittee.find({
+            office_holder: 'Vacancy',
+            county: 'Queens County'
+        }).count();
+
+
+    countySeatBreakdowns.push({
+            county: 'Queens',
+            numOfSeats: numOfSeats,
+            numOfFilledSeats: numOfSeats - numOfVacancies,
+            numOfVacancies: numOfVacancies
+        });
+    
 
     res.render('index', {
-        numOfFilledSeats: numOfSeats - numOfVacancies,
-        numOfVacancies: numOfVacancies
+        countySeatBreakdowns: countySeatBreakdowns
     });
 }));
+
+function* getCountySeatBreakdown(county) {
+
+        
+
+        console.log(numOfSeats, numOfVacancies);
+
+        return {
+            county: county,
+            numOfSeats: numOfSeats - numOfVacancies,
+            numOfVacancies: numOfVacancies
+        }
+    };
 
 const intersectQuery = (coordinates) => {
     return {

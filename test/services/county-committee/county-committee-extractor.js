@@ -1,6 +1,5 @@
-
-
 var assert = require('assert');
+const mongoose = require('mongoose');
 
 describe('County Committee Extractor', function() {
     console.log('hello')
@@ -66,6 +65,97 @@ describe('County Committee Extractor', function() {
     });
     */
 
+    describe('CSV Extractor', function() {
+
+        it('can extract the county committee members from a a csv', function(done) {
+            //var Sails = require('sails').constructor;
+            this.timeout(60000);
+
+            const app = require('../../../src/app');
+
+            const countyCommitteeModel = require('../../../src/services/county-committee/county-committee-model');
+
+            // Load app to get access to ORM, services, etc (but don't lift an actual server onto a port)
+            var ccExtractor = require('../../../src/services/county-committee/county-committee-extractor');
+
+            var filepath = __dirname + '/../../../import/kingsCCmembers.csv';
+            // var filepath = __dirname + '/../../../import/democratic_county_committee_ny.pdf';
+
+            ccExtractor.getCCMembersFromCSV(filepath, function(ccMembers) {
+                console.log('callback', ccMembers);
+
+                let electedMemberCount = 0;
+                let appointedMemberCount = 0;
+
+                memberCount = ccMembers.length;
+
+                let appointedMembers = [];
+
+                ccMembers.forEach(function(member, index) {
+                    //console.log('member', member);
+                    if (member) {
+
+                        countyCommitteeModel.find({
+                            electoral_district: member.electoral_district,
+                            assembly_district: member.assembly_district,
+                            office_holder: member.office_holder,
+                        }, function(err, foundMembers) {
+
+                            if (err) {
+                                console.log('ERROR', err);
+                            } else {
+                                if (foundMembers.length > 0) {                                    
+                                    electedMemberCount++;
+                                    // console.log('FOUND', foundMembers);
+                                } else {
+                                    
+                                    appointedMembers.push(member);
+                                    console.log(member.office_holder, member.assembly_district, member.electoral_district);
+
+                                    
+                                    /* newMember.save(function(err, saved) {
+                                        if (err) return console.error(err);
+
+                                        if (index + 1 == ccMembers.length) {
+                                            // console.log();
+                                            process.exit('### IMPORT COMPLETED ###')
+                                                //return;
+                                        }
+                                        
+                                    });
+                                    */
+                                }
+
+                            }
+
+                            memberCount--;
+
+                            if (memberCount === 0) {
+                                console.log('ELECTED OR PETITIONED MEMBERCOUNT', electedMemberCount);
+                                console.log('APPOINTED MEMBERCOUNT', appointedMembers.length);
+
+                                ccExtractor.addCCMembers(appointedMembers, function(notMatched) { console.log('NOT MATCHED COUNT:', notMatched.length); done(); } );
+                               
+                            }
+
+                        });
+
+
+
+                    } else {
+                        console.log('NO MEMBER :( ', member)
+                    }
+                })
+
+
+
+            });
+
+
+
+        });
+    });
+    /*
     describe('PDF Extractor', function() {
 
         it('can extract the county committee members from a party position certified list PDF', function(done) {
@@ -107,12 +197,9 @@ describe('County Committee Extractor', function() {
                 });
 
             })
-     
-         
-  
-
         });
     });
+    */
 
     /*
     describe('CSV Extractor', function(done) {
