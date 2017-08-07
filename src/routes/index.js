@@ -147,13 +147,19 @@ router.get('/', co(function*(req, res, next) {
             county: 'Kings County'
         }).count();
 
+        let numOfAppointed = yield countyCommittee.find({
+            entry_type: 'Appointed',
+            county: 'Kings County'
+        }).count();
+
 
     let countySeatBreakdowns = [
         {
             county: 'Kings',
             numOfSeats: numOfSeats,
             numOfFilledSeats: numOfSeats - numOfVacancies,
-            numOfVacancies: numOfVacancies
+            numOfVacancies: numOfVacancies,
+            numOfAppointed: numOfAppointed
         }
     ];
 
@@ -171,7 +177,8 @@ router.get('/', co(function*(req, res, next) {
             county: 'Queens',
             numOfSeats: numOfSeats,
             numOfFilledSeats: numOfSeats - numOfVacancies,
-            numOfVacancies: numOfVacancies
+            numOfVacancies: numOfVacancies,
+            numOfAppointed: 0
         });
     
 

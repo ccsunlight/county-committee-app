@@ -34,6 +34,11 @@ var pdfFileName = process.argv[2];
 
 importCCPDF(pdfFileName);
 
+//const countyCommitteeModel = mongoose.model('county-committee');
+
+
+
+
 function importCCPDF(filename) {
 
     var ccExtractor = require(__dirname + '/src/services/county-committee/county-committee-extractor.js');
@@ -45,50 +50,49 @@ function importCCPDF(filename) {
     console.log('ATTEMPTING TO IMPORT: ' + filepath);
 
     ccExtractor.getCCMembersFromCertifiedListPDF(filepath, function(ccMembers) {
-        const countyCommitteeModel = mongoose.model('county-committee');
 
-        ccMembers.forEach(function(member, index) {
+        let newPositions = [];
+        importCCMembersRecursive(ccMembers, newPositions, function(newPositions) {
+            console.log('done', newPositions.length);
+            process.exit();
+        })
 
-            if (member) {
-                console.log('MEMBER YA', member);
-                member.data_source = filepath;
+    });
 
-                countyCommitteeModel.find(member, function(err, foundMembers) {
-                    if (err) return console.error(err);
 
-                    if (foundMembers.length == 0) {
-                        var newMember = new countyCommitteeModel(member);
+}
 
-                        console.log(newMember);
-                        newMember.save(function(err, saved) {
-                            if (err) return console.error(err);
 
-                            if (index + 1 == ccMembers.length) {
-                                // console.log();
-                                process.exit('### IMPORT COMPLETED ###')
-                                    //return;
-                            }
-                            
-                        });
-                    } else {
-                        if (index + 1 == ccMembers.length) {
-                            // console.log();
-                            process.exit('### IMPORT COMPLETED ###')
-                                //return;
-                        }
-                    }
+function importCCMembersRecursive(ccMembers, newPositions, callback) {
 
-                })
+    let member = ccMembers.shift();
 
+    if (member) {
+
+        member.data_source = pdfFileName;
+
+        var newMember = new countyCommitteeModel(member);
+
+        newPositions.push(newMember);
+        console.log('New member', newMember.assembly_district, newMember.electoral_district, newMember.office_holder);
+
+        newMember.save(function(err, saved) {
+
+            if (err) return console.error(err);
+
+            if (ccMembers.length === 0) {
+                callback(newPositions)
             } else {
-                console.log('MEMBER ROW EMPTY', index, member)
+                importCCMembersRecursive(ccMembers, newPositions, callback);
             }
-            
+
         });
 
 
 
-    });
-
+    } else {
+        console.log('MEMBER ROW EMPTY', member);
+        importCCMembersRecursive(ccMembers, newPositions, callback)
+    }
 
 }

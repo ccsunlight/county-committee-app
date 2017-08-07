@@ -86,67 +86,17 @@ describe('County Committee Extractor', function() {
 
                 let electedMemberCount = 0;
                 let appointedMemberCount = 0;
+                let invalidMemberRow = 0;
 
                 memberCount = ccMembers.length;
 
+                console.log('Total members extracted from CSV', memberCount);
+
                 let appointedMembers = [];
 
-                ccMembers.forEach(function(member, index) {
-                    //console.log('member', member);
-                    if (member) {
-
-                        countyCommitteeModel.find({
-                            electoral_district: member.electoral_district,
-                            assembly_district: member.assembly_district,
-                            office_holder: member.office_holder,
-                        }, function(err, foundMembers) {
-
-                            if (err) {
-                                console.log('ERROR', err);
-                            } else {
-                                if (foundMembers.length > 0) {                                    
-                                    electedMemberCount++;
-                                    // console.log('FOUND', foundMembers);
-                                } else {
-                                    
-                                    appointedMembers.push(member);
-                                    console.log(member.office_holder, member.assembly_district, member.electoral_district);
-
-                                    
-                                    /* newMember.save(function(err, saved) {
-                                        if (err) return console.error(err);
-
-                                        if (index + 1 == ccMembers.length) {
-                                            // console.log();
-                                            process.exit('### IMPORT COMPLETED ###')
-                                                //return;
-                                        }
-                                        
-                                    });
-                                    */
-                                }
-
-                            }
-
-                            memberCount--;
-
-                            if (memberCount === 0) {
-                                console.log('ELECTED OR PETITIONED MEMBERCOUNT', electedMemberCount);
-                                console.log('APPOINTED MEMBERCOUNT', appointedMembers.length);
-
-                                ccExtractor.addCCMembers(appointedMembers, function(notMatched) { console.log('NOT MATCHED COUNT:', notMatched.length); done(); } );
-                               
-                            }
-
-                        });
-
-
-
-                    } else {
-                        console.log('NO MEMBER :( ', member)
-                    }
-                })
-
+                ccExtractor.getNonFoundMembersRecursive(ccMembers, appointedMembers, function(unfoundMembers) {
+                    console.log('unfoundMembers', unfoundMembers.length);
+                });
 
 
             });
