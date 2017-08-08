@@ -2,8 +2,15 @@
 		<div class="mdl-grid">
 			<div class="mdl-card mdl-cell mdl-cell--12-col">
 				<div class="mdl-card__supporting-text"><h4>{{this.county}} County Democratic Party</h4>
-				<small>This data is approximate for demo purposes. Source: NY BOE</small>
-			
+				<small>This data is approximate for demo purposes. Source: NY BOE
+
+
+				</small>
+				<small>
+				{{#unless numOfAppointed}}
+					Appointed member data not yet available. 
+				{{/unless}}
+				</small>
 				<canvas id="myChart-{{county}}" width="5" height="5"></canvas>
 			</div>
 		</div>
@@ -25,7 +32,7 @@
 			{
 			label:"Vacant Seats",
 			data: [
-				{{this.numOfVacancies}}, {{this.numOfFilledSeats}},
+				{{this.numOfVacancies}}, {{this.numOfElected}},
 				{{this.numOfAppointed}}
 				],
 				fill:false,
