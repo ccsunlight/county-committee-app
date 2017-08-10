@@ -34,18 +34,12 @@ var pdfFileName = process.argv[2];
 
 importCCPDF(pdfFileName);
 
-//const countyCommitteeModel = mongoose.model('county-committee');
-
-
-
 
 function importCCPDF(filename) {
 
     var ccExtractor = require(__dirname + '/src/services/county-committee/county-committee-extractor.js');
 
     var filepath = __dirname + '/import/' + filename;
-    //  var filepath = __dirname + '/../../../import/2016QueensDemCoComm_people_elected.pdf';
-    // var filepath = __dirname + '/../../../import/democratic_county_committee_ny.pdf';
 
     console.log('ATTEMPTING TO IMPORT: ' + filepath);
 

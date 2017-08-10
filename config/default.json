@@ -1,4 +1,4 @@
-{
+    {
     "host": "localhost",
     "port": "80",
     "mongodb": "mongodb://172.17.0.2:27017/county-committee",

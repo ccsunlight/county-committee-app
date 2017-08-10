@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const feathers = require('feathers');
 
-
 const _ = require('lodash');
 const bb = require('bluebird');
 const co = bb.coroutine;
@@ -65,8 +64,6 @@ router.get('/invite/confirm/:confirm_code', auth.express.authenticate('local', {
 }), function(req, res) {
 
     res.send('ok time to make a password');
-
-
 
 });
 /*
