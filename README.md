@@ -35,9 +35,11 @@ This will create three docker containers, one with mongo, the other with node an
 4. This will stop and restart the docker containers (except the persistant storage) and should leave you inside the cc-app container at a bash prompt
 
 5. run 
-```
-npm migrate
-```
+
+	```
+	npm migrate
+	```
+
 This will create a super admin user with
 a un and pw. *It will output this in the console. Copy and save this to a secure location.*
 
