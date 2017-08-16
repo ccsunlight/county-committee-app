@@ -57,6 +57,7 @@
     "json2csv": "^3.11.0",
     "migrate-mongoose": "^3.2.2",
     "mongoose": "^4.9.1",
+    "node-cache": "^4.1.1",
     "node-geocoder": "^3.16.0",
     "nodemailer": "^4.0.1",
     "passport": "^0.3.2",

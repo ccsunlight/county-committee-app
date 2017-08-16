@@ -177,12 +177,14 @@ router.get('/', co(function*(req, res, next) {
         county: 'Queens County'
     }).count();
 
+    var stubQueensAppointed = 933 // Counted rows of appointed in CSV.
+
     countySeatBreakdowns.push({
         county: 'Queens',
         numOfSeats: numOfElected + numOfVacancies + numOfAppointed,
         numOfElected: numOfElected,
-        numOfVacancies: numOfVacancies,
-        numOfAppointed: 0
+        numOfVacancies: numOfVacancies - stubQueensAppointed,
+        numOfAppointed: stubQueensAppointed
     });
 
     res.render('index', {
@@ -263,7 +265,13 @@ router.get('/get_address', co(function*(req, res, next) {
             };
         }));
 
+        let county = '', hasAppointedData = true;
+
         const memberData = yield bb.map(yourMembers, co(function*(member) {
+
+            if (!county) {
+                county = member.county;
+            }
             return {
                 office: member.office,
                 entry_type: member.entry_type,
@@ -273,6 +281,11 @@ router.get('/get_address', co(function*(req, res, next) {
             }
         }));
 
+        if (county === "Queens County") {
+            hasAppointedData = false;
+        } else {
+            hasAppointedData = true;
+        }
 
         const locals = {
             address: address,
@@ -280,6 +293,8 @@ router.get('/get_address', co(function*(req, res, next) {
             long: long,
             ad: ad,
             ed: ed,
+            county: county,
+            hasAppointedData: hasAppointedData,
             members: memberData,
             cleanedAllGeomDocsInAd: JSON.stringify(cleanedAllGeomDocsInAd)
         };

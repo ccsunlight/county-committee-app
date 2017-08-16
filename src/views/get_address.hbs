@@ -5,7 +5,14 @@
 <div class="mdl-card__supporting-text">
 	<h4>Assembly District: {{ad}}</h4>
 	<h4>Election District: {{ed}}</h4>
+
+	{{#if hasAppointedData}}
+	{{else}}
+		Appointed data not available yet in Queens. Positions listed as "Vacancy" may have members appointed. Please check back soon.
+	{{/if}}
+	
 	{{> table}}
+	
 </div>
 </div>
 <div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--12-col-tablet mdl-cell--4-col-phone">

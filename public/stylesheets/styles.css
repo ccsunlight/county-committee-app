@@ -279,6 +279,10 @@ html, body {
   width: 100%;
 }
 
+#cc-list-table {
+  overflow: scroll;
+}
+
 .logo-link, .logo-link .material-icons, .logo-link span  {
   text-decoration: none;
   vertical-align: bottom;
