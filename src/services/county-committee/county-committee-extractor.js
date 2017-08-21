@@ -442,14 +442,17 @@ exports.getCCMembersFromCSV = function(filepath, callback) {
 
         })
         .on("end", function() {
+
+            var genderRegex = new RegExp('female', "i");
             let ccMembers = ccMemberRows.map(function(row) {
 
                 return {
                     assembly_district: row.AD,
                     electoral_district: row.ED,
-                    office: row.SEX === 'M' ? 'Male County Committee' : 'Female County Committee',
-                    office_holder: row.OFFICE_HOLDER,
-                    address: row.ADDRESS + ' Brooklyn, NY ' + row.ZIPCODE,
+                    part: row.PART,
+                    office: genderRegex.test(row.GENDER) ? 'Female County Committee' : 'Male County Committee',
+                    office_holder: row.FIRSTNAME + ' ' + row.LASTNAME,
+                    address: row.ADDRESS,
                     data_source: filepath
                 }
 

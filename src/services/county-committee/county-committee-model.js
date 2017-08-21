@@ -38,6 +38,12 @@ const countyCommitteeSchema = new Schema({
         type: String,
         required: true
     },
+    part: {
+        type: String,
+        part: ['A','B'],
+        default: '',
+        required: false
+    },
     ed_ad: {
         type: String,
         required: true

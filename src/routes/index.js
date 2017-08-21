@@ -177,14 +177,12 @@ router.get('/', co(function*(req, res, next) {
         county: 'Queens County'
     }).count();
 
-    var stubQueensAppointed = 933 // Counted rows of appointed in CSV.
-
     countySeatBreakdowns.push({
         county: 'Queens',
         numOfSeats: numOfElected + numOfVacancies + numOfAppointed,
         numOfElected: numOfElected,
-        numOfVacancies: numOfVacancies - stubQueensAppointed,
-        numOfAppointed: stubQueensAppointed
+        numOfVacancies: numOfVacancies,
+        numOfAppointed: numOfAppointed
     });
 
     res.render('index', {
