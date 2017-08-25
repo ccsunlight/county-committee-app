@@ -1,0 +1,1 @@
+ssh root@107.170.2.68 "cd /mnt/county-committee && ./spinup-prod.sh "

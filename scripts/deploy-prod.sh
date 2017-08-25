@@ -1,0 +1,1 @@
+ssh root@107.170.2.68 "cd /mnt/county-committee && git checkout master && git pull && bash ./spinup-prod.sh "
