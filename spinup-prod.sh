@@ -8,6 +8,7 @@ echo "#########################"
 echo "#      CC Sunlight      #"
 echo "#########################"
 printf "\n"
+printf "environment: production\n\n"
 printf "Stopping and removing existing cc-mongo container...\n\n"
 docker stop cc-mongo > /dev/null 2>&1
 docker rm cc-mongo > /dev/null 2>&1
