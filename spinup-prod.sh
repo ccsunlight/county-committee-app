@@ -32,4 +32,4 @@ docker run --rm -v "$PWD":/usr/src/app -w /usr/src/app --link=cc-mongo:mongodb -
 
 printf "\n"
 printf "County Committee has been started.\n\n"
-printf "Bye.";
+printf "Bye.\n\n";
