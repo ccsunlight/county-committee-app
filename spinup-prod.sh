@@ -8,6 +8,7 @@ echo "#########################"
 echo "#      CC Sunlight      #"
 echo "#########################"
 printf "\n"
+printf "environment: production\n\n"
 printf "Stopping and removing existing cc-mongo container...\n\n"
 docker stop cc-mongo > /dev/null 2>&1
 docker rm cc-mongo > /dev/null 2>&1
@@ -31,4 +32,4 @@ docker run --rm -v "$PWD":/usr/src/app -w /usr/src/app --link=cc-mongo:mongodb -
 
 printf "\n"
 printf "County Committee has been started.\n\n"
-printf "Bye.";
+printf "Bye.\n\n";
