@@ -38,6 +38,12 @@ const countyCommitteeSchema = new Schema({
         type: String,
         required: true
     },
+    part: {
+        type: String,
+        part: ['A','B'],
+        default: '',
+        required: false
+    },
     ed_ad: {
         type: String,
         required: true
@@ -64,7 +70,18 @@ const countyCommitteeSchema = new Schema({
         required: true
     }
 
+},{
+  toObject: {
+  virtuals: true
+  },
+  toJSON: {
+  virtuals: true 
+  }
 });
+
+countyCommitteeSchema.virtual('id').get(function() {
+    return this._id;
+})
 
 const countyCommitteeModel = mongoose.model('county-committee', countyCommitteeSchema);
 

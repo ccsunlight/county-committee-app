@@ -1,6 +1,5 @@
-
-
 var assert = require('assert');
+const mongoose = require('mongoose');
 
 describe('County Committee Extractor', function() {
     console.log('hello')
@@ -66,6 +65,47 @@ describe('County Committee Extractor', function() {
     });
     */
 
+    describe('CSV Extractor', function() {
+
+        it('can extract the county committee members from a a csv', function(done) {
+            //var Sails = require('sails').constructor;
+            this.timeout(60000);
+
+            const app = require('../../../src/app');
+
+            const countyCommitteeModel = require('../../../src/services/county-committee/county-committee-model');
+
+            // Load app to get access to ORM, services, etc (but don't lift an actual server onto a port)
+            var ccExtractor = require('../../../src/services/county-committee/county-committee-extractor');
+
+            var filepath = __dirname + '/../../../import/kingsCCmembers.csv';
+            // var filepath = __dirname + '/../../../import/democratic_county_committee_ny.pdf';
+
+            ccExtractor.getCCMembersFromCSV(filepath, function(ccMembers) {
+                console.log('callback', ccMembers);
+
+                let electedMemberCount = 0;
+                let appointedMemberCount = 0;
+                let invalidMemberRow = 0;
+
+                memberCount = ccMembers.length;
+
+                console.log('Total members extracted from CSV', memberCount);
+
+                let appointedMembers = [];
+
+                ccExtractor.getNonFoundMembersRecursive(ccMembers, appointedMembers, function(unfoundMembers) {
+                    console.log('unfoundMembers', unfoundMembers.length);
+                });
+
+
+            });
+
+
+
+        });
+    });
+    /*
     describe('PDF Extractor', function() {
 
         it('can extract the county committee members from a party position certified list PDF', function(done) {
@@ -107,12 +147,9 @@ describe('County Committee Extractor', function() {
                 });
 
             })
-     
-         
-  
-
         });
     });
+    */
 
     /*
     describe('CSV Extractor', function(done) {

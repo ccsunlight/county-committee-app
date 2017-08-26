@@ -7,6 +7,7 @@
  * author     (Jonathan Crockett)
  * 
  */
+const countyCommitteeModel = require('../../../src/services/county-committee/county-committee-model');
 
 
 var Xray = require('x-ray');
@@ -61,6 +62,152 @@ exports.getCountyCommitteeCSVFileUrls = function(url, callback) {
 
 };
 
+exports.getNonFoundMembersRecursive = function(ccMembers, unfoundMembers, callback) {
+
+    let member = ccMembers.shift();
+
+    let member_name_parts = member.office_holder.split(" ");
+
+    countyCommitteeModel.find({
+        electoral_district: member.electoral_district,
+        assembly_district: member.assembly_district,
+        office_holder: new RegExp(member_name_parts[member_name_parts.length - 1], "i"),
+    }, function(err, foundMembers) {
+
+        if (err) {
+
+            console.log('ERROR', err);
+
+        } else {
+
+            if (foundMembers.length > 0) {
+
+                // console.log('FOUND', foundMembers);
+            } else {
+                console.log('UNFOUND', member.office, member.assembly_district, member.electoral_district, member.office_holder);
+                unfoundMembers.push(member)
+
+                /* newMember.save(function(err, saved) {
+                    if (err) return console.error(err);
+
+                    if (index + 1 == ccMembers.length) {
+                        // console.log();
+                        process.exit('### IMPORT COMPLETED ###')
+                            //return;
+                    }
+                    
+                });
+                */
+            }
+
+        }
+
+        if (ccMembers.length === 0) {
+
+            let anomalyMembers = [];
+
+            this.insertMembersIntoVacantPositionsRecursive(unfoundMembers, anomalyMembers, function(foundanomalyMembers) {
+
+                console.log('anomalyMembers', foundanomalyMembers);
+
+                saveToCSV(foundanomalyMembers, 'anomaly_members.csv', function() {
+
+                    process.exit('DONE IMPORTING');
+                });
+            })
+        } else {
+            this.getNonFoundMembersRecursive(ccMembers, unfoundMembers, callback);
+        }
+
+    }.bind(this));
+
+
+}
+
+
+this.insertMembersIntoVacantPositionsRecursive = function(members, anomalyMembers, callback) {
+
+    let member = members.shift();
+
+    countyCommitteeModel.findOne({
+        electoral_district: member.electoral_district,
+        assembly_district: member.assembly_district,
+        office: member.office,
+        office_holder: 'Vacancy'
+    }, function(err, vacancyOffice) {
+
+        if (vacancyOffice) {
+
+            console.log('vacancy office found', vacancyOffice.electoral_district, vacancyOffice.assembly_district);
+            vacancyOffice.office_holder = member.office_holder
+            vacancyOffice.data_source = member.data_source;
+            vacancyOffice.entry_type = "Appointed";
+            vacancyOffice.save(function(err, success) {
+
+                if (members.length > 0) {
+                    this.insertMembersIntoVacantPositionsRecursive(members, anomalyMembers, callback);
+                } else {
+                    callback(anomalyMembers);
+                }
+
+            }.bind(this));
+
+        } else {
+            console.log('not found', member.office_holder);
+            anomalyMembers.push(member);
+
+            if (members.length > 0) {
+                this.insertMembersIntoVacantPositionsRecursive(members, anomalyMembers, callback);
+            } else {
+                callback(anomalyMembers);
+            }
+
+        }
+
+    }.bind(this));
+
+}
+
+
+function saveToCSV(data, filepath, callback) {
+    var json2csv = require('json2csv');
+    var fs = require('fs');
+    
+    var fields = Object.keys(data[0]);
+    /* var myCars = [{
+        "car": "Audi",
+        "price": 40000,
+        "color": "blue"
+    }, {
+        "car": "BMW",
+        "price": 35000,
+        "color": "black"
+    }, {
+        "car": "Porsche",
+        "price": 60000,
+        "color": "green"
+    }];
+
+
+    let csv = json2csv({
+        data: data,
+        fields: fields
+    });
+    */
+
+    let csv = json2csv({
+        data: data,
+        fields: fields
+    });
+
+    fs.writeFile(filepath, csv, function(err) {
+        if (err) throw err;
+        console.log('file saved');
+        callback();
+    });
+}
+
+
 /**
  * Downloads a csv file.
  *
@@ -94,6 +241,7 @@ function saveCSVFileRecursive(ccCSVFilePathObjects, callback) {
     }
 
 }
+
 
 exports.downloadFile = function(url, dest, cb) {
 
@@ -232,6 +380,91 @@ exports.getEDElectionResultsFromCSV = function(filepath, callback) {
 
         });
 };
+
+
+exports.addCCMembers = function(members, callback) {
+
+    const countyCommitteeModel = require('../../../src/services/county-committee/county-committee-model');
+    let notMatched = [];
+    members.forEach(function(member, index) {
+        countyCommitteeModel.findOne({
+            office_holder: 'Vacancy',
+            assembly_district: parseInt(member.assembly_district, 10),
+            electoral_district: parseInt(member.electoral_district, 10),
+            office: member.office
+        }, function(err, record) {
+
+            if (err) return console.error(err);
+
+            if (record) {
+                record.office_holder = member.office_holder;
+                record.entry_type = 'Appointed';
+                record.data_source = member.data_source;
+                record.address = member.address;
+                record.save();
+
+                //  console.log('record', record);
+            } else {
+                console.log(JSON.stringify(member))
+                notMatched.push(member);
+            }
+
+            if (index === members.length - 1) {
+
+                callback(notMatched);
+            }
+        });
+    })
+}
+
+/**
+ * Goes through an election CSV and finds the winners 
+ *
+ * @param      {<type>}    filepath  The filepath
+ * @param      {Function}  callback  The callback
+ */
+exports.getCCMembersFromCSV = function(filepath, callback) {
+    // console.log('Extracting County Committee Members from: ', filepath);
+
+    var csv = require("fast-csv");
+
+    var ccMemberRows = [];
+
+    csv.fromPath(filepath, {
+            objectMode: true,
+            ignoreEmpty: true,
+            headers: true,
+            trim: true
+        })
+        .on("data", function(data) {
+
+            ccMemberRows.push(data);
+
+        })
+        .on("end", function() {
+
+            var genderRegex = new RegExp('female', "i");
+            let ccMembers = ccMemberRows.map(function(row) {
+
+                return {
+                    assembly_district: row.AD,
+                    electoral_district: row.ED,
+                    part: row.PART,
+                    office: genderRegex.test(row.GENDER) ? 'Female County Committee' : 'Male County Committee',
+                    office_holder: row.FIRSTNAME + ' ' + row.LASTNAME,
+                    address: row.ADDRESS,
+                    data_source: filepath
+                }
+
+            })
+
+            callback(ccMembers);
+
+        });
+};
+
+
+
 /*
 exports.extractEDandADfromCSV = function(filepath, callback) {
 
@@ -284,16 +517,16 @@ exports.getAllCSVFilePaths = function(callback) {
 
 
 exports.getCCMembersFromCertifiedListPDF = function(pathToPDF, callback) {
-    
+
     var path = require('path')
     var filePath = pathToPDF;
     var extract = require('pdf-text-extract');
 
     extract(filePath, function(err, pages) {
-        
+
         if (err) {
             console.log('woo', err)
-            //return
+                //return
         }
         // console.dir(pages[2]);
         // 
@@ -428,7 +661,7 @@ function extractCCMembersFromPage(page) {
 
     var county = extractCountyFromPage(page);
 
-   // console.log('county', county);
+    // console.log('county', county);
 
     var headerRowIndex = rows.findIndex(findCCMemberHeaderRow);
     var footerRowIndex = rows.findIndex(findCCMemberFooterRow);
@@ -460,7 +693,7 @@ function extractCCMembersFromPage(page) {
 
 function extractCountyFromPage(page) {
     var match = page.match(/IN THE CITY OF NEW YORK\s+(.+), .+Party/);
-    
+
     if (match) {
         return match[1];
     }

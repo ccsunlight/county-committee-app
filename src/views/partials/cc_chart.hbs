@@ -1,56 +1,88 @@
-<div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--12-col-tablet mdl-cell--12-col-phone">
-	<div class="mdl-grid">
-		<div class="mdl-cell mdl-cell--12-col">
-			<div class="mdl-card__supporting-text"><h3>Info on New York County Committees</h3>
-			<small>Source: NY BOE</small>
+<div class="mdl-cell mdl-cell--6-col-desktop mdl-cell--6-col-tablet mdl-cell--12-col-phone">
+		<div class="mdl-grid">
+			<div class="mdl-card mdl-cell mdl-cell--12-col">
+				<div class="mdl-card__supporting-text"><h4>{{this.county}} County Democratic Party</h4>
+				<small>This data is approximate for demo purposes. Source: NY BOE
+
+
+				</small>
+				<small>
+				{{#unless numOfAppointed}}
+					Appointed member data not yet available. 
+				{{/unless}}
+				</small>
+				<canvas id="myChart-{{county}}" width="5" height="5"></canvas>
 			</div>
 		</div>
-		<div class="mdl-cell mdl-cell--6-col"><div class="mdl-card__supporting-text ">
-			<canvas id="myChart" width="5" height="5"></canvas>
-		</div></div>
-		<div class="mdl-cell mdl-cell--6-col"><div class="mdl-card__supporting-text ">
-			<canvas id="myChart2" width="5" height="5"></canvas>
-		</div></div>
+
 	</div>
-	
 	
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
+<script src="/lib/Chart.PieceLabel.min.js"></script>
 <script>
+	(function() { 
 	var data = {
 		labels: [
 		"Vacant",
-		"Filled"
+		"Elected",
+		"Appointed"
 		],
 		datasets: [
 			{
 			label:"Vacant Seats",
 			data: [
-				{{numOfVacancies}}, {{numOfFilledSeats}}],
+				{{this.numOfVacancies}}, {{this.numOfElected}},
+				{{this.numOfAppointed}}
+				],
 				fill:false,
-					backgroundColor: [
+				backgroundColor: [
 					"#ebebeb",
+					"#FFA500",
 					"#1874CD"
 					],
 				hoverBackgroundColor: [
-				"#ebebeb",
-				"#1874CD"
+					"#ebebeb",
+					"#FFA500",
+					"#1874CD"
 				]
 			}
 		]
 	};
-	var myPieChart = new Chart(document.getElementById("myChart"),{
+	var myPieChart = new Chart(document.getElementById("myChart-{{this.county}}"),{
 		type: 'pie',
 		data: data,
-		options: {}
+		options: {
+			pieceLabel: {
+			    render: function (args) {
+				    // args will be something like:
+				    // { label: 'Label', value: 123, percentage: 50 }
+				    return args.value + ' ' + args.label;
+				  },
+			    fontSize: 14,
+			    fontColor: '#000'
+			},
+			title: {
+            display: true,
+			
+            text: '{{county}} County Committee Vacancies',
+
+       	 } 
+        }
 	});
 	/* new Chart(document.getElementById("chartjs-1"),
 		{"type":"bar","data":{"labels":["January","February","March","April","May","June","July"],"datasets":[{"label":"My First Dataset","data":[65,59,80,81,56,55,40],"fill":false,"backgroundColor":["rgba(255, 99, 132, 0.2)","rgba(255, 159, 64, 0.2)","rgba(255, 205, 86, 0.2)","rgba(75, 192, 192, 0.2)","rgba(54, 162, 235, 0.2)","rgba(153, 102, 255, 0.2)","rgba(201, 203, 207, 0.2)"],"borderColor":["rgb(255, 99, 132)","rgb(255, 159, 64)","rgb(255, 205, 86)","rgb(75, 192, 192)","rgb(54, 162, 235)","rgb(153, 102, 255)","rgb(201, 203, 207)"],"borderWidth":1}]},"options":});
 		*/
-
-	var myPieChart = new Chart(document.getElementById("myChart2"),{
+		/*
+	var myPieChart = new Chart(document.getElementById("myChart2-{{this.county}}"),{
 		type: 'bar',
 		data: data,
-		options: {"scales":{"yAxes":[{"ticks":{"beginAtZero":true}}]}}
+		options: {"scales":{"yAxes":[{"ticks":{"beginAtZero":true}}]},
+	title: {
+            display: true,
+            text: '{{this.county}} Vacancy Barchart'
+        }}
 	});
+	*/
+	})();
 </script>

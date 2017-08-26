@@ -53,10 +53,12 @@ html, body {
   background-color: white;
   height: 4px;
 }
+/*
 .mdl-demo main > .mdl-layout__tab-panel {
   padding: 8px;
   padding-top: 48px;
 }
+*/
 .mdl-demo .mdl-card {
   height: auto;
   display: -webkit-flex;
@@ -245,9 +247,10 @@ html, body {
   right: 0;
 }
 
-.mdl-card__supporting-text {
+#overview .mdl-card__supporting-text {
   text-align: center;
 }
+
 
 
 #address, .mdl-textfield__label {
@@ -268,6 +271,24 @@ html, body {
   padding:5px;
 }
 
+.mdl-card a {
+    color: #00BCD4;
+}
+
 #cc-member-table {
   width: 100%;
+}
+
+#cc-list-table {
+  overflow: scroll;
+}
+
+.logo-link, .logo-link .material-icons, .logo-link span  {
+  text-decoration: none;
+  vertical-align: bottom;
+  line-height: 20px;
+}
+
+.logo-link:hover, .mdl-navigation__link:hover {
+  opacity: .75;
 }

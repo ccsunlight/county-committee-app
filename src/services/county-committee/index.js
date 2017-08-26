@@ -10,16 +10,17 @@ module.exports = function() {
   const options = {
     Model: countyCommittee,
     paginate: {
-      default: 5,
+      default: 10,
       max: 25
     }
   };
 
+
   // Initialize our service with any options it requires
-  app.use('/county-committee', service(options));
+  app.use(app.get('apiPath') + '/county-committee', service(options));
 
   // Get our initialize service to that we can bind hooks
-  const countyCommitteeService = app.service('/county-committee');
+  const countyCommitteeService = app.service(app.get('apiPath') + '/county-committee');
 
   // Set up our before hooks
   countyCommitteeService.before(hooks.before);

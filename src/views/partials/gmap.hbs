@@ -63,7 +63,6 @@
 			}
 			else {
 
-				console.log('yayaya');
 				if (numOfFilledSeats == numOfSeats) {
 					color = filledColor;
 				} else if (numOfFilledSeats > 0 && numOfFilledSeats < numOfSeats) {
@@ -75,7 +74,6 @@
 				infoString = infoStringStart + 'Filled seats: ' + numOfFilledSeats + '<br />Vacant seats:' + (numOfSeats - numOfFilledSeats);
 			}
 
-			console.log('woo', numOfFilledSeats, numOfSeats, color);
 
 			makePolygon(doc.co, color, infoString);
 		});
