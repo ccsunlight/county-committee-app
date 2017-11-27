@@ -16,7 +16,7 @@ docker rm cc-mongo > /dev/null 2>&1
 printf 'Starting Mongo container...\n'
 printf '\n'
 printf "Container ID: "
-docker run --rm -it --name cc-mongo -p 27017:27017 -v cc-db-test-data:/data/db -d mongo --auth
+docker run --rm -it --name cc-mongo -p 27017:27017 -v cc-db-test-data:/data/db -d mongo
 printf "\n"
 printf "Mongo is started.\n\n\n"
 

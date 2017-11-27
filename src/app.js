@@ -55,7 +55,6 @@ const localConfig = {
 //console.log('https://' + app.get('host'));
 //
 
-
 app.use(compress())
     .configure(rest())
    /* .configure(acl(aclConfig, {

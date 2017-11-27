@@ -72,7 +72,8 @@
     "request-promise": "^4.2.0",
     "serve-favicon": "^2.4.2",
     "smtp-server": "^3.0.1",
-    "winston": "^2.3.1",
+    "winston": "^2.4.0",
+    "winston-mongodb": "^3.0.1",
     "x-ray": "^2.3.2"
   },
   "devDependencies": {
