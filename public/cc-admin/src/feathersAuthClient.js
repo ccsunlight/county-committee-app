@@ -37,6 +37,7 @@ export const checkUserHasAccess = (resource) => {
     switch (resource.name) {
         case 'user':
         case 'invite':
+        case 'action-log':
         return (localStorage.getItem('role') == 'admin');
         break;
        default: 

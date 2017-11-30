@@ -47,7 +47,7 @@ const App = () => (
 
       <Resource name="invite" icon={PersonAddIcon} list={InviteList} create={InviteCreate} remove={Delete} />
 
-      <Resource name="action-log" icon={PostIcon} list={ActionLogList}  />
+      <Resource name="action-log" options={{ label: 'Action Log' }} icon={PostIcon} list={ActionLogList}  />
       
     </Admin>
 );
