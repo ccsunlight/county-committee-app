@@ -102,6 +102,7 @@ export default (client, options = {}) => (type, params) => {
             return Promise.reject();
             //}
         case AUTH_LOGOUT:
+            // @todo send logout request to server as well.
             localStorage.removeItem(storageKey);
             localStorage.removeItem('userId');
             localStorage.removeItem('role');

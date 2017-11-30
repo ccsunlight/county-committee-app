@@ -38,8 +38,8 @@ exports.after = {
     }
   }],
   get: [],
-  create: [],
-  update: [],
-  patch: [],
-  remove: []
+  create: [globalHooks.logAction],
+  update: [globalHooks.logAction],
+  patch: [globalHooks.logAction],
+  remove: [globalHooks.logAction]
 };

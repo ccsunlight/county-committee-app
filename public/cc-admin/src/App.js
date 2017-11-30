@@ -16,6 +16,7 @@ import feathers from 'feathers/client';
 import { MemberList, MemberEdit, MemberCreate } from './members';
 import { PageList, PageEdit, PageCreate } from './pages';
 import { UserList, UserEdit, UserCreate } from './users';
+import { ActionLogList} from './actionLog';
 import { ProfileList, ProfileEdit } from './profile';
 import { InviteList, InviteCreate } from './invites';
 import { If, Then, Else } from 'react-if';
@@ -45,6 +46,9 @@ const App = () => (
       <Resource name="user" icon={UserIcon} list={UserList} edit={UserEdit} remove={Delete} />
 
       <Resource name="invite" icon={PersonAddIcon} list={InviteList} create={InviteCreate} remove={Delete} />
+
+      <Resource name="action-log" icon={PostIcon} list={ActionLogList}  />
+      
     </Admin>
 );
 

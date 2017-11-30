@@ -37,8 +37,8 @@ exports.after = {
     }
   }],
   get: [],
-  create: [],
+  create: [globalHooks.logAction],
   update: [globalHooks.logAction],
-  patch: [],
-  remove: []
+  patch: [globalHooks.logAction],
+  remove: [globalHooks.logAction]
 };
