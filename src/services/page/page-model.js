@@ -17,6 +17,11 @@ const pageSchema = new Schema({
         type: Date,
         'default': Date.now
     },
+    status: {
+        type: String,
+        enum: ['draft','published'],
+        default: 'draft'
+    },
     title: {
         type: String
     },
