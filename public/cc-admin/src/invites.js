@@ -19,17 +19,9 @@ export const InviteList = (props) => (
     </SwitchPermissions>
 );
 
-const CreateToolbar = ({invalid, submitOnEnter }) => (
-    <ToolbarGroup>
-        <SaveButton invalid={invalid} submitOnEnter={submitOnEnter} label="Save and add" redirect="create" />
-        <SaveButton invalid={invalid} submitOnEnter={submitOnEnter} redirect="list" />
-    </ToolbarGroup>
-);
-
-
 export const InviteCreate = (props) => (
     <Create   {...props}>
-        <SimpleForm toolbar={<CreateToolbar />}>
+        <SimpleForm redirect="list">
             <TextInput label="Email Address" source="email" type="email" />
             <SelectInput source="role" defaultValue="user" choices={[
                 { id: 'admin', name: 'Admin' },

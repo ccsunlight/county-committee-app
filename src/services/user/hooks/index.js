@@ -55,8 +55,8 @@ exports.after = {
     all: [_idToId],
     find: [_idToId],
     get: [_idToId],
-    create: [_idToId],
-    update: [_idToId],
-    patch: [_idToId],
-    remove: [_idToId]
+    create: [_idToId, globalHooks.logAction],
+    update: [_idToId, globalHooks.logAction],
+    patch: [_idToId, globalHooks.logAction],
+    remove: [_idToId, globalHooks.logAction]
 };

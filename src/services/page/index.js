@@ -15,8 +15,6 @@ module.exports = function() {
     }
   };
 
-
-
   // Initialize our service with any options it requires
   app.use(app.get('apiPath') + '/page', service(options));
 
@@ -28,5 +26,6 @@ module.exports = function() {
 
   // Set up our after hooks
   pageService.after(hooks.after);
+
 };
 

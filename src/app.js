@@ -7,6 +7,7 @@ const compress = require('compression');
 const cors = require('cors');
 const feathers = require('feathers');
 const configuration = require('feathers-configuration');
+const globalHooks = require('./hooks');
 const hooks = require('feathers-hooks');
 const rest = require('feathers-rest');
 const bodyParser = require('body-parser');
@@ -16,6 +17,7 @@ const local = require('feathers-authentication-local');
 const jwt = require('feathers-authentication-jwt');
 const auth = require('feathers-authentication');
 const errors = require('feathers-errors');
+
 // const forceSSL = require('express-force-ssl');
 const errorHandler = require('feathers-errors/handler');
 // const acl = require('feathers-acl');
@@ -26,10 +28,17 @@ const hbs = require('hbs');
 const app = feathers();
 
 
-
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 hbs.registerPartials(__dirname + '/views/partials');
+
+hbs.registerHelper('if_eq', function(a, b, opts) {
+    if (a == b) {
+        return opts.fn(this);
+    } else {
+        return opts.inverse(this);
+    }
+});
 
 app.configure(configuration(path.join(__dirname, '..')));
 app.set('apiPath', '/' + app.get('api').basePath + '/' + app.get('api').version);
@@ -55,7 +64,6 @@ const localConfig = {
 //console.log('https://' + app.get('host'));
 //
 
-
 app.use(compress())
     .configure(rest())
    /* .configure(acl(aclConfig, {
@@ -75,7 +83,8 @@ app.use(compress())
     //.use(forceSSL)
     .configure(auth({
         path: apiPath + '/authentication',
-        secret: 'supersecret'
+        secret: 'supersecret',
+        passReqToCallback: true
     }))
     .configure(local(localConfig))
     .configure(jwt(localConfig))
@@ -108,11 +117,25 @@ app.service(apiPath + '/authentication').hooks({
 
 
 
+app.service(apiPath + '/authentication').hooks({
+    after: {
+        create: [
+            // You can chain multiple strategies
+            globalHooks.logAction
+        ],
+        remove: [
+            globalHooks.logAction
+        ]
+    }
+});
+
+
+
 
 
 app.service(apiPath + '/user').hooks({
     before: {
-        all:  [local.hooks.hashPassword(), auth.hooks.authenticate('jwt'), function(req) { console.log(req) }],
+        all:  [local.hooks.hashPassword(), auth.hooks.authenticate('jwt')],
     }
 });
 

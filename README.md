@@ -44,7 +44,7 @@ This will create three docker containers, one with mongo, the other with node an
 5. run 
 
 	```
-	npm migrate
+	npm run migrate
 	```
 
 This will create a super admin user with
