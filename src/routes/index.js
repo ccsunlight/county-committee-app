@@ -14,6 +14,7 @@ const auth = require('feathers-authentication');
 const countyCommittee = require('../services/county-committee/county-committee-model');
 const edGeometry = require('../services/edGeometry/edGeometry-model');
 const page = require('../services/page/page-model');
+const news = require('../services/news-link/news-link-model');
 const confirm = require('../services/invite/email-confirm');
 const User = require('../services/user/user-model');
 
@@ -343,6 +344,26 @@ router.get('/county-committee/:county', co(function*(req, res, next) {
 
 }));
 */
+
+
+
+/* GET home page. */
+router.get('/news', co(function*(req, res, next) {
+
+
+
+
+    news.find({}).then(function(data) {
+
+        console.log('data', { news_links: data });
+        if (data) {
+            res.render('news', { news_links: data });
+        } else {
+            next();
+        }
+
+    });
+}));
 
 
 /* GET home page. */

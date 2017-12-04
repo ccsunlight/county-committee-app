@@ -19,6 +19,7 @@ import { MemberList, MemberEdit, MemberCreate } from './members';
 import { PageList, PageEdit, PageCreate } from './pages';
 import { UserList, UserEdit, UserCreate } from './users';
 import { GlossaryTermList, GlossaryTermCreate, GlossaryTermEdit } from './glossary-term';
+import { NewsLinkList, NewsLinkCreate, NewsLinkEdit } from './news-links';
 import { ActionLogList} from './actionLog';
 import { ProfileList, ProfileEdit } from './profile';
 import { InviteList, InviteCreate } from './invites';
@@ -54,6 +55,9 @@ const App = () => (
 
       <Resource name="action-log" options={{ label: 'Action Log' }} icon={ActionLogIcon} list={ActionLogList}  />
       
+      <Resource name="news-link" options={{ label: 'News' }} icon={ActionLogIcon} list={NewsLinkList} create={NewsLinkCreate} edit={NewsLinkEdit} remove={Delete}  />
+      
+
     </Admin>
 );
 

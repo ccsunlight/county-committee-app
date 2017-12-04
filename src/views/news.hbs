@@ -1,0 +1,47 @@
+
+<section class="section--center mdl-grid mdl-shadow--2dp">
+
+ {{#each this.news_links}}
+
+ <div class="mdl-card mdl-cell mdl-cell--6-col">
+            <div class="mdl-card__media mdl-color-text--grey-50" style="background-image: url({{image}}); background-size: cover; background-repeat:no-repeat; height: 300px" >
+             
+            </div>
+           
+            <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
+            <h3><a href="{{url}}" target="_blank">{{title}}</a></h3>
+             {{description}}
+            </div>
+            <div class="mdl-card__supporting-text meta mdl-color-text--grey-600">
+              <div class="minilogo"></div>
+              <div>
+                <strong>{{site_name}}</strong>
+                <span>{{published_date}}</span>
+              </div>
+            </div>
+          </div>
+
+          <!--
+
+  <div class="mdl-card  mdl-cell mdl-cell--8-col">
+            <div class="mdl-card__media mdl-color-text--grey-50" style="background: url({{image}}) cover" >
+              <h3><a href="{{url}}">{{title}}</a></h3>
+            </div>
+            <div class="mdl-card__supporting-text mdl-color-text--grey-600">
+             {{description}}
+            </div>
+            <div class="mdl-card__supporting-text meta mdl-color-text--grey-600">
+              <div class="minilogo"></div>
+              <div>
+                <strong>{{site_name}}</strong>
+                <span>{{published_date}}</span>
+              </div>
+            </div>
+          </div>
+  </div>
+
+  -->
+
+
+{{/each}}
+</section>

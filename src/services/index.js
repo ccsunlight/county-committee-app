@@ -4,6 +4,7 @@ const edGeometry = require('./edGeometry');
 const countyCommittee = require('./county-committee');
 const actionLog = require('./action-log');
 const glossaryTerm = require('./glossary-term');
+const newsLink = require('./news-link');
 //const authentication = require('./authentication');
 const user = require('./user');
 const page = require('./page');
@@ -23,7 +24,8 @@ module.exports = function() {
  app.configure(invite);
  app.configure(actionLog);
  app.configure(glossaryTerm);
-
+ app.configure(newsLink);
+ 
 };
 
 
