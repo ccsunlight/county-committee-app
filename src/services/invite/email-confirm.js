@@ -9,7 +9,7 @@ const local = require('feathers-authentication-local');
 // @todo this is super hacky. Gotta clean this up at some point.
 let tempModelGenerated = false;
 
-function nevInit(verifyMailOptions) {
+function nevInit(verifyMailOptions, callback) {
 
     const app = require('../../app.js');
     console.log('this is the host', app.get('host'));
@@ -34,7 +34,7 @@ function nevInit(verifyMailOptions) {
         verifyMailOptions: verifyMailOptions,
         shouldSendConfirmation: true,
         confirmMailOptions: {
-            from: 'Do Not Reply <ccsunlightproject@gmail.co>',
+            from: 'County Committee Sunlight Project <ccsunlightproject@gmail.com>',
             subject: 'Successfully verified!',
             html: '<p>Your account has been successfully verified.</p>',
             text: 'Your account has been successfully verified.'
@@ -49,12 +49,14 @@ function nevInit(verifyMailOptions) {
     };
 
     if (!tempModelGenerated) {
-  // generating the model, pass the User model defined earlier
-    nev.generateTempUserModel(invite, function(err, info) {
+        // generating the model, pass the User model defined earlier
+        nev.generateTempUserModel(invite, function(err, info) {
 
-        console.log('info', info);
-        tempModelGenerated = true;
-    });
+            console.log('info', info);
+            tempModelGenerated = true;
+
+            callback();
+        });
 
     }
 
@@ -71,60 +73,63 @@ function sendInvite(data, password_for_email, callback) {
     console.log('newUser', newUser);
 
     nevInit({
-        from: 'Do Not Reply <ccsunlightproject@gmail.co>',
+        from: 'County Committee Sunlight Project <ccsunlightproject@gmail.com>',
         subject: 'Confirm your account',
         html: '<p>Please verify your account by clicking <a href="${URL}">this link</a>. If you are unable to do so, copy and ' +
             'paste the following link into your browser and using your login details below:</p><p>${URL}</p><p>username: ' + data.email + '</p><p>pw: ' + password_for_email + '</p>',
         text: 'Please verify your account by clicking the following link, or by copying and pasting it into your browser: ${URL}'
+    }, function() {
+
+        nev.createTempUser(newUser, function(err, existingPersistentUser, newTempUser) {
+            console.log('the callback');
+            // some sort of error
+            if (err) {
+                console.log('error creating user', err);
+                callback(err);
+            }
+            // handle error...
+
+            // user already exists in persistent collection...
+            if (existingPersistentUser) {
+
+                callback('User exists already');
+            }
+            // handle user's existence... violently.
+
+            // a new user
+            if (newTempUser) {
+                console.log('New Temp user found', newTempUser);
+                var URL = newTempUser['GENERATED_VERIFYING_URL'];
+                nev.sendVerificationEmail(newTempUser.email, URL, function(err, info) {
+                    if (err) {
+                        console.log('error sending verification email', err)
+                    }
+                    // handle error...
+                    callback(err, newTempUser);
+                    // flash message of success
+                });
+
+                // user already exists in temporary collection...
+            } else {
+
+                console.log('no temp user', existingPersistentUser, newTempUser);
+                //callback('no temp user');
+                /*   var URL = newUser[nev.options.URLFieldName];
+                  nev.sendVerificationEmail(newUser.email, URL, function(err, info) {
+                      if (err) {
+                          console.log('err')
+                      }
+
+                      console.log(info);
+                      // handle error...
+
+                      // flash message of success
+                  });
+                  */
+                // flash message of failure...
+            }
+        });
     })
-
-    nev.createTempUser(newUser, function(err, existingPersistentUser, newTempUser) {
-        console.log('the callback');
-        // some sort of error
-        if (err) {
-            console.log('error creating user', err);
-            callback(err);
-        }
-        // handle error...
-
-        // user already exists in persistent collection...
-        if (existingPersistentUser) {
-
-            callback('User exists already');
-        }
-        // handle user's existence... violently.
-
-        // a new user
-        if (newTempUser) {
-            console.log('New Temp user found', newTempUser);
-            var URL = newTempUser['GENERATED_VERIFYING_URL'];
-            nev.sendVerificationEmail(newTempUser.email, URL, function(err, info) {
-                if (err) {}
-                // handle error...
-                callback(err, newTempUser);
-                // flash message of success
-            });
-
-            // user already exists in temporary collection...
-        } else {
-
-            console.log('no temp user', existingPersistentUser, newTempUser);
-            //callback('no temp user');
-            /*   var URL = newUser[nev.options.URLFieldName];
-              nev.sendVerificationEmail(newUser.email, URL, function(err, info) {
-                  if (err) {
-                      console.log('err')
-                  }
-
-                  console.log(info);
-                  // handle error...
-
-                  // flash message of success
-              });
-              */
-            // flash message of failure...
-        }
-    });
 
 }
 
@@ -132,7 +137,7 @@ function sendInvite(data, password_for_email, callback) {
 function confirmUser(url, callback) {
 
     console.log('confirm user', url);
-    
+
     nev.confirmTempUser(url, function(err, user) {
         if (err) {
             console.log(err);

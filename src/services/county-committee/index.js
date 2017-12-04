@@ -27,5 +27,6 @@ module.exports = function() {
 
   // Set up our after hooks
   countyCommitteeService.after(hooks.after);
+
 };
 

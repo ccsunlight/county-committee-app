@@ -9,7 +9,11 @@ exports.before = {
   find: [],
   get: [],
   create: [],
-  update: [],
+  update: [function(hook) { 
+    console.log('hook', hook)
+    delete hook.data.updatedAt;
+    return hook;
+  }],
   patch: [],
   remove: []
 };
@@ -38,8 +42,8 @@ exports.after = {
     }
   }],
   get: [],
-  create: [],
-  update: [],
-  patch: [],
-  remove: []
+  create: [globalHooks.logAction],
+  update: [globalHooks.logAction],
+  patch: [globalHooks.logAction],
+  remove: [globalHooks.logAction]
 };

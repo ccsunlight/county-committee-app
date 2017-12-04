@@ -10,7 +10,6 @@ const generator = require('generate-password');
  */
 exports.up = function up(done) {
 
-
     var password = generator.generate({
             length: 10,
             numbers: true

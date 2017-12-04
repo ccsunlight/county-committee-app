@@ -47,7 +47,7 @@
     "feathers-errors": "^2.6.2",
     "feathers-hooks": "^1.8.1",
     "feathers-memory": "^1.1.0",
-    "feathers-mongoose": "^5.1.0",
+    "feathers-mongoose": "^5.1.2",
     "feathers-rest": "^1.7.1",
     "feathers-seeder": "^1.0.8",
     "feathers-socketio": "^1.5.2",
@@ -72,7 +72,8 @@
     "request-promise": "^4.2.0",
     "serve-favicon": "^2.4.2",
     "smtp-server": "^3.0.1",
-    "winston": "^2.3.1",
+    "winston": "^2.4.0",
+    "winston-mongodb": "^3.0.1",
     "x-ray": "^2.3.2"
   },
   "devDependencies": {

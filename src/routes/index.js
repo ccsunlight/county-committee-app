@@ -347,9 +347,18 @@ router.get('/county-committee/:county', co(function*(req, res, next) {
 
 /* GET home page. */
 router.get('/:page', co(function*(req, res, next) {
-    page.findOne({
+
+    let queryParams = {
         'alias': req.params.page
-    }).then(function(data) {
+    }
+
+    console.log(req.params);
+
+    if ( req.query.preview !== '1' ) {
+          queryParams.status = 'published';
+    }   
+
+    page.findOne(queryParams).then(function(data) {
         if (data) {
             res.render('page', data);
         } else {

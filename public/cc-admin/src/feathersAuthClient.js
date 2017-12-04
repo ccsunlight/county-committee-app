@@ -37,6 +37,7 @@ export const checkUserHasAccess = (resource) => {
     switch (resource.name) {
         case 'user':
         case 'invite':
+        case 'action-log':
         return (localStorage.getItem('role') == 'admin');
         break;
        default: 
@@ -102,6 +103,7 @@ export default (client, options = {}) => (type, params) => {
             return Promise.reject();
             //}
         case AUTH_LOGOUT:
+            // @todo send logout request to server as well.
             localStorage.removeItem(storageKey);
             localStorage.removeItem('userId');
             localStorage.removeItem('role');
