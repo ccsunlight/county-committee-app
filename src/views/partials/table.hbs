@@ -19,13 +19,26 @@
    
         <tr>
           {{#each this}}
-          <td class="{{@key}}">{{this}}</td>
+
+         
+          <td class="{{@key}}" >
+           
+          <span id="{{@../index}}-{{@key}}-{{@index}}">{{this}}</span>
+{{#if_eq this 'Appointed'}}
+          <div class="mdl-tooltip" for="{{@../index}}-{{@key}}-{{@index}}">
+Appointed members serve at the pleasure<br/> of the executive committee.<br/>These are unelected positions.
+</div>
+ {{/if_eq}}
+ </td>
+          
+         
           {{/each}}
         </tr>
     {{/each}}
       
     </tbody>
   </table>
+  
 {{else}}
 <h4><i class="material-icons">error_outline</i> No Data for this district</h4>
 

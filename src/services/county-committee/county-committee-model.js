@@ -9,14 +9,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const countyCommitteeSchema = new Schema({
-    createdAt: {
-        type: Date,
-        'default': Date.now
-    },
-    updatedAt: {
-        type: Date,
-        'default': Date.now
-    },
     petition_number: {
         type: Number
     },
@@ -76,7 +68,8 @@ const countyCommitteeSchema = new Schema({
   },
   toJSON: {
   virtuals: true 
-  }
+  },
+  timestamps: true
 });
 
 countyCommitteeSchema.virtual('id').get(function() {

@@ -85,7 +85,7 @@ export const PageCreate = (props) => (
                 { id: 'published', name: 'Published' }
             ]} />
             <TextInput source="alias" type="text" />
-            <RichTextInput source="content" module={quillModules} toolbar={toolbarProps} />
+            <RichTextInput elStyle={{ height: '500px' }} source="content" module={quillModules} toolbar={toolbarProps} />
         </SimpleForm>
     </Create>
 );

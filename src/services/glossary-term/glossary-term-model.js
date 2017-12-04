@@ -8,7 +8,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const pageSchema = new Schema({
+const glossaryTermSchema = new Schema({
     status: {
         type: String,
         enum: ['draft','published'],
@@ -34,10 +34,10 @@ const pageSchema = new Schema({
   timestamps: true
 });
 
-pageSchema.virtual('id').get(function() {
+glossaryTermSchema.virtual('id').get(function() {
     return this._id;
 })
 
-const pageModel = mongoose.model('page', pageSchema);
+const glossaryTermModel = mongoose.model('glossary-term', glossaryTermSchema);
 
-module.exports = pageModel;
+module.exports = glossaryTermModel;

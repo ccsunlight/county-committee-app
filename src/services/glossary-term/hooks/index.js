@@ -9,11 +9,7 @@ exports.before = {
   find: [],
   get: [],
   create: [],
-  update: [function(hook) { 
-    console.log('hook', hook)
-    delete hook.data.updatedAt;
-    return hook;
-  }],
+  update: [],
   patch: [],
   remove: []
 };

@@ -16,6 +16,7 @@ import feathers from 'feathers/client';
 import { MemberList, MemberEdit, MemberCreate } from './members';
 import { PageList, PageEdit, PageCreate } from './pages';
 import { UserList, UserEdit, UserCreate } from './users';
+import { GlossaryTermList, GlossaryTermCreate, GlossaryTermEdit } from './glossary';
 import { ActionLogList} from './actionLog';
 import { ProfileList, ProfileEdit } from './profile';
 import { InviteList, InviteCreate } from './invites';
@@ -46,6 +47,8 @@ const App = () => (
       <Resource name="user" icon={UserIcon} list={UserList} edit={UserEdit} remove={Delete} />
 
       <Resource name="invite" icon={PersonAddIcon} list={InviteList} create={InviteCreate} remove={Delete} />
+
+      <Resource name="glossary" options={{ label: 'Glossary' }}   icon={PersonAddIcon} list={GlossaryTermList} create={GlossaryTermCreate} edit={GlossaryTermEdit} remove={Delete} />
 
       <Resource name="action-log" options={{ label: 'Action Log' }} icon={PostIcon} list={ActionLogList}  />
       

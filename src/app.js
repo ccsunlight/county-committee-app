@@ -32,6 +32,14 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 hbs.registerPartials(__dirname + '/views/partials');
 
+hbs.registerHelper('if_eq', function(a, b, opts) {
+    if (a == b) {
+        return opts.fn(this);
+    } else {
+        return opts.inverse(this);
+    }
+});
+
 app.configure(configuration(path.join(__dirname, '..')));
 app.set('apiPath', '/' + app.get('api').basePath + '/' + app.get('api').version);
 
