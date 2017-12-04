@@ -16,7 +16,7 @@ module.exports = function() {
   };
 
   // Initialize our service with any options it requires
-  app.use(app.get('apiPath') + '/glossary-terms', service(options));
+  app.use(app.get('apiPath') + '/glossary-term', service(options));
 
   // Get our initialize service to that we can bind hooks
   const glossaryTermService = app.service(app.get('apiPath') + '/glossary-term');

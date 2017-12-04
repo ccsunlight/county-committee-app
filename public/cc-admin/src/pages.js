@@ -63,7 +63,7 @@ const quillModules = {
 
 export const PageEdit = (props) => (
     <Edit title={<PageTitle />} {...props}>
-        <SimpleForm redirect={false} >
+        <SimpleForm redirect={true} >
             <DisabledInput label="Id" source="id" />
             <SelectInput source="status" choices={[
                 { id: 'draft', name: 'Draft' },
@@ -78,7 +78,7 @@ export const PageEdit = (props) => (
 
 export const PageCreate = (props) => (
     <Create {...props}>
-        <SimpleForm redirect={false}  >
+        <SimpleForm redirect={true}  >
             <TextInput source="title" />
             <SelectInput source="status" choices={[
                 { id: 'draft', name: 'Draft' },

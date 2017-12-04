@@ -29,7 +29,7 @@ const googleGeocoder = NodeGeocoder(googleGeocoderOptions);
 
 router.use('/invite/confirm/:confirm_code', function(req, res, next) {
     console.log('confirm code' + req.params.confirm_code);
-    confirm.confirmUser(req.params.confirm_code, function(registered) {
+    confirm.confirmUser(req.params.confirm_code, function(registeredUser) {
         console.log('result', registeredUser);
 
         const Invite = require('../services/invite/invite-model');
