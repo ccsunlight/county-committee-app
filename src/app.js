@@ -40,6 +40,8 @@ hbs.registerHelper('if_eq', function(a, b, opts) {
     }
 });
 
+hbs.registerHelper('dateFormat', require('handlebars-dateformat'));
+
 app.configure(configuration(path.join(__dirname, '..')));
 app.set('apiPath', '/' + app.get('api').basePath + '/' + app.get('api').version);
 

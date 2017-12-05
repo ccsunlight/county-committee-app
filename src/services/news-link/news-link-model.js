@@ -14,6 +14,9 @@ const newsLinkSchema = new Schema({
         enum: ['draft','published'],
         default: 'published'
     },
+    published_on: {
+        type: Date
+    },
     title: {
         type: String
     },

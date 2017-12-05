@@ -353,7 +353,7 @@ router.get('/news', co(function*(req, res, next) {
 
 
 
-    news.find({}).then(function(data) {
+    news.find({}).sort({ published_on: -1 }).then(function(data) {
 
         console.log('data', { news_links: data });
         if (data) {

@@ -292,3 +292,26 @@ html, body {
 .logo-link:hover, .mdl-navigation__link:hover {
   opacity: .75;
 }
+
+#news a {
+  text-decoration: none;
+}
+
+#news a .mdl-card__supporting-text {
+  color: #757575 !important;
+  font-weight: normal;
+}
+
+#news a .mdl-card__title-text {
+  font-weight: 400;
+  color: #000000
+}
+
+#news a:hover .mdl-card__title-text {
+  text-decoration: underline;
+}
+
+#news .mdl-card__supporting-text {
+    padding: 15px 20px !important;
+    margin: 0;
+}

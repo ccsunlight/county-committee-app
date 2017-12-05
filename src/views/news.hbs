@@ -1,46 +1,44 @@
 
-<section class="section--center mdl-grid mdl-shadow--2dp">
+<section id="news" class="section--center mdl-grid mdl-shadow--2dp">
+
+  <div class="mdl-card mdl-cell mdl-cell--12-col">
+              <div class="mdl-card__supporting-text">
+                <h1>County Committee News</h1>
+                </div>
+              <div class="mdl-card__actions">
+                <a href="/" class="mdl-button">Back to home</a>
+              </div>
+            </div>
+
 
  {{#each this.news_links}}
 
  <div class="mdl-card mdl-cell mdl-cell--6-col">
-            <div class="mdl-card__media mdl-color-text--grey-50" style="background-image: url({{image}}); background-size: cover; background-repeat:no-repeat; height: 300px" >
+            <a href="{{url}}" target="_blank"><div class="mdl-card__media mdl-color-text--grey-50" style="background-image: url({{image}}); background-size: cover; background-repeat:no-repeat; height: 300px" >
              
             </div>
-           
+          
             <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
-            <h3><a href="{{url}}" target="_blank">{{title}}</a></h3>
-             {{description}}
+             
+            <h5 class="mdl-card__title-text">{{title}}</h5>
+              
+             
+             
             </div>
+             <div class="mdl-card__supporting-text">
+             {{description}} 
+             </div>
             <div class="mdl-card__supporting-text meta mdl-color-text--grey-600">
-              <div class="minilogo"></div>
               <div>
                 <strong>{{site_name}}</strong>
-                <span>{{published_date}}</span>
               </div>
-            </div>
-          </div>
-
-          <!--
-
-  <div class="mdl-card  mdl-cell mdl-cell--8-col">
-            <div class="mdl-card__media mdl-color-text--grey-50" style="background: url({{image}}) cover" >
-              <h3><a href="{{url}}">{{title}}</a></h3>
-            </div>
-            <div class="mdl-card__supporting-text mdl-color-text--grey-600">
-             {{description}}
-            </div>
-            <div class="mdl-card__supporting-text meta mdl-color-text--grey-600">
-              <div class="minilogo"></div>
               <div>
-                <strong>{{site_name}}</strong>
-                <span>{{published_date}}</span>
+              <span>{{dateFormat published_on "MMMM Do, YYYY"}}</span>
               </div>
             </div>
+            </a>
           </div>
-  </div>
 
-  -->
 
 
 {{/each}}

@@ -2,6 +2,7 @@
 
 const globalHooks = require('../../../hooks');
 const hooks = require('feathers-hooks');
+const metascraper = require('metascraper')
 
 
 exports.before = {
@@ -10,33 +11,36 @@ exports.before = {
     get: [],
     create: [function(hook) {
 
-        const ogs = require('open-graph-scraper');
-        const options = {
-            'url': hook.data.url
-        };
-
         return new Promise(function(fulfill, reject) {
-            ogs(options, function(error, results) {
-                console.log('error:', error); // This is returns true or false. True if there was a error. The error it self is inside the results object.
-                console.log('results:', results);
+            metascraper.scrapeUrl(hook.data.url).then(function(metadata) {
+                // { 
+              //   "author": "Ellen Huet", 
+              //   "date": "2016-05-24T18:00:03.894Z", 
+              //   "description": "The HR startups go to war.", 
+              //   "image": "https://assets.bwbx.io/images/users/iqjWHBFdfxIU/ioh_yWEn8gHo/v1/-1x-1.jpg", 
+              //   "publisher": "Bloomberg.com", 
+              //   "title": "As Zenefits Stumbles, Gusto Goes Head-On by Selling Insurance" 
+              // } 
 
-                if (results.data.ogTitle) {
-                    hook.data.title = results.data.ogTitle;
+                if (metadata.title) {
+                    hook.data.title = metadata.title;
                 }
 
-                if (results.data.ogDescription) {
-                    hook.data.description = results.data.ogDescription;
+                if (metadata.description) {
+                    hook.data.description = metadata.description;
                 }
 
-                if (results.data.ogImage) {
-                    hook.data.image = results.data.ogImage.url;
+                if (metadata.image) {
+                    hook.data.image = metadata.image;
                 }
 
-                if (results.data.ogSiteName) {
-                    hook.data.site_name = results.data.ogSiteName;
+                if (metadata.publisher) {
+                    hook.data.site_name = metadata.publisher;
                 }
 
-                console.log('updated hook', hook.data);
+                if (metadata.date) {
+                    hook.data.published_on = metadata.date;
+                }
 
                 fulfill(hook);
             });
