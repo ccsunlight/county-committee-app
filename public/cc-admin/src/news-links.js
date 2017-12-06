@@ -11,7 +11,6 @@ export const NewsLinkList = (props) => (
                 <List {...props} title="News">
                         <Datagrid>
                             <TextField source="title" />
-                            <DateField source="published_on" />
                             <TextField source="url" />
                             <TextField source="site_name" />
                             <EditButton />        
