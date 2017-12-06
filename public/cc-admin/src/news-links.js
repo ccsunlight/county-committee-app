@@ -1,7 +1,7 @@
 // in src/posts.js
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { List, Edit,Filter, Create, SimpleList, Responsive,  Datagrid, ReferenceField, TextField, EditButton, DisabledInput, LongTextInput, ReferenceInput, SelectInput, SimpleForm, TextInput, DateInput } from 'admin-on-rest';
+import { List, Edit,Filter, Create, SimpleList, Responsive,  Datagrid, ReferenceField, TextField, EditButton, DisabledInput, LongTextInput, ReferenceInput, SelectInput, SimpleForm, TextInput, DateInput, DateField } from 'admin-on-rest';
 import { WithPermission, SwitchPermissions,  Permission} from 'aor-permissions';
 import authClient from './feathersAuthClient';
 import {checkUserCanEdit} from './feathersAuthClient';
