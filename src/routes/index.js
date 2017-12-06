@@ -361,16 +361,10 @@ router.get(['/news', '/news/:pageNum'], function(req, res, next) {
     }
 
     news.count({}).then(function(count) {
-        console.log('COUNT', count);
+
         news.find({ }).skip(perPage * pageNum).limit(perPage).sort({
             published_on: -1
         }).then(function(data) {
-
-            console.log('data', {
-                news_links: data
-            });
-
-            console.log('PAGECOUNT', Math.floor(count / perPage));
 
             let pagination = {
                         page: pageNum,
