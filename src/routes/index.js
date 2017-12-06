@@ -18,6 +18,8 @@ const news = require('../services/news-link/news-link-model');
 const confirm = require('../services/invite/email-confirm');
 const User = require('../services/user/user-model');
 
+
+
 const googleGeocoderOptions = {
     provider: 'google',
     apiKey: 'AIzaSyBWT_tSznzz1oSNXAql54sSKGIAC4EyQGg',
@@ -161,19 +163,19 @@ router.get('/', co(function*(req, res, next) {
         numOfAppointed: numOfAppointed
     }];
 
-     numOfElected = yield countyCommittee.find({
+    numOfElected = yield countyCommittee.find({
         county: 'Queens County',
         entry_type: {
             "$in": ['Elected', 'Uncontested']
         }
     }).count();
 
-     numOfVacancies = yield countyCommittee.find({
+    numOfVacancies = yield countyCommittee.find({
         office_holder: 'Vacancy',
         county: 'Queens County'
     }).count();
 
-     numOfAppointed = yield countyCommittee.find({
+    numOfAppointed = yield countyCommittee.find({
         entry_type: 'Appointed',
         county: 'Queens County'
     }).count();
@@ -264,7 +266,8 @@ router.get('/get_address', co(function*(req, res, next) {
             };
         }));
 
-        let county = '', hasAppointedData = true;
+        let county = '',
+            hasAppointedData = true;
 
         const memberData = yield bb.map(yourMembers, co(function*(member) {
 
@@ -348,22 +351,48 @@ router.get('/county-committee/:county', co(function*(req, res, next) {
 
 
 /* GET home page. */
-router.get('/news', co(function*(req, res, next) {
+router.get(['/news', '/news/:pageNum'], function(req, res, next) {
+    
+    let perPage = 20;
+    let pageNum = req.params.pageNum;
 
+    if (!pageNum) {
+        pageNum = 0;
+    }
 
+    news.count({}).then(function(count) {
+        console.log('COUNT', count);
+        news.find({ }).skip(perPage * pageNum).limit(perPage).sort({
+            published_on: -1
+        }).then(function(data) {
 
+            console.log('data', {
+                news_links: data
+            });
 
-    news.find({}).sort({ published_on: -1 }).then(function(data) {
+            console.log('PAGECOUNT', Math.floor(count / perPage));
 
-        console.log('data', { news_links: data });
-        if (data) {
-            res.render('news', { news_links: data });
-        } else {
-            next();
-        }
+            let pagination = {
+                        page: pageNum,
+                        pageCount: Math.floor(count / perPage)-1
+                    };
+               
+            if (pageNum < Math.floor(count / perPage)-1) {
+                pagination.hasNext = true;
+            }
 
+            if (data) {
+                res.render('news', {
+                    news_links: data,
+                    pagination: pagination
+                });
+            } else {
+                next();
+            }
+
+        });
     });
-}));
+});
 
 
 /* GET home page. */
@@ -375,9 +404,9 @@ router.get('/:page', co(function*(req, res, next) {
 
     console.log(req.params);
 
-    if ( req.query.preview !== '1' ) {
-          queryParams.status = 'published';
-    }   
+    if (req.query.preview !== '1') {
+        queryParams.status = 'published';
+    }
 
     page.findOne(queryParams).then(function(data) {
         if (data) {

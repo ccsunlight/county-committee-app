@@ -25,8 +25,9 @@ const middleware = require('./middleware');
 const services = require('./services');
 const routes = require('./routes');
 const hbs = require('hbs');
-const app = feathers();
 
+const paginate = require('handlebars-paginate');
+const app = feathers();
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
@@ -41,6 +42,9 @@ hbs.registerHelper('if_eq', function(a, b, opts) {
 });
 
 hbs.registerHelper('dateFormat', require('handlebars-dateformat'));
+
+hbs.registerHelper('paginate', paginate);
+
 
 app.configure(configuration(path.join(__dirname, '..')));
 app.set('apiPath', '/' + app.get('api').basePath + '/' + app.get('api').version);

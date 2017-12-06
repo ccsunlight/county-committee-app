@@ -54,6 +54,7 @@
     "generate-password": "^1.3.0",
     "greenlock-express": "^2.0.11",
     "handlebars-dateformat": "^1.1.1",
+    "handlebars-paginate": "^0.1.0",
     "hbs": "^4.0.1",
     "json2csv": "^3.11.0",
     "metascraper": "^1.0.7",

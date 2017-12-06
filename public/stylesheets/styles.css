@@ -315,3 +315,7 @@ html, body {
     padding: 15px 20px !important;
     margin: 0;
 }
+
+#news .pagination {
+  text-align: center;
+}
