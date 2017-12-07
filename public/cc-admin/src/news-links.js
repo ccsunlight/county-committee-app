@@ -40,7 +40,8 @@ export const NewsLinkCreate = (props) => (
     <Create {...props}>
         <SimpleForm>
             <TextInput source="title" />
-            <TextInput source="url" type="url" />
+            <TextInput source="url" type="url" options={{hintText: 'If you enter an article url and save it will fetch all the meta info.'}} />
+            
             <TextInput source="description" />
             <DateInput source="published_on" />
             <TextInput source="site_name" />

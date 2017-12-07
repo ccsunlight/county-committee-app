@@ -8,30 +8,46 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const countyCommitteeSchema = new Schema({
-
-    chairman: {
+const countyCommitteeMemberSchema = new Schema({
+    petition_number: {
+        type: Number
+    },
+    office: {
         type: String,
         required: true
     },
-    party: {
+    office_holder: {
         type: String,
-        enum: ['Democratic','Republican'],
-        default: 'draft'
-    },
-    url: {
-        type: String
-    },
-    email: {
-        type: String
-    },  
-    phone: {
-        type: String
+        required: true
     },
     address: {
         type: String
     },
-
+    tally: {
+        type: Number
+    },
+    entry_type: {
+        type: String,
+        required: true
+    },
+    part: {
+        type: String,
+        part: ['A','B'],
+        default: '',
+        required: false
+    },
+    ed_ad: {
+        type: String,
+        required: true
+    },
+    electoral_district: {
+        type: Number,
+        required: true
+    },
+    assembly_district: {
+        type: Number,
+        required: true
+    },
     county: {
         type: String,
         required: true
@@ -41,12 +57,9 @@ const countyCommitteeSchema = new Schema({
         enum: ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'],
         default: 'NY'
     },
-    party_rules: {
-        type: String
-    },
-    alias: {
+    data_source: {
         type: String,
-        unique: true
+        required: true
     }
 
 },{
@@ -59,10 +72,10 @@ const countyCommitteeSchema = new Schema({
   timestamps: true
 });
 
-countyCommitteeSchema.virtual('id').get(function() {
+countyCommitteeMemberSchema.virtual('id').get(function() {
     return this._id;
 })
 
-const countyCommitteeModel = mongoose.model('county-committee', countyCommitteeSchema);
+const countyCommitteeMemberModel = mongoose.model('county-committee-member', countyCommitteeMemberSchema);
 
-module.exports = countyCommitteeModel;
+module.exports = countyCommitteeMemberModel;
