@@ -3,7 +3,6 @@
 const app = require('../src/app');
 const apiPath = app.get('apiPath');
 const generator = require('generate-password');
-
      
 /**
  * Make any changes you need to make to the database here
@@ -63,7 +62,6 @@ exports.up = function up(done) {
             
         });
     }
-
    
 };
 

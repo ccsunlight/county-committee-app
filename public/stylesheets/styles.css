@@ -319,3 +319,8 @@ html, body {
 #news .pagination {
   text-align: center;
 }
+
+.material-icons {
+  vertical-align: middle !important;
+  padding-bottom: 3px;
+}

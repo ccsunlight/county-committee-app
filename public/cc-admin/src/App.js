@@ -16,6 +16,8 @@ import authClient from './feathersAuthClient';
 import feathersClient from './feathersClient';
 import feathers from 'feathers/client';
 import { MemberList, MemberEdit, MemberCreate } from './members';
+import { CountyCommitteeList, CountyCommitteeEdit, CountyCommitteeCreate } from './county-committees';
+
 import { PageList, PageEdit, PageCreate } from './pages';
 import { UserList, UserEdit, UserCreate } from './users';
 import { GlossaryTermList, GlossaryTermCreate, GlossaryTermEdit } from './glossary-term';
@@ -41,8 +43,10 @@ const App = () => (
       authClient={authClient(feathersClient, authClientOptions)}
     	restClient={restClient(feathersClient)}
     >
-      <Resource name="county-committee" options={{ label: 'CC Members' }}  list={MemberList} edit={MemberEdit} create={MemberCreate} remove={Delete} />
+      <Resource name="county-committee-member" options={{ label: 'CC Members' }}  list={MemberList} edit={MemberEdit} create={MemberCreate} remove={Delete} />
       
+      <Resource name="county-committee" options={{ label: 'County Committees' }}  list={CountyCommitteeList} edit={CountyCommitteeEdit} create={CountyCommitteeCreate} remove={Delete} />
+
       <Resource name="profile" icon={AccountIcon} options={{ label: 'My Profile' }} list={ProfileList} edit={ProfileEdit} />
       
       <Resource name="page" icon={PostIcon} list={PageList} edit={PageEdit} create={PageCreate} remove={Delete} />

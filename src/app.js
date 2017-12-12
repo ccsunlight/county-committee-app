@@ -145,7 +145,7 @@ app.service(apiPath + '/user').hooks({
     }
 });
 
-app.service(apiPath + '/county-committee').hooks({
+app.service(apiPath + '/county-committee-member').hooks({
     before: {
         all:  [local.hooks.hashPassword(), auth.hooks.authenticate('jwt')],
     }

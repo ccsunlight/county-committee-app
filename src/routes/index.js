@@ -12,6 +12,7 @@ const NodeGeocoder = require('node-geocoder');
 const serveStatic = require('feathers').static;
 const auth = require('feathers-authentication');
 const countyCommittee = require('../services/county-committee/county-committee-model');
+const countyCommitteeMember = require('../services/county-committee-member/county-committee-member-model');
 const edGeometry = require('../services/edGeometry/edGeometry-model');
 const page = require('../services/page/page-model');
 const news = require('../services/news-link/news-link-model');
@@ -138,19 +139,19 @@ updateEdDb();
 /* GET home page. */
 router.get('/', co(function*(req, res, next) {
 
-    let numOfElected = yield countyCommittee.find({
+    let numOfElected = yield countyCommitteeMember.find({
         county: 'Kings County',
         entry_type: {
             "$in": ['Elected', 'Uncontested']
         }
     }).count();
 
-    let numOfVacancies = yield countyCommittee.find({
+    let numOfVacancies = yield countyCommitteeMember.find({
         office_holder: 'Vacancy',
         county: 'Kings County'
     }).count();
 
-    let numOfAppointed = yield countyCommittee.find({
+    let numOfAppointed = yield countyCommitteeMember.find({
         entry_type: 'Appointed',
         county: 'Kings County'
     }).count();
@@ -163,19 +164,19 @@ router.get('/', co(function*(req, res, next) {
         numOfAppointed: numOfAppointed
     }];
 
-    numOfElected = yield countyCommittee.find({
+    numOfElected = yield countyCommitteeMember.find({
         county: 'Queens County',
         entry_type: {
             "$in": ['Elected', 'Uncontested']
         }
     }).count();
 
-    numOfVacancies = yield countyCommittee.find({
+    numOfVacancies = yield countyCommitteeMember.find({
         office_holder: 'Vacancy',
         county: 'Queens County'
     }).count();
 
-    numOfAppointed = yield countyCommittee.find({
+    numOfAppointed = yield countyCommitteeMember.find({
         entry_type: 'Appointed',
         county: 'Queens County'
     }).count();
@@ -233,7 +234,7 @@ router.get('/get_address', co(function*(req, res, next) {
         if (!yourGeomDoc) throw new Error('Not in NYC');
 
         const [ad, ed] = [yourGeomDoc.ad, yourGeomDoc.ed];
-        const yourMembers = yield countyCommittee.find({
+        const yourMembers = yield countyCommitteeMember.find({
             assembly_district: ad,
             electoral_district: ed
         });
@@ -250,7 +251,7 @@ router.get('/get_address', co(function*(req, res, next) {
                 }
             });
 
-            const memberDocs = yield countyCommittee.find({
+            const memberDocs = yield countyCommitteeMember.find({
                 assembly_district: doc.ad,
                 electoral_district: doc.ed
             });
@@ -322,37 +323,12 @@ router.get('/get_address', co(function*(req, res, next) {
     }
 }));
 
-/*
-router.get('/county-committee/:county', co(function*(req, res, next) {
-
-    const members = yield countyCommittee.find({ county: new RegExp(req.params.county, "i") });
-  //  console.log(members[0].toObject());
-
-    const memberData = yield bb.map(members, co(function*(member) {
-      return {
-        ed: member.electoral_district,
-        ad: member.assembly_district,
-        office: member.office,
-        entry_type: member.entry_type,
-        office_holder: member.office_holder,
-        county: member.county,
-        petition_number: member.petition_number,
-        entry_type: member.entry_type
-      }
-    }));
-
-    // console.log(memberData);
-
-    res.render('table', { membersJSON: JSON.stringify(memberData.slice(50)), members: memberData.slice(0,50)});
-
-}));
-*/
 
 
 
 /* GET home page. */
 router.get(['/news', '/news/:pageNum'], function(req, res, next) {
-    
+
     let perPage = 20;
     let pageNum = req.params.pageNum;
 
@@ -362,16 +338,16 @@ router.get(['/news', '/news/:pageNum'], function(req, res, next) {
 
     news.count({}).then(function(count) {
 
-        news.find({ }).skip(perPage * pageNum).limit(perPage).sort({
+        news.find({}).skip(perPage * pageNum).limit(perPage).sort({
             published_on: -1
         }).then(function(data) {
 
             let pagination = {
-                        page: pageNum,
-                        pageCount: Math.floor(count / perPage)-1
-                    };
-               
-            if (pageNum < Math.floor(count / perPage)-1) {
+                page: pageNum,
+                pageCount: Math.floor(count / perPage) - 1
+            };
+
+            if (pageNum < Math.floor(count / perPage) - 1) {
                 pagination.hasNext = true;
             }
 
@@ -387,6 +363,31 @@ router.get(['/news', '/news/:pageNum'], function(req, res, next) {
         });
     });
 });
+
+
+router.get('/counties/:alias', function(req, res, next) {
+
+    console.log('county alias', req.params.alias);
+
+    countyCommittee.findOne({
+        alias: new RegExp(req.params.alias, "i")
+    }).then(function(county_committee) {
+
+        if (county_committee) {
+            res.render('county-committee-page', {
+                foo: 'bah',
+                county: county_committee.county,
+                party: county_committee.party,
+                chairman: county_committee.chairman,
+                county_committee: county_committee
+            });
+        } else {
+            next();
+        }
+    });
+
+});
+
 
 
 /* GET home page. */

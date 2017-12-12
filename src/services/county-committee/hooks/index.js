@@ -2,16 +2,23 @@
 
 const globalHooks = require('../../../hooks');
 const hooks = require('feathers-hooks');
+const slugify = require('slugify')
 
 exports.before = {
   all: [],
   find: [],
   get: [],
-  create: [],
-  update: [],
-  patch: [],
+  create: [generateAlias],
+  update: [generateAlias],
+  patch: [generateAlias],
   remove: []
 };
+
+function generateAlias(hook){
+
+    hook.data.alias = slugify(hook.data.county + ' ' + hook.data.party + ' County Committee').toLowerCase(); 
+  
+}
 
 exports.after = {
   all: [function(hook) 
