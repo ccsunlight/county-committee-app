@@ -11,13 +11,12 @@ const Schema = mongoose.Schema;
 const countyCommitteeSchema = new Schema({
 
     chairman: {
-        type: String,
-        required: true
+        type: String
     },
     party: {
         type: String,
         enum: ['Democratic','Republican'],
-        default: 'draft'
+        default: 'Democratic'
     },
     url: {
         type: String
@@ -46,7 +45,7 @@ const countyCommitteeSchema = new Schema({
     },
     alias: {
         type: String,
-        unique: true
+        required: true
     }
 
 },{
