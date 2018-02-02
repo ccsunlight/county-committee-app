@@ -14,6 +14,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function hasher(password) {
   return new Promise(function (resolve, reject) {
     _bcryptjs2.default.genSalt(10, function (error, salt) {
+
       if (error) {
         return reject(error);
       }
