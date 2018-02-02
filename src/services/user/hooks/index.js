@@ -26,10 +26,16 @@ function _passwordChangeHandler(hook) {
 
     if (hook.data.changepassword && hook.data.changepassword.length > 0) {
         if (hook.data.changepassword === hook.data.confirmpassword) {
-            
             return _hash(hook.data.changepassword).then(function(hashedPassword){
-
-                hook.data.password = hashedPassword;
+                
+                // 
+                // Password is being hashed somewhere further down the line
+                // by the local authentication strategy so hashing it here 
+                // doublehashes would corrupt the pw. 
+                // 
+                // @todo find where it's being hashed automatically 
+                // 
+                hook.data.password = hook.data.changepassword;
             });
             
         }
@@ -46,7 +52,6 @@ function _idToId(hook) {
             });
         } else if (hook.result._id) {
             hook.result.id = hook.result._id;
-            console.log(hook.result);
         }
       }
   }

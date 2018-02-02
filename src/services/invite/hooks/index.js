@@ -64,7 +64,6 @@ function _idToId(hook) {
             });
         } else if (hook.result._id) {
             hook.result.id = hook.result._id;
-            console.log(hook.result);
         }
     }
 }
