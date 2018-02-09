@@ -251,7 +251,26 @@ html, body {
   text-align: center;
 }
 
+.announcement_bar {
+  background: #000;
+  height: 40px;
+  display: inline-block;
+  text-align: center;
+  line-height: 40px;
 
+}
+
+.announcement_bar a {
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  color: #fff;
+}
+
+.announcement_bar a:hover {
+  text-decoration: underline;
+
+}
 
 #address, .mdl-textfield__label {
   font-size: 30px;
