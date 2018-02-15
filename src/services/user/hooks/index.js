@@ -10,7 +10,7 @@ exports.before = {
     all: [],
     find: [],
     get: [],
-    create: [local.hooks.hashPassword()],
+    create: [],
     update: [_passwordChangeHandler],
     patch: [],
     remove: []

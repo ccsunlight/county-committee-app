@@ -51,7 +51,7 @@ app.configure(configuration(path.join(__dirname, '..')));
 
 // Load DB settings
 // MONGODB_URL overrides 
-app.set('mongodb', process.env.MONGODB_URL || "mongodb://" + process.env.DB_HOST + ':' + process.env.DB_PORT + '/' + process.env.DB_NAME);
+app.set('mongodb', process.env.MONGODB_URL); // ? process.env.MONGODB_URL : "mongodb://" + process.env.DB_USER + ":" + process.env.DB_PASS + '@' + process.env.DB_HOST + ':' + process.env.DB_PORT + '/' + process.env.DB_NAME);
 
 app.set('apiPath', '/' + app.get('api').basePath + '/' + app.get('api').version);
 
@@ -95,7 +95,7 @@ app.use(compress())
     //.use(forceSSL)
     .configure(auth({
         path: apiPath + '/authentication',
-        secret: 'supersecret',
+        secret:  app.get('authentication').secret,
         passReqToCallback: true
     }))
     .configure(local(localConfig))
