@@ -21,9 +21,15 @@ exports.up = function up (done) {
 
 	  // Access the underlying database object provided by the MongoDB driver.
 	  let db = mongoose.connection.db;
-
+	  /*
+	  if (db.collection('county-committees')) {
+	  	return db.collection('county-committees').rename('county-committee-members');
+	  } else {
+	  	return "Collection already renamed";
+	  }
+	  */
 	  // Rename the `test` collection to `foobar`
-	  return db.collection('county-committees').rename('county-committee-members');
+	  
 	
 	}).then(() => {
 	  console.log('rename successful');

@@ -1,4 +1,7 @@
 /**
+ *
+ * WIP - Not ready for use
+ * 
  * Imports CC list PDF to DB. 
  *
  * @usage       node import-cc-pdf [filename
@@ -7,6 +10,7 @@
  */
 'use strict';
 
+const dotenv = require('dotenv').config();
 const path = require('path');
 const serveStatic = require('feathers').static;
 const favicon = require('serve-favicon');
@@ -27,6 +31,11 @@ const app = feathers();
 
 app.configure(configuration(path.join(__dirname + '/../')));
 
+app.set('mongodb', process.env.MONGODB_URL || "mongodb://" + process.env.DB_HOST + ':' + process.env.DB_PORT + '/' + process.env.DB_NAME);
+
+
+
+console.log(app.get('mongodb'));
 mongoose.connect(app.get('mongodb'));
 var ccExtractor = require('../src/services/county-committee/county-committee-extractor.js');
 
@@ -53,7 +62,6 @@ function findMemberRecursive(members) {
         office_holder: member.office_holder
     }, function(err, foundMembers) {
 
-        // console.log('duh', foundMembers)
         if (err) return console.log(err);
 
         if (foundMembers.length == 0) {
@@ -67,7 +75,7 @@ function findMemberRecursive(members) {
             }
 
         } else {
-            console.log('woo', foundMembers)
+
             foundMembers[0].office_holder = member.office_holder;
             foundMembers[0].part = member.part;
             foundMembers[0].source = member.source;
@@ -89,10 +97,6 @@ function findMemberRecursive(members) {
                 }
                 */
         }
-
-
-
-
 
     })
 }
