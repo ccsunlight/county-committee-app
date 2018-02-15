@@ -1,5 +1,5 @@
 /**
- * Imports CC list PDF to DB. 
+ * * WIP - Not ready for use
  *
  * @usage       node import-cc-pdf [filename
  * ]
@@ -18,13 +18,14 @@ const hooks = require('feathers-hooks');
 const rest = require('feathers-rest');
 const bodyParser = require('body-parser');
 const socketio = require('feathers-socketio');
-const middleware = require('./src/middleware');
-const services = require('./src/services');
+const middleware = require('../src/middleware');
+const services = require('../src/services');
 
 
 const mongoose = require('mongoose');
 
 const app = feathers();
+app.set('mongodb', process.env.MONGODB_URL || "mongodb://" + process.env.DB_HOST + ':' + process.env.DB_PORT + '/' + process.env.DB_NAME);
 
 app.configure(configuration(path.join(__dirname + '/../')));
 
