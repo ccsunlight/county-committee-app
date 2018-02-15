@@ -1,5 +1,6 @@
 'use strict';
 
+const dotenv = require('dotenv').config()
 const path = require('path');
 const serveStatic = require('feathers').static;
 const favicon = require('serve-favicon');
@@ -47,6 +48,11 @@ hbs.registerHelper('paginate', paginate);
 
 
 app.configure(configuration(path.join(__dirname, '..')));
+
+// Load DB settings
+// MONGODB_URL overrides 
+app.set('mongodb', process.env.MONGODB_URL || "mongodb://" + process.env.DB_HOST + ':' + process.env.DB_PORT + '/' + process.env.DB_NAME);
+
 app.set('apiPath', '/' + app.get('api').basePath + '/' + app.get('api').version);
 
 const apiPath = app.get('apiPath');
