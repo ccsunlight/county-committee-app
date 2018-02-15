@@ -1,5 +1,10 @@
 'use strict';
 
+const app = require('../src/app');
+const apiPath = app.get('apiPath');
+const generator = require('generate-password');
+     
+
 // Changing the name of "county-committees" to "county-committee-members".
 // County committees should be moved to "county-committees"
 
@@ -11,7 +16,7 @@ exports.up = function up (done) {
 	const mongoose   = require('mongoose');
 	mongoose.Promise = Promise;
 
-	mongoose.connect('mongodb://172.17.0.2:27017/county-committee').then(() => {
+	mongoose.connect(app.get('mongodb')).then(() => {
 	  console.log('connected');
 
 	  // Access the underlying database object provided by the MongoDB driver.

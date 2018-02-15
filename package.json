@@ -21,7 +21,6 @@
     "jshint": "jshint src/. test/. --config",
     "start": "node src/",
     "cert": "node cert/generate-cert.js",
-    "migrate": "./node_modules/.bin/migrate -d mongodb://172.17.0.2:27017/county-committee up",
     "mocha": "mocha test/services/county-committee/county-committee-extractor.js"
   },
   "dependencies": {
@@ -33,6 +32,7 @@
     "body-parser": "^1.17.1",
     "compression": "^1.6.2",
     "cors": "^2.8.1",
+    "dotenv": "^5.0.0",
     "download": "^5.0.3",
     "email-verification": "^0.4.6",
     "express-acl": "^1.0.2",

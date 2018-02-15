@@ -14,19 +14,16 @@ The data is stored in a local dockerized mongo and the entire image is backed up
 
 ### Docker
 The app runs via docker. Docker creates containers
-with the specs below. You can try to use without docker, but if you can use docker, it will set these
+with the specs below. You can try to use without docker, but
+ if you can use docker, it will set these
 up automatically for you.
 
-Mongo DB  3.4.4  
-Node 6.10  
-NPM  
-PM2 - Node process manager  
+- Mongo DB  3.4.4  
+- Node 6.10  
+- NPM  
+- PM2 - Node process manager  
 
 *On production server there is a NGINX reverse proxy to enable SSL. It's not necessary for local dev.
-
-```
-
-```
 
 
 ## Getting Started
@@ -36,10 +33,24 @@ Getting up and running is as easy as 1, 2, 3...10
 
 2. cd /your/app/path
 
-3. Run bash spinup-local-and-ssh.sh
+3. Spin up docker containers:
+
+Run: 
+```
+bash spinup-local-and-ssh.sh
+```
+
 This will create three docker containers, one with mongo, the other with node and a persistant storage docker container. 
 
+4. You should see a prompt that looks like this:
+```
+root@4b8a402c7f31:/usr/src/app#
+```
+
+
 4. This will stop and restart the docker containers (except the persistant storage) and should leave you inside the cc-app container at a bash prompt
+
+
 
 5. run 
 
@@ -48,13 +59,19 @@ This will create three docker containers, one with mongo, the other with node an
 	```
 
 This will create a super admin user with
-a un and pw. *It will output this in the console. Copy and save this to a secure location.*
+a un and pw. 
+
+**It will output this in the console. Make sure you copy and save this to a secure location.** You will not be able to see this again once your terminal session closes. 
 
 6. Start your app
     
     ```
     npm start
     ```
+
+
+alternatively you could run through PM2 with ``` ./node_modules/.bin/pm2 start ```, which is a process manager. For dev you may not want this.
+
 
 9. Go to your homepage
 http://localhost
