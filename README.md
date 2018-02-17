@@ -1,6 +1,6 @@
 # The County Committee Sunlight Project App
 
-> App for county committee information
+> App for ccsunlight.org
 
 ## About
 
@@ -50,7 +50,9 @@ root@4b8a402c7f31:/usr/src/app#
 
 4. This will stop and restart the docker containers (except the persistant storage) and should leave you inside the cc-app container at a bash prompt
 
+5. duplicate the ".env_example" as ".env" in the root of your dir. This will be where your keys and pws will go. 
 
+6. If you have proprietary DB connection info update the ".env" file with it. Also create a special key for for the AUTHENTICATION_SECRET. (512 chars recommended)
 
 5. run 
 
