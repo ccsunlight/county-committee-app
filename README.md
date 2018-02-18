@@ -65,7 +65,7 @@ Enter a alphanumeric key for AUTHENTICATION_SECRET. (512 chars recommended for p
 4. run 
 
 	```
-	./node_modules/.bin/migrate up -d mongodb://172.17.0.2:27017/county-committee-dev --autosync 
+	bash ./init-migration.sh
 	```
 * Replace the mongo DB url with what is specified in the .env file you created.
 
