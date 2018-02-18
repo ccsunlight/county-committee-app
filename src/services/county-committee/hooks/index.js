@@ -29,7 +29,7 @@ exports.after = {
         return record;
       });
     } else {
-      console.log(hook.result);
+
     }
   }],
   find: [function(hook) 
@@ -40,7 +40,7 @@ exports.after = {
         return record;
       });
     } else {
-      console.log(hook.result);
+      
     }
   }],
   get: [],
