@@ -31,16 +31,18 @@ exports.up = function up(done) {
             }
         }).then(result => {
 
-            console.log('.find()', result);
-
             if (result.total === 0) {
 
                 app.service(apiPath + '/user').create(seedData).then(user => {
-                    console.log('Created default user', user);
+                console.log('\n\n###########################');
+                console.log('### ADMIN LOGIN CREATED ###');
+                console.log('###########################');
 
-                console.log('Here are your admin user details. Save this somewhere secure: ');
+                console.log('\nSAVE THIS SOMEWHERE SECURE!\n');
                 console.log('un: ' + seedAdminData.email);
                 console.log('pw: ' + password);
+
+                console.log('\n\n#########################');
                 done();
 
                 }).catch(console.error);
@@ -50,8 +52,13 @@ exports.up = function up(done) {
                 let existingUser = result.data[0];
 
                 app.service(apiPath + '/user').update(existingUser._id, seedData).then(user => {
-                    console.log('Updated default user', user);
-                    console.log('Here are your admin user details. Save this somewhere secure: ');
+
+                    console.log('\n\n###########################');
+                    console.log('### ADMIN LOGIN UPDATED ###');
+                    console.log('###########################');
+
+                    console.log('\nSAVE THIS SOMEWHERE SECURE!\n');
+
                     console.log('un: ' + seedAdminData.email);
                     console.log('pw: ' + password);
                     done();

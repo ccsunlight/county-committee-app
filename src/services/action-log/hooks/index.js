@@ -34,7 +34,7 @@ exports.after = {
         return record;
       });
     } else {
-      console.log(hook.result);
+      
     }
   }],
   get: [],

@@ -55,6 +55,9 @@ app.set('mongodb', process.env.MONGODB_URL); // ? process.env.MONGODB_URL : "mon
 
 app.set('apiPath', '/' + app.get('api').basePath + '/' + app.get('api').version);
 
+app.set('gmail_un', process.env.GMAIL_UN);
+app.set('gmail_pw', process.env.GMAIL_PW);
+
 const apiPath = app.get('apiPath');
 // Site access auth for demo purposes
 /*if (app.get('env') === 'production') {

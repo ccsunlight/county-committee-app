@@ -10,8 +10,8 @@ echo "#########################"
 printf "\n"
 printf "environment: local\n\n"
 printf "Stopping and removing existing cc-mongo container...\n\n"
-docker stop cc-mongo > /dev/null 2>&1
-docker rm cc-mongo > /dev/null 2>&1
+docker stop cc-mongo 
+docker rm cc-mongo 
 
 printf 'Starting Mongo container...\n'
 printf '\n'

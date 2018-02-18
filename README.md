@@ -47,18 +47,28 @@ This will create three docker containers, one with mongo, the other with node an
 root@4b8a402c7f31:/usr/src/app#
 ```
 
+4. Run
+```
+npm install
+```
+
+This will install the node dependancies. It's important the this is done inside the running app container otherwise there may be errors with bcrypt. (see troublshooting below)
 
 4. This will stop and restart the docker containers (except the persistant storage) and should leave you inside the cc-app container at a bash prompt
 
-5. duplicate the ".env_example" as ".env" in the root of your dir. This will be where your keys and pws will go. 
+4. duplicate the ".env_example" as ".env" in the root of your dir. This will be where your keys and pws will go. 
 
-6. If you have proprietary DB connection info update the ".env" file with it. Also create a special key for for the AUTHENTICATION_SECRET. (512 chars recommended)
+4. If you have proprietary DB setup info update the ".env" file to your settings. Otherwise the DB vars can be left as is for dev, however, ~this is strongly discouraged to leave for production use as this DB will have no PW and is only for dev.~
 
-5. run 
+Enter a alphanumeric key for AUTHENTICATION_SECRET. (512 chars recommended for production).
+
+4. run 
 
 	```
-	npm run migrate
+	./node_modules/.bin/migrate up -d mongodb://172.17.0.2:27017/county-committee-dev --autosync 
 	```
+* Replace the mongo DB url with what is specified in the .env file you created.
+
 
 This will create a super admin user with
 a un and pw. 
@@ -74,6 +84,8 @@ a un and pw.
 
 alternatively you could run through PM2 with ``` ./node_modules/.bin/pm2 start ```, which is a process manager. For dev you may not want this.
 
+
+When the app starts for the first time it will run additional imports for the map geometry which will take a little while.
 
 9. Go to your homepage
 http://localhost

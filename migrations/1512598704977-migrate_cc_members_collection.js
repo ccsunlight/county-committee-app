@@ -14,33 +14,21 @@ const generator = require('generate-password');
 exports.up = function up (done) {
 
 	const mongoose   = require('mongoose');
-	mongoose.Promise = Promise;
-
-	mongoose.connect(app.get('mongodb')).then(() => {
-	  console.log('connected');
+	console.log('connect', app.get('mongodb'));
 
 	  // Access the underlying database object provided by the MongoDB driver.
 	  let db = mongoose.connection.db;
-	  /*
-	  if (db.collection('county-committees')) {
-	  	return db.collection('county-committees').rename('county-committee-members');
-	  } else {
-	  	return "Collection already renamed";
-	  }
-	  */
-	  // Rename the `test` collection to `foobar`
 	  
-	
-	}).then(() => {
-	  console.log('rename successful');
-	}).catch(e => {
-	  console.log('rename failed:', e.message);
-	}).then(() => {
-	  console.log('disconnecting');
-	  mongoose.disconnect();
-	});
+	  if (db.collection('county-committees')) {
+	  	 db.collection('county-committees').rename('county-committee-members');
+	  	 done();
+	  } else {
+	  	 "Collection already renamed";
+	  	 done();
+	  }
 
-  done();
+
+ 
 };
 
 /**

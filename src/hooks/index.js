@@ -26,45 +26,39 @@ exports.myHook = function(options) {
 
 
 
-var MongooseLogger = winston.transports.MongooseLogger = function (options) {
-  this.name = 'mongooseLogger';
+var MongooseLogger = winston.transports.MongooseLogger = function(options) {
+    this.name = 'mongooseLogger';
 
-  options = options || {};
+    options = options || {};
 
-  this.level = options.level || 'info';
-  this.collection_name = options.collection_name || 'action-log';    
+    this.level = options.level || 'info';
+    this.collection_name = options.collection_name || 'action-log';
 
-  // fuck this shit, it is 3am and I want go to the bed
-  
-  // initialize static LogModel
- 
+
 };
 
 
 
 util.inherits(MongooseLogger, winston.Transport);
 let LogModel = require('../services/action-log/action-log-model');
-MongooseLogger.prototype.log = function (level, message, metadata, callback) {
-  var entry = new LogModel({
-    level: level,
-    message: message,
-    meta: metadata    
-  });
+MongooseLogger.prototype.log = function(level, message, metadata, callback) {
+    var entry = new LogModel({
+        level: level,
+        message: message,
+        meta: metadata
+    });
 
-  entry.save(function(err) {
-    return callback(err, true);
-  });
+    entry.save(function(err) {
+        return callback(err, true);
+    });
 };
 
 
 const logger = new winston.Logger({
     level: 'info',
     transports: [
-        new(winston.transports.Console)({
-            level: 'info'
-        }),
         new winston.transports.MongooseLogger({
-          level: 'info'
+            level: 'info'
         })
         /* new(winston.transports.MongoDB)({
             db: 'mongodb://172.17.0.2:27017/county-committee',
@@ -78,45 +72,44 @@ const logger = new winston.Logger({
 
 exports.logAction = function(hook) {
 
-
-  let user;
-  if (hook.params.user) {
-    user = hook.params.user;
-  } else {
-    user = {
-      email: 'anonymous',
-      id: ''
-    };
-  }
-  console.log('DEBUG logAction',hook.params.user);
-
-    var logObject; 
-
-    switch (hook.path) {
-      case 'api/v1/authentication':
-      logObject = {
-          user: user.email,
-          user_id: user.id,
-          type: 'authentication',
-          description: 'Login' // @todo add data changing
-      };
-
-      break;
-      default:
-      logObject = {
-        user: user.email,
-        user_id: user.id,
-        type: hook.service.Model.modelName,
-        description: JSON.stringify(hook.result)// @todo change to diff data changing
-      };
-      break;
+    let user;
+    if (hook.params.user) {
+        user = hook.params.user;
+    } else {
+        user = {
+            email: 'anonymous',
+            id: ''
+        };
     }
 
+    var logObject;
 
+    switch (hook.path) {
+        case 'api/v1/authentication':
+            logObject = {
+                user: user.email,
+                user_id: user.id,
+                type: 'authentication',
+                description: 'Login' // @todo add data changing
+            };
+
+            break;
+        default:
+            logObject = {
+                user: user.email,
+                user_id: user.id,
+                type: hook.service.Model.modelName,
+                description: JSON.stringify(hook.result) // @todo change to diff data changing
+            };
+            break;
+    }
+
+    
     logger.log('info', hook.method, {
         user: logObject.user,
         type: logObject.type,
         description: logObject.description
     });
+    
     //console.log('This hook is logged', hook.method)
 };
