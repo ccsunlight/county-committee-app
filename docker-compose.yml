@@ -1,0 +1,24 @@
+version: '3' # version of docker-compose to use
+
+services: # configuring each container
+  cc-app:
+    image: node:6.10.0
+    volumes: 
+      - '.:/usr/src/app'
+    command: 'npm install && bash ./init-migration.sh && npm start'
+    links:
+      - cc-mongo
+    ports:
+      - "8000:80"
+      - "8587:587"
+      - "8465:465" 
+    environment:
+      NODE_ENV: 'local'
+      MONGODB_URL: 'mongodb://cc-mongo:27017/county-committee'
+  cc-mongo: # name of our mysql container
+    image: mongo:latest # which image to pull, in this case latest
+    restart: always # always restart the container after reboot
+    volumes: # data to map to the container
+      - 'cc-db-test-data:/data/db'
+volumes:
+  cc-db-test-data:
