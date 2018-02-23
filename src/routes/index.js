@@ -19,7 +19,13 @@ const news = require('../services/news-link/news-link-model');
 const confirm = require('../services/invite/email-confirm');
 const User = require('../services/user/user-model');
 
-
+// Prevents crawlers from cralwer not on production
+if (process.env.NODE_ENV != 'local') {
+    router.use('/robots.txt', function (req, res) {
+        res.type('text/plain');
+        res.send("User-agent: *\nDisallow: /");
+    });
+}
 
 const googleGeocoderOptions = {
     provider: 'google',
