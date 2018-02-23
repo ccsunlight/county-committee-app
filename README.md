@@ -15,15 +15,34 @@ The data is stored in a local dockerized mongo and the entire image is backed up
 ### Docker
 The app runs via docker. Docker creates containers
 with the specs below. You can try to use without docker, but
- if you can use docker, it will set these
+ if you can use docker, it will install and set everything
 up automatically for you.
 
 - Mongo DB  3.4.4  
-- Node 6.10  
-- NPM  
-- PM2 - Node process manager  
+- Node 6.10 with NPM
 
 *On production server there is a NGINX reverse proxy to enable SSL. It's not necessary for local dev.
+
+
+### Dependencies
+The app will automatically install these itself if you have docker installed.
+
+- [Express](https://expressjs.com/)
+- [Feathers](https://feathersjs.com/)
+- [MongoDB](https://docs.mongodb.com/)
+- [Mongoose](http://mongoosejs.com/)
+- [Material Design Lite](https://getmdl.io)
+- [Gulp](https://gulpjs.com/)
+- [Admin On Rest](https://github.com/marmelab/admin-on-rest)
+- [ReactJS](https://reactjs.org/)
+- [Passport](http://www.passportjs.org/)
+- [Docker](https://www.docker.com/)
+- [PM2](http://pm2.keymetrics.io/)
+- [LetsEncrypt](https://letsencrypt.org/)
+- [NGINX](https://nginx.org/en/) - for reverse proxy for SSL on production
+- [PDF-To-Text Extract](https://github.com/nisaacson/pdf-text-extract)
+- [Google Maps API](https://developers.google.com/maps/documentation/javascript/)
+
 
 
 ## Getting Started
@@ -44,7 +63,7 @@ This will create three docker containers, one with mongo, the other with node an
 
 4. You should see a prompt that looks like this:
 ```
-root@4b8a402c7f31:/usr/src/app#
+root@121fsfsw:/usr/src/app 
 ```
 
 4. Run
@@ -56,9 +75,9 @@ This will install the node dependancies. It's important the this is done inside 
 
 4. This will stop and restart the docker containers (except the persistant storage) and should leave you inside the cc-app container at a bash prompt
 
-4. duplicate the ".env_example" as ".env" in the root of your dir. This will be where your keys and pws will go. 
+4. Copy the ".env_example" to a new file named ".env" in the root of your app dir. This will be where your keys and pws will go for the app.
 
-4. If you have proprietary DB setup info update the ".env" file to your settings. Otherwise the DB vars can be left as is for dev, however, ~this is strongly discouraged to leave for production use as this DB will have no PW and is only for dev.~
+4. If you have proprietary DB setup info update the ".env" file to your settings. Otherwise the DB vars can be left as is for dev, however, **it is strongly discouraged to leave for production use as this DB would have no PW.**
 
 Enter a alphanumeric key for AUTHENTICATION_SECRET. (512 chars recommended for production).
 
@@ -67,13 +86,13 @@ Enter a alphanumeric key for AUTHENTICATION_SECRET. (512 chars recommended for p
 	```
 	bash ./init-migration.sh
 	```
-* Replace the mongo DB url with what is specified in the .env file you created.
-
 
 This will create a super admin user with
 a un and pw. 
 
-**It will output this in the console. Make sure you copy and save this to a secure location.** You will not be able to see this again once your terminal session closes. 
+**It will output this in the console. Make sure you copy and save this to a secure location.** 
+
+You will not be able to see this again once your terminal session closes.
 
 6. Start your app
     
