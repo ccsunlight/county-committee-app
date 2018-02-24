@@ -61,6 +61,7 @@ exports.up = function up(done) {
 
                     console.log('un: ' + seedAdminData.email);
                     console.log('pw: ' + password);
+                    console.log('\n\n#########################');
                     done();
                 })
 

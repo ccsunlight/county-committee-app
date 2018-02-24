@@ -23,7 +23,6 @@ module.exports = function() {
 
     // Get our initialize service to that we can bind hooks
     let inviteService = app.service(app.get('apiPath') + '/invite');
-    console.log('woo', app.get('apiPath') + '/invite');
     
     // Set up our before hooks
     inviteService.before(hooks.before);
