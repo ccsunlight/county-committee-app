@@ -115,7 +115,7 @@ app.use(compress())
         uiIndex: true,
         info: {
           title: 'CC Sunlight API',
-          description: 'Endpoints for main entities. Some endpoints require auth. Most non write operations do not.'
+          description: 'Endpoints for main entities. Some endpoints require auth. Most non write operations do not. These endpoints are not yet stable. Please use for dev purposes only.'
         }
       }))
     .configure(services)
