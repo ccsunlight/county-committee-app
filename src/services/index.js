@@ -11,8 +11,10 @@ const user = require('./user');
 const page = require('./page');
 const mongoose = require('mongoose');
 
+
 module.exports = function() {
  const app = this;
+ const apiPath = app.get('apiPath');
 
  mongoose.connect(app.get('mongodb'));
  mongoose.Promise = global.Promise;
@@ -27,7 +29,21 @@ module.exports = function() {
  app.configure(actionLog);
  app.configure(glossaryTerm);
  app.configure(newsLink);
- 
+
+ //
+ // Workaroud for disabling docs paths for admin entities.
+ // https://github.com/feathersjs-ecosystem/feathers-swagger/issues/54
+ // @todo handle this more gracefully.
+ // 
+ delete app.docs.paths[apiPath + '/user'];
+ delete app.docs.paths[apiPath + '/user/{_id}'];
+ delete app.docs.paths[apiPath + '/invite'];
+ delete app.docs.paths[apiPath + '/invite/{_id}'];
+ delete app.docs.paths[apiPath + '/action-log'];
+ delete app.docs.paths[apiPath + '/action-log/{_id}'];
+ delete app.docs.paths[apiPath + '/profile'];
+ delete app.docs.paths[apiPath + '/profile/{_id}'];
+
 };
 
 

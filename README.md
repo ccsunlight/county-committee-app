@@ -73,8 +73,6 @@ npm install
 
 This will install the node dependancies. It's important the this is done inside the running app container otherwise there may be errors with bcrypt. (see troublshooting below)
 
-4. This will stop and restart the docker containers (except the persistant storage) and should leave you inside the cc-app container at a bash prompt
-
 4. Copy the ".env_example" to a new file named ".env" in the root of your app dir. This will be where your keys and pws will go for the app.
 
 4. If you have proprietary DB setup info update the ".env" file to your settings. Otherwise the DB vars can be left as is for dev, however, **it is strongly discouraged to leave for production use as this DB would have no PW.**
@@ -127,6 +125,16 @@ bash scripts/deploy-prod.sh
 4. The script will ssh into the droplet, pull down the latest changes from master and destroy and recreate and spinup the docker nodes. 
 
 note: There will be appoximately 1 to 3 minutes of downtime while this happens.
+
+
+## API
+Feathers uses a restful, envoloped JSON API. The API docs and can be found at:
+
+http://{your-domain}/api/v1/docs/
+
+More info on how to use can be found here:
+https://docs.feathersjs.com/api/client/rest.html
+
 
 ## Troubleshooting
 

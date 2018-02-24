@@ -15,7 +15,6 @@ module.exports = function() {
     }
   };
 
-
   // Initialize our service with any options it requires
   app.use(app.get('apiPath') + '/county-committee', service(options));
 

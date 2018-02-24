@@ -20,6 +20,7 @@ const local = require('feathers-authentication-local');
 const jwt = require('feathers-authentication-jwt');
 const auth = require('feathers-authentication');
 const errors = require('feathers-errors');
+const swagger = require('feathers-swagger');
 
 // const forceSSL = require('express-force-ssl');
 const errorHandler = require('feathers-errors/handler');
@@ -109,6 +110,14 @@ app.use(compress())
     .use(cors())
    // .use(favicon(path.join(app.get('public'), 'favicon.ico')))
     .use('/cc-admin', serveStatic(app.get('public') + '/cc-admin/build'))
+    .configure(swagger({
+        docsPath: apiPath + '/docs',
+        uiIndex: true,
+        info: {
+          title: 'CC Sunlight API',
+          description: 'Endpoints for main entities. Some endpoints require auth. Most non write operations do not. These endpoints are not yet stable. Please use for dev purposes only.'
+        }
+      }))
     .configure(services)
     .use(routes)
     .use('/', serveStatic(app.get('public')))
