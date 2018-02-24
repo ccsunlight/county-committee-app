@@ -27,7 +27,18 @@ module.exports = function() {
  app.configure(actionLog);
  app.configure(glossaryTerm);
  app.configure(newsLink);
- 
+
+ // Workaroud for docs paths
+ // https://github.com/feathersjs-ecosystem/feathers-swagger/issues/54
+ delete app.docs.paths['/api/v1/user'];
+ delete app.docs.paths['/api/v1/user/{_id}'];
+ delete app.docs.paths['/api/v1/invite'];
+ delete app.docs.paths['/api/v1/invite/{_id}'];
+ delete app.docs.paths['/api/v1/action-log'];
+ delete app.docs.paths['/api/v1/action-log/{_id}'];
+ delete app.docs.paths['/api/v1/profile'];
+ delete app.docs.paths['/api/v1/profile/{_id}'];
+
 };
 
 
