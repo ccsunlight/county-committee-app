@@ -1,0 +1,30 @@
+{
+    "host": "dev.ccsunlight.org",
+    "port": "80",
+    "authentication": {
+        "secret": "AUTHENTICATION_SECRET",
+        "strategies": [
+            "jwt",
+            "local"
+        ],
+        "path": "/authentication",
+        "service": "user",
+        "jwt": {
+            "header": {
+                "type": "access"
+            },
+            "audience": "ccsunlight",
+            "subject": "anonymous",
+            "issuer": "feathers",
+            "algorithm": "HS256",
+            "expiresIn": "1d"
+        },
+        "session": true,
+        "local": {
+            "entity": "user",
+            "service": "user",
+            "usernameField": "email",
+            "passwordField": "password"
+        }
+    }
+}
