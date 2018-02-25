@@ -8,7 +8,7 @@
 				</small>
 				<small>
 				{{#unless numOfAppointed}}
-					Appointed member data not yet available. 
+					Appointed member data not yet available.
 				{{/unless}}
 				</small>
 				<canvas id="myChart-{{county}}" width="5" height="5"></canvas>
@@ -16,12 +16,12 @@
 		</div>
 
 	</div>
-	
+
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
 <script src="/lib/Chart.PieceLabel.min.js"></script>
 <script>
-	(function() { 
+	(function() {
 	var data = {
 		labels: [
 		"Vacant",
@@ -38,13 +38,13 @@
 				fill:false,
 				backgroundColor: [
 					"#ebebeb",
-					"#FFA500",
-					"#1874CD"
+					"#40B69A",
+					"#FAA737"
 					],
 				hoverBackgroundColor: [
 					"#ebebeb",
-					"#FFA500",
-					"#1874CD"
+					"#40B69A",
+					"#FAA737"
 				]
 			}
 		]
@@ -64,10 +64,10 @@
 			},
 			title: {
             display: true,
-			
+
             text: '{{county}} County Committee Vacancies',
 
-       	 } 
+       	 }
         }
 	});
 	/* new Chart(document.getElementById("chartjs-1"),
