@@ -21,10 +21,14 @@ html, body {
 }
 h1, h2, h3 {
   font-family: 'Roboto Slab', serif;
+  color: #009688;
 }
 h4 {
   font-weight: 700;
   font-size: 20px;
+}
+.mdl-layout__title, .mdl-layout-title {
+  font-family: 'Roboto Slab';
 }
 .mdl-demo .mdl-layout__header-row {
   padding-left: 40px;
@@ -97,7 +101,7 @@ h4 {
   color: inherit;
 }
 .mdl-demo .mdl-card__actions a {
-  color: #00BCD4;
+  color: #FAA737;
   margin: 0;
 }
 .mdl-demo .mdl-card__actions a:hover,
@@ -298,7 +302,7 @@ h4 {
 }
 
 .mdl-card a {
-    color: #00BCD4;
+    color: #FAA737;
 }
 
 #cc-member-table {
@@ -311,7 +315,7 @@ h4 {
 
 .logo-link, .logo-link .material-icons, .logo-link span  {
   text-decoration: none;
-  vertical-align: bottom;
+  vertical-align: middle;
   line-height: 20px;
 }
 
