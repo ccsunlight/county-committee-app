@@ -2,25 +2,24 @@ version: '3' # version of docker-compose to use
 
 services: # configuring each container
   cc-app:
-    image: node:6.10.0
-    volumes: 
-      - '.:/usr/src/app'
-    command: 'npm start'
+    build: .
+    command: /usr/src/app/node_modules/.bin/pm2 start src --name=app --no-daemon
     links:
-      - cc-mongo
+      - mongo
     ports:
       - "8000:80"
       - "8587:587"
       - "8465:465" 
     environment:
       NODE_ENV: 'local'
-      MONGODB_URL: 'mongodb://cc-mongo:27017/county-committee'
+      MONGODB_URL: "mongodb://mongo:27017/ccsunlight"
+
     depends_on:
-      - cc-mongo
-  cc-mongo: # name of our mysql container
-    image: mongo:3.4.4 # which image to pull, in this case latest
-    restart: always # always restart the container after reboot
+      - mongo
+  mongo: # name of our mysql container
+    image: mongo:latest # which image to pull, in this case latest
+    ports:
+      - "27017:27017"
+    command: "mongod --port 27017 --smallfiles --bind_ip_all"
     volumes: # data to map to the container
-      - 'cc-db-test-data:/data/db'
-volumes:
-  cc-db-test-data:
+      - './data:/data/db'
