@@ -15,9 +15,16 @@
  */
 
 html, body {
-  font-family: 'Roboto', 'Helvetica', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   margin: 0;
   padding: 0;
+}
+h1, h2, h3 {
+  font-family: 'Roboto Slab', serif;
+}
+h4 {
+  font-weight: 700;
+  font-size: 20px;
 }
 .mdl-demo .mdl-layout__header-row {
   padding-left: 40px;
