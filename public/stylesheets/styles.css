@@ -39,7 +39,6 @@ h4 {
 }
 .mdl-demo .mdl-layout__header-row {
   padding-left: 40px;
-  overflow-x: scroll;
 }
 .mdl-demo .mdl-layout.is-small-screen .mdl-layout__header-row h3 {
   font-size: inherit;
@@ -325,6 +324,7 @@ h4 {
   text-decoration: none;
   vertical-align: middle;
   line-height: 20px;
+  margin-left: 5px;
 }
 
 .logo-link:hover, .mdl-navigation__link:hover {
