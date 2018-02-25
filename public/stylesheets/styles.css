@@ -15,12 +15,31 @@
  */
 
 html, body {
-  font-family: 'Roboto', 'Helvetica', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   margin: 0;
   padding: 0;
 }
+h1, h2, h3 {
+  font-family: 'Roboto Slab', serif;
+  color: #009688;
+}
+h4 {
+  font-weight: 700;
+  font-size: 20px;
+}
+.splash-text {
+  text-align: center;
+  background-color: #f5f5f5;
+}
+.light-green {
+  color: #40B69A;
+}
+.mdl-layout__title, .mdl-layout-title {
+  font-family: 'Roboto Slab';
+}
 .mdl-demo .mdl-layout__header-row {
   padding-left: 40px;
+  overflow-x: scroll;
 }
 .mdl-demo .mdl-layout.is-small-screen .mdl-layout__header-row h3 {
   font-size: inherit;
@@ -90,7 +109,7 @@ html, body {
   color: inherit;
 }
 .mdl-demo .mdl-card__actions a {
-  color: #00BCD4;
+  color: #FAA737;
   margin: 0;
 }
 .mdl-demo .mdl-card__actions a:hover,
@@ -291,7 +310,7 @@ html, body {
 }
 
 .mdl-card a {
-    color: #00BCD4;
+    color: #FAA737;
 }
 
 #cc-member-table {
@@ -304,7 +323,7 @@ html, body {
 
 .logo-link, .logo-link .material-icons, .logo-link span  {
   text-decoration: none;
-  vertical-align: bottom;
+  vertical-align: middle;
   line-height: 20px;
 }
 
