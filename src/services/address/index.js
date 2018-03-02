@@ -77,8 +77,7 @@ class Service {
 
 
 
-            let county = '',
-                hasAppointedData = true;
+            let county = '';
 
             const memberData = yield bb.map(yourMembers, co(function*(member) {
 
@@ -101,9 +100,8 @@ class Service {
                 ad: ad,
                 ed: ed,
                 county: county,
-                hasAppointedData: hasAppointedData,
                 members: memberData,
-               
+          
             };
 
             return result;
