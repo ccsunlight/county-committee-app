@@ -1,4 +1,5 @@
 'use strict';
+
 const invite = require('./invite');
 const edGeometry = require('./edGeometry');
 const countyCommitteeMember = require('./county-committee-member');
@@ -9,6 +10,7 @@ const newsLink = require('./news-link');
 //const authentication = require('./authentication');
 const user = require('./user');
 const page = require('./page');
+const address = require('./address');
 const mongoose = require('mongoose');
 
 
@@ -20,6 +22,7 @@ module.exports = function() {
  mongoose.Promise = global.Promise;
 
  // app.configure(authentication);
+ 
  app.configure(user);
  app.configure(page);
  app.configure(countyCommitteeMember);
@@ -29,6 +32,32 @@ module.exports = function() {
  app.configure(actionLog);
  app.configure(glossaryTerm);
  app.configure(newsLink);
+ app.configure(address);
+
+ 
+    address.docs = {
+        description: 'A service to send and receive messages',
+        definitions: {
+            messages: {
+                "type": "object",
+                "required": [
+                    "text"
+                ],
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "description": "The message text"
+                    },
+                    "useId": {
+                        "type": "string",
+                        "description": "The id of the user that sent the message"
+                    }
+                }
+            }
+        }
+    };
+
+
 
  //
  // Workaroud for disabling docs paths for admin entities.
