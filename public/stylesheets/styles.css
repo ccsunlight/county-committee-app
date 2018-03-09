@@ -373,4 +373,11 @@ h4 {
   color: #FAA737;
 }
 
+/**
+ * Workaround for button offset bug with announcement bar. 
+ * @todo find more permanent solution.
+ */
+.mdl-layout__drawer-button {
+    margin-top: 40px !important; 
+}
 
