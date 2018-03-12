@@ -15,13 +15,9 @@ var cacheMap = CacheMap({
 
 
 exports.before = {
-    all: [cache(cacheMap, 'address')],
+    all: [],
     find: [],
-    get: [function (hook) {
-      console.log(cacheMap.keys().sort()); // ['c', 'e']
-
-      return hook;
-    }],
+    get: [cache(cacheMap, 'address')],
     create: [],
     update: [],
     patch: [],
@@ -29,9 +25,9 @@ exports.before = {
 };
 
 exports.after = {
-    all: [cache(cacheMap, 'address')],
+    all: [],
     find: [],
-    get: [],
+    get: [cache(cacheMap, 'address')],
     create: [],
     update: [],
     patch: [],
