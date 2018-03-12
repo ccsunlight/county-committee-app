@@ -24,6 +24,7 @@
     "mocha": "mocha test/services/county-committee/county-committee-extractor.js"
   },
   "dependencies": {
+    "@feathers-plus/cache": "^1.4.0",
     "@feathersjs/authentication-oauth2": "^1.0.3",
     "admin-lte-express": "^1.4.2",
     "aor-permissions": "^1.0.2",
@@ -44,9 +45,11 @@
     "feathers-authentication-hooks": "^0.1.4",
     "feathers-authentication-jwt": "^0.3.1",
     "feathers-authentication-local": "^0.3.4",
+    "feathers-cache": "^0.2.7",
     "feathers-configuration": "^0.3.3",
     "feathers-errors": "^2.6.2",
     "feathers-hooks": "^1.8.1",
+    "feathers-hooks-common": "^4.10.0",
     "feathers-memory": "^1.1.0",
     "feathers-mongoose": "^5.1.2",
     "feathers-rest": "^1.7.1",
@@ -59,6 +62,7 @@
     "handlebars-paginate": "^0.1.0",
     "hbs": "^4.0.1",
     "json2csv": "^3.11.0",
+    "memory-cache": "^0.2.0",
     "metascraper": "^1.0.7",
     "migrate-mongoose": "^3.2.2",
     "mongoose": "^4.9.1",

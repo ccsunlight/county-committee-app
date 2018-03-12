@@ -60,6 +60,8 @@ class Service {
 
     get(address, params) {
 
+        console.log('get!');
+
         const get_address = co(function*(address) {
 
             const data = yield googleGeocoder.geocode(address);
