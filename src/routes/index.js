@@ -8,7 +8,7 @@ const co = bb.coroutine;
 const fs = bb.promisifyAll(require('fs'));
 const rp = require('request-promise');
 const download = require('download');
-const NodeGeocoder = require('node-geocoder');
+//const NodeGeocoder = require('node-geocoder');
 const serveStatic = require('feathers').static;
 const auth = require('feathers-authentication');
 const countyCommittee = require('../services/county-committee/county-committee-model');
@@ -18,6 +18,7 @@ const page = require('../services/page/page-model');
 const news = require('../services/news-link/news-link-model');
 const confirm = require('../services/invite/email-confirm');
 const User = require('../services/user/user-model');
+const Address = require('../services/address');
 
 // Prevents crawlers from cralwer not on production
 if (process.env.NODE_ENV !== 'production') {
@@ -26,7 +27,7 @@ if (process.env.NODE_ENV !== 'production') {
         res.send("User-agent: *\nDisallow: /");
     });
 }
-
+/*
 const googleGeocoderOptions = {
     provider: 'google',
     apiKey: 'AIzaSyBWT_tSznzz1oSNXAql54sSKGIAC4EyQGg',
@@ -35,7 +36,7 @@ const googleGeocoderOptions = {
 };
 
 const googleGeocoder = NodeGeocoder(googleGeocoderOptions);
-
+*/
 
 router.use('/invite/confirm/:confirm_code', function(req, res, next) {
     console.log('confirm code' + req.params.confirm_code);
@@ -199,7 +200,7 @@ router.get('/', co(function*(req, res, next) {
         countySeatBreakdowns: countySeatBreakdowns
     });
 }));
-
+/*
 function* getCountySeatBreakdown(county) {
 
 
@@ -226,89 +227,54 @@ const intersectQuery = (coordinates) => {
         }
     };
 };
+*/
 
-router.get('/get_address', co(function*(req, res, next) {
+router.get('/get_address', function(req, res, next) {
     try {
-        if (!_.isString(req.query.address) || req.query.address === '') throw new Error('Empty address');
-        const address = req.query.address;
+        
 
-        const data = yield googleGeocoder.geocode(address);
-        if (!data[0]) throw new Error('Bad address');
+        let addressSvc = new Address.Service();
+        addressSvc.get(req.query.address).then(co(function*(data) {
 
-        const [lat, long] = [data[0].latitude, data[0].longitude];
-        const yourGeomDoc = yield edGeometry.findOne(intersectQuery([lat, long]));
-        if (!yourGeomDoc) throw new Error('Not in NYC');
+            // @todo move this to feathers map service.
+            const allGeomDocsInAd = yield edGeometry.find({
+                ad: data.ad
+            });
 
-        const [ad, ed] = [yourGeomDoc.ad, yourGeomDoc.ed];
-        const yourMembers = yield countyCommitteeMember.find({
-            assembly_district: ad,
-            electoral_district: ed
-        });
+            const cleanedAllGeomDocsInAd = yield bb.map(allGeomDocsInAd, co(function*(doc) {
+                const singleEdCoords = yield bb.map(doc.geometry.coordinates[0][0], oneCoord => {
+                    return {
+                        lat: oneCoord[1],
+                        lng: oneCoord[0]
+                    }
+                });
 
-        const allGeomDocsInAd = yield edGeometry.find({
-            ad: ad
-        });
+                const memberDocs = yield countyCommitteeMember.find({
+                    assembly_district: doc.ad,
+                    electoral_district: doc.ed
+                });
+                const filledDocs = _.filter(memberDocs, x => x.office_holder !== 'Vacancy');
+                const numOfSeats = _.size(memberDocs);
+                const numOfFilledSeats = _.size(filledDocs);
 
-        const cleanedAllGeomDocsInAd = yield bb.map(allGeomDocsInAd, co(function*(doc) {
-            const singleEdCoords = yield bb.map(doc.geometry.coordinates[0][0], oneCoord => {
                 return {
-                    lat: oneCoord[1],
-                    lng: oneCoord[0]
-                }
-            });
+                    co: singleEdCoords,
+                    ed: doc.ed,
+                    ns: numOfSeats,
+                    nf: numOfFilledSeats
+                };
+            }));
 
-            const memberDocs = yield countyCommitteeMember.find({
-                assembly_district: doc.ad,
-                electoral_district: doc.ed
-            });
-            const filledDocs = _.filter(memberDocs, x => x.office_holder !== 'Vacancy');
-            const numOfSeats = _.size(memberDocs);
-            const numOfFilledSeats = _.size(filledDocs);
 
-            return {
-                co: singleEdCoords,
-                ed: doc.ed,
-                ns: numOfSeats,
-                nf: numOfFilledSeats
-            };
+            data.cleanedAllGeomDocsInAd = JSON.stringify(cleanedAllGeomDocsInAd);
+
+            res.render('get_address', data);
+
         }));
 
-        let county = '',
-            hasAppointedData = true;
 
-        const memberData = yield bb.map(yourMembers, co(function*(member) {
 
-            if (!county) {
-                county = member.county;
-            }
-            return {
-                office: member.office,
-                entry_type: member.entry_type,
-                office_holder: member.office_holder,
-                petition_number: member.petition_number,
-                entry_type: member.entry_type
-            }
-        }));
-
-        if (county === "Queens County") {
-            hasAppointedData = false;
-        } else {
-            hasAppointedData = true;
-        }
-
-        const locals = {
-            address: address,
-            lat: lat,
-            long: long,
-            ad: ad,
-            ed: ed,
-            county: county,
-            hasAppointedData: hasAppointedData,
-            members: memberData,
-            cleanedAllGeomDocsInAd: JSON.stringify(cleanedAllGeomDocsInAd)
-        };
-
-        res.render('get_address', locals);
+        
     } catch (err) {
 
         if (err.message === 'Not in NYC') console.log('TODO: the address must be in NYC');
@@ -327,7 +293,7 @@ router.get('/get_address', co(function*(req, res, next) {
         res.render('get_address', locals);
 
     }
-}));
+});
 
 
 

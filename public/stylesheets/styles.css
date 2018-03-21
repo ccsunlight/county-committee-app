@@ -347,6 +347,7 @@ h4 {
 
 #news a:hover .mdl-card__title-text {
   text-decoration: underline;
+
 }
 
 #news .mdl-card__supporting-text {
@@ -361,4 +362,30 @@ h4 {
 .material-icons {
   vertical-align: middle !important;
   padding-bottom: 3px;
+}
+
+#overview a {
+    text-decoration-style: dotted;
+    color: #40B69A;
+}
+
+#overview a:hover {
+  color: #FAA737;
+}
+
+/**
+ * Workaround for button offset bug with announcement bar. 
+ * @todo find more permanent solution.
+ */
+.mdl-layout__drawer-button {
+    margin-top: 40px !important; 
+}
+
+
+#menu-logo-text {
+    width: 200px;
+    display: block;
+    float: right;
+    line-height: 22px;
+    letter-spacing: .04em;
 }

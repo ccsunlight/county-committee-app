@@ -1,13 +1,18 @@
 
+<div class="mdl-grid">
+<div class="mdl-card mdl-cell mdl-cell--8-col-desktop mdl-cell--9-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp through mdl-shadow--2dp">
 {{> addressform}}
-
-
+</div>
+	<div class="mdl-card mdl-cell mdl-cell--4-col-desktop mdl-cell--4-col-tablet mdl-cell--12-col-phone  mdl-shadow--2dp through mdl-shadow--2dp">
+		{{>newsletter_signup}}
+	</div>
+</div>
+<div class="mdl-grid">
 <div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--12-col-tablet mdl-cell--4-col-phone">
 <div class="mdl-card__supporting-text">
 	<h4>Assembly District: {{ad}}</h4>
 	<h4>Election District: {{ed}}</h4>
 	{{> table}}
-	
 	
 </div>
 </div>
@@ -17,4 +22,5 @@
 		{{> include_gmap_and_autocomplete}}
 	</div>
 
+</div>
 </div>
