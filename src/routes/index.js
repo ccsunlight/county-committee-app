@@ -21,12 +21,18 @@ const User = require('../services/user/user-model');
 const Address = require('../services/address');
 
 // Prevents crawlers from cralwer not on production
-if (process.env.NODE_ENV !== 'production') {
-    router.use('/robots.txt', function (req, res) {
-        res.type('text/plain');
+
+router.use('/robots.txt', function(req, res) {
+
+    res.type('text/plain');
+    
+    if (process.env.NODE_ENV === 'production') {
+        res.send("User-agent: *\nAllow: /");
+    } else {
         res.send("User-agent: *\nDisallow: /");
-    });
-}
+    }
+});
+
 /*
 const googleGeocoderOptions = {
     provider: 'google',
@@ -231,7 +237,7 @@ const intersectQuery = (coordinates) => {
 
 router.get('/get_address', function(req, res, next) {
     try {
-        
+
 
         let addressSvc = new Address.Service();
         addressSvc.get(req.query.address).then(co(function*(data) {
@@ -274,7 +280,7 @@ router.get('/get_address', function(req, res, next) {
 
 
 
-        
+
     } catch (err) {
 
         if (err.message === 'Not in NYC') console.log('TODO: the address must be in NYC');
