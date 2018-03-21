@@ -20,7 +20,7 @@ const confirm = require('../services/invite/email-confirm');
 const User = require('../services/user/user-model');
 
 // Prevents crawlers from cralwer not on production
-if (process.env.NODE_ENV != 'local') {
+if (process.env.NODE_ENV !== 'production') {
     router.use('/robots.txt', function (req, res) {
         res.type('text/plain');
         res.send("User-agent: *\nDisallow: /");
