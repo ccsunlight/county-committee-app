@@ -47,7 +47,7 @@
 		var filledColor = '#1874CD';
 		var partiallyFilledColor = '#CAE1FF';
 		var vacantColor = '#EFEFEF';
-		var nodataColor = '#FFFFFF';
+		var nodataColor = '#40B69A';
 
 		_.forEach(cleanedAllGeomDocsInAd, function(doc) {
 			var coordinates = doc.co;
@@ -59,7 +59,7 @@
 			var infoString, color;
 
 			if (numOfSeats === 0) {
-				infoString = infoStringStart + 'No seat data';
+				infoString = infoStringStart + 'This district is newly created after the last election.';
 				color = nodataColor;
 			}
 			else {

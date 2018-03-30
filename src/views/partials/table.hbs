@@ -26,7 +26,7 @@
           <span id="{{@../index}}-{{@key}}-{{@index}}">{{this}}</span>
 {{#if_eq this 'Appointed'}}
           <div class="mdl-tooltip" for="{{@../index}}-{{@key}}-{{@index}}">
-Appointed members serve at the pleasure<br/> of the executive committee.<br/>These are unelected positions.
+Appointed members serve at the pleasure<br/> of the executive committee.<br/>These are unelected positions and expire at at the end of each cc term.
 </div>
  {{/if_eq}}
  </td>
@@ -39,10 +39,16 @@ Appointed members serve at the pleasure<br/> of the executive committee.<br/>The
     </tbody>
   </table>
   
-{{else}}
-<h4><i class="material-icons">error_outline</i> No Data for this district</h4>
+{{else if ed}}
+<p><i class="material-icons">error_outline</i>This election district has been newly created after the last election and therefore does not yet have seat information.
+</p>
 
-<button class="address-button mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-button--right" act>Where's my County Committee info?</button>
+<p>Seats are determined at the end of May, right before petitioning season starts.</p>
+
+<p>Check back then for seat information.</p>
+
+{{else}}
+<h4><i class="material-icons">error_outline</i> Sorry we do not have seat information for this district yet. Consider <a href="https://goo.gl/forms/BpeKaPz7rSa4hXdU2" target="_blank">volunteering</a> to help get this info!</h4>
 {{/if}}
 </div>
  
