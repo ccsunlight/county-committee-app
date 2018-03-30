@@ -276,7 +276,15 @@ router.get('/get_address', function(req, res, next) {
 
             res.render('get_address', data);
 
-        }));
+        })).catch(function(error) {
+
+            const locals = {
+                address: req.query.address,
+                error: error.message
+            };
+            res.render('get_address', locals);
+            
+        });
 
 
 
