@@ -247,6 +247,7 @@ router.get('/get_address', function(req, res, next) {
                 ad: data.ad
             });
 
+            if (data.ad >= 23 && data.ad <= 64) {
             const cleanedAllGeomDocsInAd = yield bb.map(allGeomDocsInAd, co(function*(doc) {
                 const singleEdCoords = yield bb.map(doc.geometry.coordinates[0][0], oneCoord => {
                     return {
@@ -254,27 +255,34 @@ router.get('/get_address', function(req, res, next) {
                         lng: oneCoord[0]
                     }
                 });
+                    const memberDocs = yield countyCommitteeMember.find({
+                        assembly_district: doc.ad,
+                        electoral_district: doc.ed
+                    });
+                    const filledDocs = _.filter(memberDocs, x => x.office_holder !== 'Vacancy');
+                    const numOfSeats = _.size(memberDocs);
+                    const numOfFilledSeats = _.size(filledDocs);
 
-                const memberDocs = yield countyCommitteeMember.find({
-                    assembly_district: doc.ad,
-                    electoral_district: doc.ed
-                });
-                const filledDocs = _.filter(memberDocs, x => x.office_holder !== 'Vacancy');
-                const numOfSeats = _.size(memberDocs);
-                const numOfFilledSeats = _.size(filledDocs);
-
-                return {
-                    co: singleEdCoords,
-                    ed: doc.ed,
-                    ns: numOfSeats,
-                    nf: numOfFilledSeats
-                };
+                    return {
+                        co: singleEdCoords,
+                        ed: doc.ed,
+                        ns: numOfSeats,
+                        nf: numOfFilledSeats
+                    };
+                
             }));
 
+                data.cleanedAllGeomDocsInAd = JSON.stringify(cleanedAllGeomDocsInAd);
+                res.render('get_address', data);
 
-            data.cleanedAllGeomDocsInAd = JSON.stringify(cleanedAllGeomDocsInAd);
+            } else {
+                 const locals = {
+                    address: req.query.address,
+                    error: 'No data for this district.'
+                };
+                res.render('get_address', locals);
 
-            res.render('get_address', data);
+            }
 
         })).catch(function(error) {
 

@@ -47,8 +47,12 @@
 		var filledColor = '#1874CD';
 		var partiallyFilledColor = '#CAE1FF';
 		var vacantColor = '#EFEFEF';
+		{{error}}
+		{{#if error}}
+		var nodataColor = '#ffffff';
+		{{else}}
 		var nodataColor = '#40B69A';
-
+		{{/if}}
 		_.forEach(cleanedAllGeomDocsInAd, function(doc) {
 			var coordinates = doc.co;
 			var ed = doc.ed;
