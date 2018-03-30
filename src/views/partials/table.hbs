@@ -4,6 +4,7 @@
   <ul class="pagination"></ul>
 
  {{#if members}}
+
   <table id="cc-member-table" class="mdl-data-table mdl-js-data-table">
     {{#each members}}
     {{#if @first}}
@@ -24,10 +25,12 @@
           <td class="{{@key}}" >
            
           <span id="{{@../index}}-{{@key}}-{{@index}}">{{this}}</span>
+ 
 {{#if_eq this 'Appointed'}}
           <div class="mdl-tooltip" for="{{@../index}}-{{@key}}-{{@index}}">
 Appointed members serve at the pleasure<br/> of the executive committee.<br/>These are unelected positions and expire at at the end of each cc term.
 </div>
+
  {{/if_eq}}
  </td>
           
@@ -38,8 +41,10 @@ Appointed members serve at the pleasure<br/> of the executive committee.<br/>The
       
     </tbody>
   </table>
-  
-{{else if end}}
+
+
+{{else}}
+
 <p><i class="material-icons">error_outline</i>This election district has been newly created after the last election and therefore does not yet have seat information.
 </p>
 
@@ -47,8 +52,7 @@ Appointed members serve at the pleasure<br/> of the executive committee.<br/>The
 
 <p>Check back then for seat information.</p>
 
-{{else}}
-<h4><i class="material-icons">error_outline</i> Sorry we do not have seat information for this district yet. Consider <a href="https://goo.gl/forms/BpeKaPz7rSa4hXdU2" target="_blank">volunteering</a> to help get this info!</h4>
+
 {{/if}}
 </div>
  

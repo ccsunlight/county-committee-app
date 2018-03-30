@@ -25,7 +25,7 @@ const Address = require('../services/address');
 router.use('/robots.txt', function(req, res) {
 
     res.type('text/plain');
-    
+
     if (process.env.NODE_ENV === 'production') {
         res.send("User-agent: *\nAllow: /");
     } else {
@@ -242,19 +242,20 @@ router.get('/get_address', function(req, res, next) {
         let addressSvc = new Address.Service();
         addressSvc.get(req.query.address).then(co(function*(data) {
 
-            // @todo move this to feathers map service.
-            const allGeomDocsInAd = yield edGeometry.find({
-                ad: data.ad
-            });
-
             if (data.ad >= 23 && data.ad <= 64) {
-            const cleanedAllGeomDocsInAd = yield bb.map(allGeomDocsInAd, co(function*(doc) {
-                const singleEdCoords = yield bb.map(doc.geometry.coordinates[0][0], oneCoord => {
-                    return {
-                        lat: oneCoord[1],
-                        lng: oneCoord[0]
-                    }
+                // @todo move this to feathers map service.
+                const allGeomDocsInAd = yield edGeometry.find({
+                    ad: data.ad
                 });
+
+
+                const cleanedAllGeomDocsInAd = yield bb.map(allGeomDocsInAd, co(function*(doc) {
+                    const singleEdCoords = yield bb.map(doc.geometry.coordinates[0][0], oneCoord => {
+                        return {
+                            lat: oneCoord[1],
+                            lng: oneCoord[0]
+                        }
+                    });
                     const memberDocs = yield countyCommitteeMember.find({
                         assembly_district: doc.ad,
                         electoral_district: doc.ed
@@ -269,35 +270,39 @@ router.get('/get_address', function(req, res, next) {
                         ns: numOfSeats,
                         nf: numOfFilledSeats
                     };
-                
-            }));
+
+                }));
 
                 data.cleanedAllGeomDocsInAd = JSON.stringify(cleanedAllGeomDocsInAd);
                 res.render('get_address', data);
 
             } else {
-                 const locals = {
+
+                const locals = {
                     address: req.query.address,
-                    error: 'No data for this district.'
+                    error: 'No data for this district.',
+                    new_district: true
                 };
                 res.render('get_address', locals);
 
             }
 
         })).catch(function(error) {
-
+           
             const locals = {
                 address: req.query.address,
                 error: error.message
             };
             res.render('get_address', locals);
-            
+
         });
 
 
 
 
     } catch (err) {
+
+        console.log('err no data');
 
         if (err.message === 'Not in NYC') console.log('TODO: the address must be in NYC');
         else if (err.name === 'HttpError') console.log('TODO: google geocoding service is currently down');
@@ -310,7 +315,8 @@ router.get('/get_address', function(req, res, next) {
 
         const locals = {
             address: req.query.address,
-            error: err.message
+            error: err.message,
+            newDistrict: true
         };
         res.render('get_address', locals);
 

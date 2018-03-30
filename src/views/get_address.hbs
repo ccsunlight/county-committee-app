@@ -12,8 +12,16 @@
 <div class="mdl-card__supporting-text">
 	<h4>Assembly District: {{ad}}</h4>
 	<h4>Election District: {{ed}}</h4>
-	{{> table }}
 	
+	
+	{{#if error}}
+
+	<h4><i class="material-icons">error_outline</i>  Sorry we do not have seat information for this district yet. Consider <a href="https://goo.gl/forms/BpeKaPz7rSa4hXdU2" target="_blank">volunteering</a> to help get this info!</h4>
+	{{else}}
+
+		{{> table }}
+	{{/if}}
+
 </div>
 </div>
 <div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--12-col-tablet mdl-cell--4-col-phone">
