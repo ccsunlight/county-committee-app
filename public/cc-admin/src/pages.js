@@ -1,7 +1,7 @@
 // in src/posts.js
 import React from 'react';
 import { List, Edit, Filter, RichTextField, Create, SimpleList, Responsive,  Datagrid, ReferenceField, TextField, EditButton, DisabledInput, LongTextInput, ReferenceInput, SelectInput, SimpleForm, TextInput, SaveButton, Toolbar } from 'admin-on-rest';
-import RichTextInput from 'aor-rich-text-input';
+import RichTextInput from './aor-rich-text-input';
 import { SwitchPermissions, Permission } from 'aor-permissions';
 import authClient from './feathersAuthClient';
 import {checkUserCanEdit} from './feathersAuthClient';
@@ -15,7 +15,6 @@ export const PageList = (props) => (
                         <TextField source="alias" />
                         <TextField source="updatedAt" />
                         <TextField source="createdAt" />
-
                         <EditButton />        
                     </Datagrid>
             </List>
@@ -25,9 +24,10 @@ export const PageList = (props) => (
 
 
 const PageTitle = ({ record }) => {
-    return <span>Post {record ? `"${record.title}"` : ''}</span>;
+    return (
+      <span>Post {record ? `${record.title}` : ''}</span>
+      );
 };
-
 
 
 
@@ -59,6 +59,32 @@ const quillModules = {
       userOnly: true
     }
   };
+console.log('quillOptions');
+
+const quillOptions = {
+  toolbar: toolbarProps,
+  onEditorReady (editor) {
+    console.log('editor ready');
+  let qlEditor = null
+  for (let i = 0; i < editor.container.childNodes.length; i++) {
+    if (editor.container.childNodes[i].className === 'ql-editor') {
+      qlEditor = editor.container.childNodes[i]
+      break
+    }
+  }
+  if (qlEditor === null) return
+  for (let i = 0; i < qlEditor.childNodes.length; i++) {
+    if (qlEditor.childNodes[i].nextSibling && qlEditor.childNodes[i].nextSibling.className !== 'ql-syntax') {
+      continue
+    }
+    if (qlEditor.childNodes[i].innerHTML === '<br>') {
+      qlEditor.removeChild(qlEditor.childNodes[i])
+    }
+  }
+}
+
+}
+
 
 
 export const PageEdit = (props) => (
@@ -71,7 +97,7 @@ export const PageEdit = (props) => (
             ]} />
             <TextInput source="title" />
             <TextInput source="alias" type="text" />
-            <RichTextInput source="content" module={quillModules} toolbar={toolbarProps}/>
+            <RichTextInput source="content" options={quillOptions} />
         </SimpleForm>
     </Edit>
 );
@@ -85,7 +111,7 @@ export const PageCreate = (props) => (
                 { id: 'published', name: 'Published' }
             ]} />
             <TextInput source="alias" type="text" />
-            <RichTextInput elStyle={{ height: '500px' }} source="content" module={quillModules} toolbar={toolbarProps} />
+            <RichTextInput elStyle={{ height: '500px' }} options={quillOptions} source="content" module={quillModules} toolbar={toolbarProps} />
         </SimpleForm>
     </Create>
 );
