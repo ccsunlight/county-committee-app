@@ -21,7 +21,7 @@
     "jshint": "jshint src/. test/. --config",
     "start": "node src/",
     "cert": "node cert/generate-cert.js",
-    "mocha": "mocha test/services/county-committee/county-committee-extractor.js",
+    "mocha": "mocha test/services/county-committee/county-committee-extractor.js"
   },
   "dependencies": {
     "@feathers-plus/cache": "^1.4.0",
@@ -61,6 +61,7 @@
     "handlebars-paginate": "^0.1.0",
     "hbs": "^4.0.1",
     "husky": "^0.14.3",
+    "js-beautify": "^1.7.5",
     "json2csv": "^3.11.0",
     "lint-staged": "^7.0.1",
     "metascraper": "^1.0.7",
@@ -79,6 +80,7 @@
     "permission": "^1.0.4",
     "pm2": "^2.5.0",
     "prettier": "^1.11.1",
+    "pretty": "^2.0.0",
     "request": "^2.81.0",
     "request-promise": "^4.2.0",
     "serve-favicon": "^2.4.2",
