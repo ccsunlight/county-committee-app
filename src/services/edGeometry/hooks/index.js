@@ -3,7 +3,6 @@
 const globalHooks = require('../../../hooks');
 const hooks = require('feathers-hooks');
 
-
 exports.before = {
   all: [],
   find: [],

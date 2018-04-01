@@ -38,5 +38,5 @@ const smtpServer = new SMTPServer({
 smtpServer.listen(465);
 */
 server.on('listening', () =>
-    console.log(`Feathers application started on ${app.get('host')}:${port}`)
+  console.log(`Feathers application started on ${app.get('host')}:${port}`)
 );

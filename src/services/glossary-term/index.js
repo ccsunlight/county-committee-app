@@ -19,13 +19,13 @@ module.exports = function() {
   app.use(app.get('apiPath') + '/glossary-term', service(options));
 
   // Get our initialize service to that we can bind hooks
-  const glossaryTermService = app.service(app.get('apiPath') + '/glossary-term');
+  const glossaryTermService = app.service(
+    app.get('apiPath') + '/glossary-term'
+  );
 
   // Set up our before hooks
   glossaryTermService.before(hooks.before);
 
   // Set up our after hooks
   glossaryTermService.after(hooks.after);
-
 };
-

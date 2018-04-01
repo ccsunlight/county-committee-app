@@ -1,7 +1,7 @@
 'use strict';
 
 // user-model.js - A mongoose model
-// 
+//
 // See http://mongoosejs.com/docs/models.html
 // for more of what you can do here.
 
@@ -13,8 +13,8 @@ const userSchema = new Schema({
   facebook: { type: Schema.Types.Mixed },
   googleId: { type: String },
   google: { type: Schema.Types.Mixed },
-  email: {type: String, required: true, unique: true},
-  role: {type: String, required: true, enum: ['admin', 'user', 'visitor']},
+  email: { type: String, required: true, unique: true },
+  role: { type: String, required: true, enum: ['admin', 'user', 'visitor'] },
   password: { type: String, required: true },
   firstname: { type: String, required: false },
   lastname: { type: String, required: false },
@@ -23,9 +23,8 @@ const userSchema = new Schema({
 });
 
 userSchema.virtual('id').get(function() {
-    return this._id;
-})
-
+  return this._id;
+});
 
 const userModel = mongoose.model('user', userSchema);
 

@@ -9,14 +9,14 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const edGeometrySchema = new Schema({
-  type: { type: String, 'default': 'Feature' },
+  type: { type: String, default: 'Feature' },
   ad: { type: Number, required: true },
   ed: { type: Number, required: true },
   geometry: {
-    type: { type: String, 'default': 'MultiPolygon' },
+    type: { type: String, default: 'MultiPolygon' },
     coordinates: { type: Array, required: true }
   },
-  createdAt: { type: Number, 'default': Date.now }
+  createdAt: { type: Number, default: Date.now }
 });
 
 const edGeometryModel = mongoose.model('edGeometry', edGeometrySchema);

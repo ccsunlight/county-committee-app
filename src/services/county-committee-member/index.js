@@ -19,13 +19,13 @@ module.exports = function() {
   app.use(app.get('apiPath') + '/county-committee-member', service(options));
 
   // Get our initialize service to that we can bind hooks
-  const countyCommitteeMemberService = app.service(app.get('apiPath') + '/county-committee-member');
+  const countyCommitteeMemberService = app.service(
+    app.get('apiPath') + '/county-committee-member'
+  );
 
   // Set up our before hooks
   countyCommitteeMemberService.before(hooks.before);
 
   // Set up our after hooks
   countyCommitteeMemberService.after(hooks.after);
-
 };
-

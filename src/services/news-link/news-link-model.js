@@ -1,51 +1,53 @@
 'use strict';
 
 // county-committee-model.js - A mongoose model
-// 
+//
 // See http://mongoosejs.com/docs/models.html
 // for more of what you can do here.
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const newsLinkSchema = new Schema({
+const newsLinkSchema = new Schema(
+  {
     status: {
-        type: String,
-        enum: ['draft','published'],
-        default: 'published'
+      type: String,
+      enum: ['draft', 'published'],
+      default: 'published'
     },
     published_on: {
-        type: Date
+      type: Date
     },
     title: {
-        type: String
+      type: String
     },
     url: {
-        type: String
+      type: String
     },
     image: {
-        type: String
+      type: String
     },
     site_name: {
-        type: String
+      type: String
     },
     description: {
-        type: String
+      type: String
     }
-
-},{
-  toObject: {
-  virtuals: true
   },
-  toJSON: {
-  virtuals: true 
-  },
-  timestamps: true
-});
+  {
+    toObject: {
+      virtuals: true
+    },
+    toJSON: {
+      virtuals: true
+    },
+    timestamps: true
+  }
+);
 
 newsLinkSchema.virtual('id').get(function() {
-    return this._id;
-})
+  return this._id;
+});
 
 const newsLinkModel = mongoose.model('news-link', newsLinkSchema);
 

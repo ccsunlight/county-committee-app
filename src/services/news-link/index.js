@@ -26,6 +26,4 @@ module.exports = function() {
 
   // Set up our after hooks
   newsLinkService.after(hooks.after);
-
 };
-
