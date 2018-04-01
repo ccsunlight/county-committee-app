@@ -5,7 +5,7 @@ import {
   GET_ONE,
   CREATE,
   UPDATE,
-  DELETE,
+  DELETE
 } from 'admin-on-rest/lib/rest/types';
 
 export default client => {
@@ -16,16 +16,16 @@ export default client => {
     switch (type) {
       case GET_MANY:
         let ids = params.ids || [];
-        query = {'id': { '$in': ids }};
+        query = { id: { $in: ids } };
         query['$limit'] = ids.length;
         return service.find({ query });
       case GET_MANY_REFERENCE:
       case GET_LIST:
-        const {page, perPage} = params.pagination || {};
-        const {field, order} = params.sort || {};
+        const { page, perPage } = params.pagination || {};
+        const { field, order } = params.sort || {};
 
         let sortKey = '$sort[' + field + ']';
-        let sortVal = (order === 'DESC') ? -1 : 1;
+        let sortVal = order === 'DESC' ? -1 : 1;
         if (perPage && page) {
           query['$limit'] = perPage;
           query['$skip'] = perPage * (page - 1);
@@ -44,7 +44,9 @@ export default client => {
       case DELETE:
         return service.remove(params.id);
       default:
-        throw new Error(`Unsupported FeathersJS restClient action type ${type}`);
+        throw new Error(
+          `Unsupported FeathersJS restClient action type ${type}`
+        );
     }
   };
 
@@ -55,13 +57,14 @@ export default client => {
       case DELETE:
         return { data: response };
       case CREATE:
-        return { data: {...params.data, id: response.id} };
+        return { data: { ...params.data, id: response.id } };
       default:
         return response;
     }
   };
 
   return (type, resource, params) =>
-    mapRequest(type, resource, params)
-      .then(response => mapResponse(response, type, resource, params));
-}
+    mapRequest(type, resource, params).then(response =>
+      mapResponse(response, type, resource, params)
+    );
+};

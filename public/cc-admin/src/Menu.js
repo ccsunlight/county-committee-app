@@ -7,9 +7,9 @@ import { Link } from 'react-router-dom';
 import pure from 'recompose/pure';
 import compose from 'recompose/compose';
 
-import { WithPermission, SwitchPermissions,  Permission} from 'aor-permissions';
+import { WithPermission, SwitchPermissions, Permission } from 'aor-permissions';
 import authClient from './feathersAuthClient';
-import {checkUserCanEdit, checkUserHasAccess} from './feathersAuthClient';
+import { checkUserCanEdit, checkUserHasAccess } from './feathersAuthClient';
 
 /* <MenuItem
                         key={resource.name}
@@ -18,38 +18,43 @@ import {checkUserCanEdit, checkUserHasAccess} from './feathersAuthClient';
                         primaryText={inflection.titleize(inflection.humanize(inflection.pluralize(resource.name)))}
                         leftIcon={<resource.icon />}
                         onTouchTap={onMenuTap}  />
-*/ 
+*/
 
 function MenuItemWithAccess(props) {
-
   const resource = props.resource;
   const onMenuTap = props.onMenuTap;
 
   console.log('MyMenu', props);
 
   if (checkUserHasAccess(resource)) {
-	  return (
-	    <MenuItem
-		    key={resource.name}
-		    value={resource.name}
-		    containerElement={<Link to={`/${resource.name}`} />}
-		    primaryText={resource.options.label ? resource.options.label : inflection.titleize(inflection.humanize(inflection.pluralize(resource.name)))}
-		    leftIcon={<resource.icon />}
-		   onTouchTap={onMenuTap}  />
-	  );
+    return (
+      <MenuItem
+        key={resource.name}
+        value={resource.name}
+        containerElement={<Link to={`/${resource.name}`} />}
+        primaryText={
+          resource.options.label
+            ? resource.options.label
+            : inflection.titleize(
+                inflection.humanize(inflection.pluralize(resource.name))
+              )
+        }
+        leftIcon={<resource.icon />}
+        onTouchTap={onMenuTap}
+      />
+    );
   } else {
-
-  		return false;
+    return false;
   }
 }
 
-export default ({ onMenuTap, resources,  logout }) => (
-    <div>
-        {resources
-            .filter(r => r.list)
-            .map(resource => <MenuItemWithAccess resource={resource} onMenuTap={onMenuTap} />)
-               
-        }
-        {logout}
-    </div>
+export default ({ onMenuTap, resources, logout }) => (
+  <div>
+    {resources
+      .filter(r => r.list)
+      .map(resource => (
+        <MenuItemWithAccess resource={resource} onMenuTap={onMenuTap} />
+      ))}
+    {logout}
+  </div>
 );
