@@ -7,20 +7,20 @@
  * author     (Jonathan Crockett)
  *
  */
-const countyCommitteeMemberModel = require('../../../src/services/county-committee/county-committee-member-model');
+const countyCommitteeMemberModel = require("../../../src/services/county-committee/county-committee-member-model");
 
-var Xray = require('x-ray');
+var Xray = require("x-ray");
 
 var x = Xray();
 
-var saveDir = 'downloads';
+var saveDir = "downloads";
 
 exports.getCountyCommitteeCSVFileUrls = function(url, callback) {
   var ccCSVFilePathObjects = [];
 
   // HTML specific to BOE website.
   // @todo make this more flexible
-  x(url, '.bodytext table', ['tr@html'])(function(err, trs) {
+  x(url, ".bodytext table", ["tr@html"])(function(err, trs) {
     // Iterates through the TRs and then sees
     // if "County Committee XX" exists.
     // If so we know it's a County Committee election
@@ -28,8 +28,8 @@ exports.getCountyCommitteeCSVFileUrls = function(url, callback) {
     trs.forEach(function(tr, index) {
       if (/County Committee \d{2}/.test(tr)) {
         x(tr, {
-          title: 'td',
-          urls: ['a@href']
+          title: "td",
+          urls: ["a@href"]
         })(function(err, obj) {
           obj.urls.forEach(function(url) {
             if (/Recap(.)csv/.test(url)) {
@@ -44,7 +44,7 @@ exports.getCountyCommitteeCSVFileUrls = function(url, callback) {
     });
 
     console.log(
-      'CSV files found at ' + url + ' : ',
+      "CSV files found at " + url + " : ",
       ccCSVFilePathObjects.length
     );
 
@@ -59,7 +59,7 @@ exports.getNonFoundMembersRecursive = function(
 ) {
   let member = ccMembers.shift();
 
-  let member_name_parts = member.office_holder.split(' ');
+  let member_name_parts = member.office_holder.split(" ");
 
   countyCommitteeModel.find(
     {
@@ -67,18 +67,18 @@ exports.getNonFoundMembersRecursive = function(
       assembly_district: member.assembly_district,
       office_holder: new RegExp(
         member_name_parts[member_name_parts.length - 1],
-        'i'
+        "i"
       )
     },
     function(err, foundMembers) {
       if (err) {
-        console.log('ERROR', err);
+        console.log("ERROR", err);
       } else {
         if (foundMembers.length > 0) {
           // console.log('FOUND', foundMembers);
         } else {
           console.log(
-            'UNFOUND',
+            "UNFOUND",
             member.office,
             member.assembly_district,
             member.electoral_district,
@@ -107,10 +107,10 @@ exports.getNonFoundMembersRecursive = function(
           unfoundMembers,
           anomalyMembers,
           function(foundanomalyMembers) {
-            console.log('anomalyMembers', foundanomalyMembers);
+            console.log("anomalyMembers", foundanomalyMembers);
 
-            saveToCSV(foundanomalyMembers, 'anomaly_members.csv', function() {
-              process.exit('DONE IMPORTING');
+            saveToCSV(foundanomalyMembers, "anomaly_members.csv", function() {
+              process.exit("DONE IMPORTING");
             });
           }
         );
@@ -133,18 +133,18 @@ this.insertMembersIntoVacantPositionsRecursive = function(
       electoral_district: member.electoral_district,
       assembly_district: member.assembly_district,
       office: member.office,
-      office_holder: 'Vacancy'
+      office_holder: "Vacancy"
     },
     function(err, vacancyOffice) {
       if (vacancyOffice) {
         console.log(
-          'vacancy office found',
+          "vacancy office found",
           vacancyOffice.electoral_district,
           vacancyOffice.assembly_district
         );
         vacancyOffice.office_holder = member.office_holder;
         vacancyOffice.data_source = member.data_source;
-        vacancyOffice.entry_type = 'Appointed';
+        vacancyOffice.entry_type = "Appointed";
         vacancyOffice.save(
           function(err, success) {
             if (members.length > 0) {
@@ -159,7 +159,7 @@ this.insertMembersIntoVacantPositionsRecursive = function(
           }.bind(this)
         );
       } else {
-        console.log('not found', member.office_holder);
+        console.log("not found", member.office_holder);
         anomalyMembers.push(member);
 
         if (members.length > 0) {
@@ -177,8 +177,8 @@ this.insertMembersIntoVacantPositionsRecursive = function(
 };
 
 function saveToCSV(data, filepath, callback) {
-  var json2csv = require('json2csv');
-  var fs = require('fs');
+  var json2csv = require("json2csv");
+  var fs = require("fs");
 
   var fields = Object.keys(data[0]);
   /* var myCars = [{
@@ -209,7 +209,7 @@ function saveToCSV(data, filepath, callback) {
 
   fs.writeFile(filepath, csv, function(err) {
     if (err) throw err;
-    console.log('file saved');
+    console.log("file saved");
     callback();
   });
 }
@@ -225,34 +225,34 @@ function saveCSVFileRecursive(ccCSVFilePathObjects, callback) {
 
   if (ccCSVFilePathObjects.length > 0) {
     var obj = ccCSVFilePathObjects.pop();
-    var filename = obj.url.split('/').pop();
+    var filename = obj.url.split("/").pop();
 
     // @todo turn this into a queue.
-    exports.downloadFile(obj.url, saveDir + '/' + filename, function() {
+    exports.downloadFile(obj.url, saveDir + "/" + filename, function() {
       // Don't want to hit the server too quickly.
       setTimeout(function() {
         saveCSVFileRecursive(ccCSVFilePathObjects, callback);
       }, downloadIntervalMS);
     });
   } else {
-    console.log('Done getting CSV Files.');
+    console.log("Done getting CSV Files.");
     callback();
   }
 }
 
 exports.downloadFile = function(url, dest, cb) {
-  var fs = require('fs');
-  var http = require('http');
+  var fs = require("fs");
+  var http = require("http");
 
   var file = fs.createWriteStream(dest);
   var request = http
     .get(url, function(response) {
       response.pipe(file);
-      file.on('finish', function() {
+      file.on("finish", function() {
         file.close(cb); // close() is async, call cb after close completes.
       });
     })
-    .on('error', function(err) {
+    .on("error", function(err) {
       // Handle errors
       fs.unlink(dest); // Delete the file async. (But we don't check the result)
       if (cb) cb(err.message);
@@ -260,11 +260,11 @@ exports.downloadFile = function(url, dest, cb) {
 };
 
 exports.downloadCSV = function(url, callback) {
-  console.log('downloadCSV', url);
+  console.log("downloadCSV", url);
 
-  var getCSV = require('get-csv');
+  var getCSV = require("get-csv");
   getCSV(url, function(err, data) {
-    console.log('done');
+    console.log("done");
     console.log(err);
     console.log(data);
     callback();
@@ -306,7 +306,7 @@ exports.determineWinningCandidates = function(candidates, numberOfSlots) {
 exports.getEDElectionResultsFromCSV = function(filepath, callback) {
   // console.log('Extracting County Committee Members from: ', filepath);
 
-  var csv = require('fast-csv');
+  var csv = require("fast-csv");
 
   var candidateRows = false;
   var endOfCandidateRows = false;
@@ -329,12 +329,12 @@ exports.getEDElectionResultsFromCSV = function(filepath, callback) {
     .validate(function(data) {
       return !(endOfCandidateRows && foundEDandAD);
     })
-    .on('data', function(data) {
-      if (data[0] == 'Total Applicable Ballots') {
+    .on("data", function(data) {
+      if (data[0] == "Total Applicable Ballots") {
         // console.log('Start of Candidates found! ');
         //console.log(data);
         candidateRows = true;
-      } else if (data[0] == 'Total Votes') {
+      } else if (data[0] == "Total Votes") {
         // console.log('End of Candidates found! ');
         //console.log(data);
         candidateRows = false;
@@ -366,7 +366,7 @@ exports.getEDElectionResultsFromCSV = function(filepath, callback) {
       // to Total Votes
       //
     })
-    .on('end', function() {
+    .on("end", function() {
       var winningCandidates = exports.determineWinningCandidates(candidates);
 
       election_results.county_committee_member_winners = winningCandidates;
@@ -376,12 +376,12 @@ exports.getEDElectionResultsFromCSV = function(filepath, callback) {
 };
 
 exports.addCCMembers = function(members, callback) {
-  const countyCommitteeModel = require('../../../src/services/county-committee/county-committee-model');
+  const countyCommitteeModel = require("../../../src/services/county-committee/county-committee-model");
   let notMatched = [];
   members.forEach(function(member, index) {
     countyCommitteeModel.findOne(
       {
-        office_holder: 'Vacancy',
+        office_holder: "Vacancy",
         assembly_district: parseInt(member.assembly_district, 10),
         electoral_district: parseInt(member.electoral_district, 10),
         office: member.office
@@ -391,7 +391,7 @@ exports.addCCMembers = function(members, callback) {
 
         if (record) {
           record.office_holder = member.office_holder;
-          record.entry_type = 'Appointed';
+          record.entry_type = "Appointed";
           record.data_source = member.data_source;
           record.address = member.address;
           record.save();
@@ -419,7 +419,7 @@ exports.addCCMembers = function(members, callback) {
 exports.getCCMembersFromCSV = function(filepath, callback) {
   // console.log('Extracting County Committee Members from: ', filepath);
 
-  var csv = require('fast-csv');
+  var csv = require("fast-csv");
 
   var ccMemberRows = [];
 
@@ -430,20 +430,20 @@ exports.getCCMembersFromCSV = function(filepath, callback) {
       headers: true,
       trim: true
     })
-    .on('data', function(data) {
+    .on("data", function(data) {
       ccMemberRows.push(data);
     })
-    .on('end', function() {
-      var genderRegex = new RegExp('female', 'i');
+    .on("end", function() {
+      var genderRegex = new RegExp("female", "i");
       let ccMembers = ccMemberRows.map(function(row) {
         return {
           assembly_district: row.AD,
           electoral_district: row.ED,
           part: row.PART,
           office: genderRegex.test(row.GENDER)
-            ? 'Female County Committee'
-            : 'Male County Committee',
-          office_holder: row.FIRSTNAME + ' ' + row.LASTNAME,
+            ? "Female County Committee"
+            : "Male County Committee",
+          office_holder: row.FIRSTNAME + " " + row.LASTNAME,
           address: row.ADDRESS,
           data_source: filepath
         };
@@ -481,12 +481,12 @@ exports.extractEDandADfromCSV = function(filepath, callback) {
 }
 */
 exports.getAllCSVFilePaths = function(callback) {
-  console.log('getAllCSVFiles');
-  const fs = require('fs');
+  console.log("getAllCSVFiles");
+  const fs = require("fs");
 
   var filepaths = [];
 
-  var path = require('path');
+  var path = require("path");
   var appDir = path.dirname(require.main.filename);
 
   //console.log('PWD' + process.env.PWD);
@@ -494,7 +494,7 @@ exports.getAllCSVFilePaths = function(callback) {
     files.forEach(file => {
       // console.log(process.env.PWD + '/' + saveDir + '/' + file);
       if (/csv$/.test(file)) {
-        filepaths.push(process.env.PWD + '/' + saveDir + '/' + file);
+        filepaths.push(process.env.PWD + "/" + saveDir + "/" + file);
       }
     });
 
@@ -503,26 +503,19 @@ exports.getAllCSVFilePaths = function(callback) {
 };
 
 exports.getCCMembersFromCertifiedListPDF = function(pathToPDF, callback) {
-  var path = require('path');
+  var path = require("path");
   var filePath = pathToPDF;
-  var extract = require('pdf-text-extract');
+  var extract = require("pdf-text-extract");
 
   extract(filePath, function(err, pages) {
     if (err) {
-      console.log('woo', err);
       //return
     }
-    // console.dir(pages[2]);
-    //
-    //
-    console.log('yayay');
 
     var ccMembers = [];
     pages.forEach(function(page, index) {
       ccMembers = ccMembers.concat(extractCCMembersFromPage(page));
     });
-
-    console.log('MEMBER COUNT: ', ccMembers.length);
 
     callback(ccMembers);
   });
@@ -559,7 +552,7 @@ function extractCCMemberDataFromRow(row, county) {
     assembly_district: undefined,
     data_source: undefined,
     county: county,
-    state: 'NY'
+    state: "NY"
   };
 
   //
@@ -573,7 +566,7 @@ function extractCCMemberDataFromRow(row, county) {
   var rowFields = row.split(/\s{2,}/);
 
   // Edge case for space at begninning
-  if (rowFields[0] == '') {
+  if (rowFields[0] == "") {
     rowFields.shift();
   }
   // petition checker
@@ -585,19 +578,19 @@ function extractCCMemberDataFromRow(row, county) {
     cc_member.office = rowFields.shift();
   } else {
     throw new ccExtractionException(
-      'Petition or position Field Not Valid. ' + rowFields[0] + ' Row: ' + row
+      "Petition or position Field Not Valid. " + rowFields[0] + " Row: " + row
     );
   }
 
   // ED AD extractor
   if (/\d+\/\d+/.test(rowFields[0])) {
     cc_member.ed_ad = rowFields.shift();
-    var ed_ad = cc_member.ed_ad.split('/');
+    var ed_ad = cc_member.ed_ad.split("/");
     cc_member.electoral_district = parseInt(ed_ad[0], 10);
     cc_member.assembly_district = parseInt(ed_ad[1], 10);
   } else {
     throw new ccExtractionException(
-      'ED/AD Field Not Valid. ' + rowFields[0] + ' Row: ' + row
+      "ED/AD Field Not Valid. " + rowFields[0] + " Row: " + row
     );
   }
 
@@ -617,7 +610,7 @@ function extractCCMemberDataFromRow(row, county) {
       cc_member.tally = rowFields.shift();
     } else {
       throw new ccExtractionException(
-        'Tally Field Not Valid. ' + rowFields[0] + ' Row: ' + row
+        "Tally Field Not Valid. " + rowFields[0] + " Row: " + row
       );
     }
   }
@@ -631,7 +624,7 @@ function extractCCMemberDataFromRow(row, county) {
 
 function ccExtractionException(message) {
   this.message = message;
-  this.name = 'CCMemberException';
+  this.name = "CCMemberException";
 }
 
 function extractCCMembersFromPage(page) {

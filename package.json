@@ -4,9 +4,7 @@
   "version": "0.0.0",
   "homepage": "",
   "main": "src/",
-  "keywords": [
-    "feathers"
-  ],
+  "keywords": ["feathers"],
   "license": "MIT",
   "repository": {},
   "author": {},
@@ -16,12 +14,19 @@
     "node": ">= 6.10.2"
   },
   "scripts": {
+    "install": "apt-get install poppler-utils",
     "dev": "nodemon -e js,json,hbs src/",
     "test": "npm run mocha",
     "jshint": "jshint src/. test/. --config",
-    "start": "node src/",
-    "cert": "node cert/generate-cert.js",
-    "mocha": "mocha test/services/county-committee/county-committee-extractor.js"
+    "start": "npm run install-pdf-to-text && node src/",
+    "cert": "node cert/gene rate-cert.js",
+    "mocha": "nodemon  --exec 'mocha --recursive --bail'",
+    "precommit": "lint-staged",
+    "format": "prettier",
+    "prettier-watch": "onchange '**/*.js' -- prettier --write {{changed}}"
+  },
+  "lint-staged": {
+    "*.{js,json,css,md}": ["prettier --write", "git add"]
   },
   "dependencies": {
     "@feathers-plus/cache": "^1.4.0",
@@ -91,7 +96,11 @@
     "x-ray": "^2.3.2"
   },
   "devDependencies": {
+    "fast-csv": "^2.4.1",
     "jshint": "^2.9.4",
-    "mocha": "^3.2.0"
+    "mocha": "5.1.1",
+    "mocha-osx-reporter": "^0.1.2",
+    "nodemon": "^1.17.3",
+    "onchange": "^3.3.0"
   }
 }

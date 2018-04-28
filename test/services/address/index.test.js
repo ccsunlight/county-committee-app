@@ -1,10 +1,11 @@
-'use strict';
+"use strict";
 
-const assert = require('assert');
-const app = require('../../../src/app');
+const assert = require("assert");
 
-describe('address service', function() {
-  it('registered the addresses service', () => {
-    assert.ok(app.service('addresses'));
+describe("address service", function() {
+  const app = require("../../../src/app");
+  it("registered the addresses service", () => {
+    const addressService = app.service(app.get("apiPath") + "/address");
+    assert.ok(addressService);
   });
 });
