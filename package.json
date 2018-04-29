@@ -14,11 +14,11 @@
     "node": ">= 6.10.2"
   },
   "scripts": {
-    "install": "apt-get install poppler-utils",
+    "install": "apt-get update && apt-get install poppler-utils",
     "dev": "nodemon -e js,json,hbs src/",
     "test": "npm run mocha",
     "jshint": "jshint src/. test/. --config",
-    "start": "npm run install-pdf-to-text && node src/",
+    "start": "node src/",
     "cert": "node cert/gene rate-cert.js",
     "mocha": "nodemon  --exec 'mocha --recursive --bail'",
     "precommit": "lint-staged",
@@ -81,6 +81,7 @@
     "passport-facebook-token": "^3.3.0",
     "passport-google-oauth20": "^1.0.0",
     "passport-google-token": "^0.1.2",
+    "path": "^0.12.7",
     "pdf-text-extract": "^1.5.0",
     "permission": "^1.0.4",
     "pm2": "^2.5.0",

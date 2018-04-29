@@ -1,34 +1,34 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const feathers = require('feathers');
+const feathers = require("feathers");
 
-const _ = require('lodash');
-const bb = require('bluebird');
+const _ = require("lodash");
+const bb = require("bluebird");
 const co = bb.coroutine;
-const fs = bb.promisifyAll(require('fs'));
-const rp = require('request-promise');
-const download = require('download');
+const fs = bb.promisifyAll(require("fs"));
+const rp = require("request-promise");
+const download = require("download");
 //const NodeGeocoder = require('node-geocoder');
-const serveStatic = require('feathers').static;
-const auth = require('feathers-authentication');
-const countyCommittee = require('../services/county-committee/county-committee-model');
-const countyCommitteeMember = require('../services/county-committee-member/county-committee-member-model');
-const edGeometry = require('../services/edGeometry/edGeometry-model');
-const page = require('../services/page/page-model');
-const news = require('../services/news-link/news-link-model');
-const confirm = require('../services/invite/email-confirm');
-const User = require('../services/user/user-model');
-const Address = require('../services/address');
+const serveStatic = require("feathers").static;
+const auth = require("feathers-authentication");
+const countyCommittee = require("../services/county-committee/county-committee-model");
+const countyCommitteeMember = require("../services/county-committee-member/county-committee-member-model");
+const edGeometry = require("../services/edGeometry/edGeometry-model");
+const page = require("../services/page/page-model");
+const news = require("../services/news-link/news-link-model");
+const confirm = require("../services/invite/email-confirm");
+const User = require("../services/user/user-model");
+const Address = require("../services/address");
 
 // Prevents crawlers from cralwer not on production
 
-router.use('/robots.txt', function(req, res) {
-  res.type('text/plain');
+router.use("/robots.txt", function(req, res) {
+  res.type("text/plain");
 
-  if (process.env.NODE_ENV === 'production') {
-    res.send('User-agent: *\nAllow: /');
+  if (process.env.NODE_ENV === "production") {
+    res.send("User-agent: *\nAllow: /");
   } else {
-    res.send('User-agent: *\nDisallow: /');
+    res.send("User-agent: *\nDisallow: /");
   }
 });
 
@@ -43,12 +43,9 @@ const googleGeocoderOptions = {
 const googleGeocoder = NodeGeocoder(googleGeocoderOptions);
 */
 
-router.use('/invite/confirm/:confirm_code', function(req, res, next) {
-  console.log('confirm code' + req.params.confirm_code);
+router.use("/invite/confirm/:confirm_code", function(req, res, next) {
   confirm.confirmUser(req.params.confirm_code, function(registeredUser) {
-    console.log('result', registeredUser);
-
-    const Invite = require('../services/invite/invite-model');
+    const Invite = require("../services/invite/invite-model");
 
     Invite.remove(
       {
@@ -58,13 +55,13 @@ router.use('/invite/confirm/:confirm_code', function(req, res, next) {
         if (err) {
           console.log(err);
         } else {
-          console.log('invite deleted');
+          console.log("invite deleted");
         }
       }
     );
 
     req.data = {
-      strategy: 'local',
+      strategy: "local",
       email: registeredUser.email,
       password: registeredUser.password
     };
@@ -75,13 +72,13 @@ router.use('/invite/confirm/:confirm_code', function(req, res, next) {
 });
 
 router.get(
-  '/invite/confirm/:confirm_code',
-  auth.express.authenticate('local', {
-    successRedirect: '/cc-admin/#/profile',
-    failureRedirect: '/cc-admin/'
+  "/invite/confirm/:confirm_code",
+  auth.express.authenticate("local", {
+    successRedirect: "/cc-admin/#/profile",
+    failureRedirect: "/cc-admin/"
   }),
   function(req, res) {
-    res.send('ok time to make a password');
+    res.send("ok time to make a password");
   }
 );
 /*
@@ -114,16 +111,16 @@ const updateEdDb = co(function*() {
     const expireTime = topDoc !== null ? topDoc.createdAt + oneWeek : 0;
     if (expireTime > Date.now()) return;
 
-    const saveTo = 'downloads/Election_Districts.geojson';
+    const saveTo = "downloads/Election_Districts.geojson";
 
     try {
       const geojsonFile = yield download(
-        'https://data.cityofnewyork.us/api/geospatial/h2n3-98hq?method=export&format=GeoJSON'
+        "https://data.cityofnewyork.us/api/geospatial/h2n3-98hq?method=export&format=GeoJSON"
       );
       yield fs.writeFileAsync(saveTo, geojsonFile);
     } catch (err) {
       // if the download fails, just log it and fall back to whatever we already have
-      console.log('ED geojson download failed!');
+      console.log("ED geojson download failed!");
     }
 
     const data = yield fs.readFileAsync(saveTo);
@@ -132,7 +129,7 @@ const updateEdDb = co(function*() {
         ad: Number(x.properties.elect_dist.slice(0, 2)),
         ed: Number(x.properties.elect_dist.slice(2)),
         geometry: {
-          type: 'MultiPolygon',
+          type: "MultiPolygon",
           coordinates: x.geometry.coordinates
         }
       };
@@ -145,7 +142,7 @@ const updateEdDb = co(function*() {
       }
     });
 
-    console.log('Updated ED geometry DB');
+    console.log("Updated ED geometry DB");
   } catch (err) {
     console.log(err);
   }
@@ -154,34 +151,34 @@ updateEdDb();
 
 /* GET home page. */
 router.get(
-  '/',
+  "/",
   co(function*(req, res, next) {
     let numOfElected = yield countyCommitteeMember
       .find({
-        county: 'Kings County',
+        county: "Kings County",
         entry_type: {
-          $in: ['Elected', 'Uncontested']
+          $in: ["Elected", "Uncontested"]
         }
       })
       .count();
 
     let numOfVacancies = yield countyCommitteeMember
       .find({
-        office_holder: 'Vacancy',
-        county: 'Kings County'
+        office_holder: "Vacancy",
+        county: "Kings County"
       })
       .count();
 
     let numOfAppointed = yield countyCommitteeMember
       .find({
-        entry_type: 'Appointed',
-        county: 'Kings County'
+        entry_type: "Appointed",
+        county: "Kings County"
       })
       .count();
 
     let countySeatBreakdowns = [
       {
-        county: 'Kings',
+        county: "Kings",
         numOfSeats: numOfElected + numOfVacancies + numOfAppointed,
         numOfElected: numOfElected,
         numOfVacancies: numOfVacancies,
@@ -191,36 +188,36 @@ router.get(
 
     numOfElected = yield countyCommitteeMember
       .find({
-        county: 'Queens County',
+        county: "Queens County",
         entry_type: {
-          $in: ['Elected', 'Uncontested']
+          $in: ["Elected", "Uncontested"]
         }
       })
       .count();
 
     numOfVacancies = yield countyCommitteeMember
       .find({
-        office_holder: 'Vacancy',
-        county: 'Queens County'
+        office_holder: "Vacancy",
+        county: "Queens County"
       })
       .count();
 
     numOfAppointed = yield countyCommitteeMember
       .find({
-        entry_type: 'Appointed',
-        county: 'Queens County'
+        entry_type: "Appointed",
+        county: "Queens County"
       })
       .count();
 
     countySeatBreakdowns.push({
-      county: 'Queens',
+      county: "Queens",
       numOfSeats: numOfElected + numOfVacancies + numOfAppointed,
       numOfElected: numOfElected,
       numOfVacancies: numOfVacancies,
       numOfAppointed: numOfAppointed
     });
 
-    res.render('index', {
+    res.render("index", {
       countySeatBreakdowns: countySeatBreakdowns
     });
   })
@@ -254,7 +251,7 @@ const intersectQuery = (coordinates) => {
 };
 */
 
-router.get('/get_address', function(req, res, next) {
+router.get("/get_address", function(req, res, next) {
   try {
     let addressSvc = new Address.Service();
     addressSvc
@@ -285,7 +282,7 @@ router.get('/get_address', function(req, res, next) {
                 });
                 const filledDocs = _.filter(
                   memberDocs,
-                  x => x.office_holder !== 'Vacancy'
+                  x => x.office_holder !== "Vacancy"
                 );
                 const numOfSeats = _.size(memberDocs);
                 const numOfFilledSeats = _.size(filledDocs);
@@ -302,14 +299,14 @@ router.get('/get_address', function(req, res, next) {
             data.cleanedAllGeomDocsInAd = JSON.stringify(
               cleanedAllGeomDocsInAd
             );
-            res.render('get_address', data);
+            res.render("get_address", data);
           } else {
             const locals = {
               address: req.query.address,
-              error: 'No data for this district.',
+              error: "No data for this district.",
               new_district: true
             };
-            res.render('get_address', locals);
+            res.render("get_address", locals);
           }
         })
       )
@@ -318,19 +315,19 @@ router.get('/get_address', function(req, res, next) {
           address: req.query.address,
           error: error.message
         };
-        res.render('get_address', locals);
+        res.render("get_address", locals);
       });
   } catch (err) {
-    console.log('err no data');
+    console.log("err no data");
 
-    if (err.message === 'Not in NYC')
-      console.log('TODO: the address must be in NYC');
-    else if (err.name === 'HttpError')
-      console.log('TODO: google geocoding service is currently down');
-    else if (err.message === 'Empty address')
-      console.log('TODO: empty address entered');
-    else if (err.message === 'Bad address')
-      console.log('TODO: bad address entered');
+    if (err.message === "Not in NYC")
+      console.log("TODO: the address must be in NYC");
+    else if (err.name === "HttpError")
+      console.log("TODO: google geocoding service is currently down");
+    else if (err.message === "Empty address")
+      console.log("TODO: empty address entered");
+    else if (err.message === "Bad address")
+      console.log("TODO: bad address entered");
     else {
       // TODO: send to a general error page like 'something went wrong!'
       console.log(err);
@@ -341,12 +338,12 @@ router.get('/get_address', function(req, res, next) {
       error: err.message,
       newDistrict: true
     };
-    res.render('get_address', locals);
+    res.render("get_address", locals);
   }
 });
 
 /* GET home page. */
-router.get(['/news', '/news/:pageNum'], function(req, res, next) {
+router.get(["/news", "/news/:pageNum"], function(req, res, next) {
   let perPage = 20;
   let pageNum = req.params.pageNum;
 
@@ -373,7 +370,7 @@ router.get(['/news', '/news/:pageNum'], function(req, res, next) {
         }
 
         if (data) {
-          res.render('news', {
+          res.render("news", {
             news_links: data,
             pagination: pagination
           });
@@ -384,17 +381,15 @@ router.get(['/news', '/news/:pageNum'], function(req, res, next) {
   });
 });
 
-router.get('/counties/:alias', function(req, res, next) {
-  console.log('county alias', req.params.alias);
-
+router.get("/counties/:alias", function(req, res, next) {
   countyCommittee
     .findOne({
-      alias: new RegExp(req.params.alias, 'i')
+      alias: new RegExp(req.params.alias, "i")
     })
     .then(function(county_committee) {
       if (county_committee) {
-        res.render('county-committee-page', {
-          foo: 'bah',
+        res.render("county-committee-page", {
+          foo: "bah",
           county: county_committee.county,
           party: county_committee.party,
           chairman: county_committee.chairman,
@@ -408,21 +403,19 @@ router.get('/counties/:alias', function(req, res, next) {
 
 /* GET home page. */
 router.get(
-  '/:page',
+  "/:page",
   co(function*(req, res, next) {
     let queryParams = {
       alias: req.params.page
     };
 
-    console.log(req.params);
-
-    if (req.query.preview !== '1') {
-      queryParams.status = 'published';
+    if (req.query.preview !== "1") {
+      queryParams.status = "published";
     }
 
     page.findOne(queryParams).then(function(data) {
       if (data) {
-        res.render('page', data);
+        res.render("page", data);
       } else {
         next();
       }

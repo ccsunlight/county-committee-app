@@ -3,12 +3,19 @@
 const fs = require("fs");
 const path = require("path");
 const extract = require("pdf-text-extract");
-
+const CertifiedList = require("./certified-list-model");
 const hooks = require("./hooks");
+const CountyCommitteeMember = require("../county-committee-member/county-committee-member-model");
+const service = require("feathers-mongoose");
 
 class Service {
   constructor(options) {
     this.options = options || {};
+
+    this.ccExtractionException = function(message) {
+      this.message = message;
+      this.name = "CCMemberException";
+    };
   }
 
   find(params) {
@@ -35,8 +42,8 @@ class Service {
 
     var county = this.extractCountyFromPage(page);
 
-    var headerRowIndex = rows.findIndex(this.findCCMemberHeaderRow);
-    var footerRowIndex = rows.findIndex(this.findCCMemberFooterRow);
+    var headerRowIndex = rows.findIndex(this.isMemberTableHeaderRow);
+    var footerRowIndex = rows.findIndex(this.isMemberTableFooterRow);
     if (headerRowIndex > 0 && footerRowIndex > 0) {
       var ccMemberRows = rows.slice(headerRowIndex + 1, footerRowIndex);
 
@@ -55,26 +62,53 @@ class Service {
     }
   }
 
-  findCCMemberHeaderRow(row) {
-    if (/Tally\s+Entry Type/.test(row)) {
-      return true;
-    } else {
-      return false;
+  extractPartyFromPage(page) {
+    var match = page.match(
+      /persons were duly elected as\s+(.+)\sCounty Committee/
+    );
+
+    if (match) {
+      return match[1];
     }
   }
 
-  findCCMemberFooterRow(row) {
-    if (/Page \d+ of \d+/.test(row)) {
-      return true;
-    } else {
-      return false;
-    }
+  /**
+   * Determines if row is a table header to extract columns
+   * and determine where member data is in PDF.
+   * @param  {[type]} row [description]
+   * @return {[type]}     [description]
+   */
+  isMemberTableHeaderRow(row) {
+    return /Tally\s+Entry Type/.test(row);
+  }
+
+  /**
+   * Determines if row is a table footer to extract columns
+   * and determine where member ends is in PDF.
+   * @param  {[type]} row [description]
+   * @return {[type]}     [description]
+   */
+  isMemberTableFooterRow(row) {
+    return /Page \d+ of \d+/.test(row);
   }
 
   //ED/AD Office Holder Address Tally Entry Type
+  /**
+   * Extracts a member's attributes from a row of text
+   * @param  {String} row    [description]
+   * @param  {String} county [description]
+   * @param  {String} state  [description]
+   * @return {Object}        [description]
+   */
+  extractCCMemberDataFromRow(row, county, state = "NY") {
+    if (!county) {
+      throw new this.ccExtractionException(
+        "County not provided for member row: " + row
+      );
+    }
 
-  extractCCMemberDataFromRow(row, county) {
-    var cc_member = {
+    // Data object for CC Member
+    let cc_member = {
       petition_number: undefined,
       office: undefined,
       office_holder: undefined,
@@ -86,7 +120,7 @@ class Service {
       assembly_district: undefined,
       data_source: undefined,
       county: county,
-      state: "NY"
+      state: state
     };
 
     //
@@ -156,11 +190,6 @@ class Service {
     return cc_member;
   }
 
-  ccExtractionException(message) {
-    this.message = message;
-    this.name = "CCMemberException";
-  }
-
   getCCMembersFromCertifiedListPDF(filepath) {
     return new Promise((resolve, reject) => {
       extract(filepath, (err, pages) => {
@@ -170,19 +199,36 @@ class Service {
         }
 
         let members = [];
-        let county;
+        let county, party;
         pages.forEach((page, index) => {
           // Keeps checking pages until it can extract county
           // Some pages have county on them others don't
           if (!county) {
             county = this.extractCountyFromPage(page);
           }
-          members.push(this.extractCCMembersFromPage(page));
+
+          if (!party) {
+            party = this.extractPartyFromPage(page);
+          }
+
+          const extractedMembers = this.extractCCMembersFromPage(page);
+
+          if (extractedMembers) {
+            members = members.concat(
+              extractedMembers.map(member => {
+                const ccMember = new CountyCommitteeMember(member);
+                ccMember.data_source = path.basename(filepath);
+                return ccMember;
+              })
+            );
+          }
         });
 
         resolve({
+          party: party,
           county: county,
-          members: members
+          members: members,
+          source: path.basename(filepath)
         });
       });
     });
@@ -190,7 +236,22 @@ class Service {
 
   create(params) {
     let certifiedList;
-    return this.getCCMembersFromCertifiedListPDF(params.filepath);
+
+    return new Promise((resolve, reject) => {
+      this.getCCMembersFromCertifiedListPDF(params.filepath).then(
+        certifiedList => {
+          let importedList = new CertifiedList(certifiedList);
+          importedList.save(err => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(importedList);
+            }
+          });
+          //console.log(importedList);
+        }
+      );
+    });
   }
 
   update(id, data, params) {
@@ -209,11 +270,21 @@ class Service {
 module.exports = function() {
   const app = this;
 
+  const options = {
+    Model: CertifiedList,
+    paginate: {
+      default: 10,
+      max: 25
+    }
+  };
+
   // Initialize our service with any options it requires
-  app.use("/certified-list", new Service());
+  app.use(app.get("apiPath") + "/certified-list", service(options));
 
   // Get our initialize service to that we can bind hooks
-  const certifiedListService = app.service("/certified-list");
+  const certifiedListService = app.service(
+    app.get("apiPath") + "/certified-list"
+  );
 
   // Set up our before hooks
   certifiedListService.before(hooks.before);

@@ -42,6 +42,7 @@ module.exports = function() {
   app.configure(glossaryTerm);
   app.configure(newsLink);
   app.configure(address);
+  app.configure(certifiedList);
 
   address.docs = {
     description: "A service to send and receive messages",
@@ -76,6 +77,6 @@ module.exports = function() {
   delete app.docs.paths[apiPath + "/action-log/{_id}"];
   delete app.docs.paths[apiPath + "/profile"];
   delete app.docs.paths[apiPath + "/profile/{_id}"];
+  delete app.docs.paths[apiPath + "/certified-list/{_id}"];
   app.configure(document);
-  app.configure(certifiedList);
 };

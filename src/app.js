@@ -113,8 +113,18 @@ app
   .configure(jwt(localConfig))
   .options("*", cors())
   .use(cors())
-  // .use(favicon(path.join(app.get('public'), 'favicon.ico')))
-  .use("/cc-admin", serveStatic(app.get("public") + "/cc-admin/build"))
+  // These mappings are to allow for admin development with react.
+  .use(
+    "/cc-admin/build/static",
+    serveStatic(app.get("public") + "/cc-admin/build/static")
+  )
+  /*
+  .use(
+    "/cc-admin",
+    serveStatic(app.get("public") + "/cc-admin/build/static")
+  )
+  */
+  //.use("/cc-admin", serveStatic(app.get("public") + "/cc-admin/public"))
   .configure(
     swagger({
       docsPath: apiPath + "/docs",
@@ -166,6 +176,12 @@ app.service(apiPath + "/user").hooks({
 app.service(apiPath + "/county-committee-member").hooks({
   before: {
     all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
+  }
+});
+
+app.service(apiPath + "/certified-list").hooks({
+  before: {
+    // all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
   }
 });
 
