@@ -19,7 +19,9 @@ const news = require("../services/news-link/news-link-model");
 const confirm = require("../services/invite/email-confirm");
 const User = require("../services/user/user-model");
 const Address = require("../services/address");
+const NodeCache = require("node-cache");
 
+const cache = new NodeCache({ stdTTL: 604800 });
 // Prevents crawlers from cralwer not on production
 
 router.use("/robots.txt", function(req, res) {
@@ -149,74 +151,74 @@ const updateEdDb = co(function*() {
 });
 updateEdDb();
 
-/* GET home page. */
-router.get(
-  "/",
-  co(function*(req, res, next) {
-    let numOfElected = yield countyCommitteeMember
-      .find({
-        county: "Kings County",
-        entry_type: {
-          $in: ["Elected", "Uncontested"]
-        }
-      })
-      .count();
-
-    let numOfVacancies = yield countyCommitteeMember
-      .find({
-        office_holder: "Vacancy",
-        county: "Kings County"
-      })
-      .count();
-
-    let numOfAppointed = yield countyCommitteeMember
-      .find({
-        entry_type: "Appointed",
-        county: "Kings County"
-      })
-      .count();
-
-    let countySeatBreakdowns = [
-      {
-        county: "Kings",
-        numOfSeats: numOfElected + numOfVacancies + numOfAppointed,
-        numOfElected: numOfElected,
-        numOfVacancies: numOfVacancies,
-        numOfAppointed: numOfAppointed
+const getCountyCommitteeBreakdown = co(function*(county, party) {
+  // "Counties in db include 'county' in the name
+  const countySearchString = county + " County";
+  let numOfElected = yield countyCommitteeMember
+    .find({
+      county: countySearchString,
+      party: party,
+      entry_type: {
+        $in: ["Elected", "Uncontested"]
       }
-    ];
+    })
+    .count();
 
-    numOfElected = yield countyCommitteeMember
-      .find({
-        county: "Queens County",
-        entry_type: {
-          $in: ["Elected", "Uncontested"]
-        }
-      })
-      .count();
+  let numOfVacancies = yield countyCommitteeMember
+    .find({
+      office_holder: "Vacancy",
+      county: countySearchString,
+      party: party
+    })
+    .count();
 
-    numOfVacancies = yield countyCommitteeMember
-      .find({
-        office_holder: "Vacancy",
-        county: "Queens County"
-      })
-      .count();
+  let numOfAppointed = yield countyCommitteeMember
+    .find({
+      entry_type: "Appointed",
+      county: countySearchString,
+      party: party
+    })
+    .count();
 
-    numOfAppointed = yield countyCommitteeMember
-      .find({
-        entry_type: "Appointed",
-        county: "Queens County"
-      })
-      .count();
-
-    countySeatBreakdowns.push({
-      county: "Queens",
+  let countySeatBreakdowns = [
+    {
+      county: county,
       numOfSeats: numOfElected + numOfVacancies + numOfAppointed,
       numOfElected: numOfElected,
       numOfVacancies: numOfVacancies,
       numOfAppointed: numOfAppointed
-    });
+    }
+  ];
 
+  return {
+    county: county,
+    party: party,
+    numOfSeats: numOfElected + numOfVacancies + numOfAppointed,
+    numOfElected: numOfElected,
+    numOfVacancies: numOfVacancies,
+    numOfAppointed: numOfAppointed
+  };
+});
+
+/* GET home page. */
+router.get(
+  "/",
+  co(function*(req, res, next) {
+    // Caching the output of the cc breakdowns
+    // These don't change much
+    let countySeatBreakdowns = cache.get("county-committee-breakdowns");
+
+    if (!countySeatBreakdowns) {
+      countySeatBreakdowns = [
+        yield getCountyCommitteeBreakdown("Kings", "Democratic"),
+        yield getCountyCommitteeBreakdown("Queens", "Democratic"),
+        yield getCountyCommitteeBreakdown("New York", "Democratic"),
+        yield getCountyCommitteeBreakdown("Bronx", "Democratic"),
+        yield getCountyCommitteeBreakdown("Richmond", "Democratic")
+      ];
+
+      cache.set("county-committee-breakdowns", countySeatBreakdowns);
+    }
     res.render("index", {
       countySeatBreakdowns: countySeatBreakdowns
     });
@@ -258,7 +260,7 @@ router.get("/get_address", function(req, res, next) {
       .get(req.query.address)
       .then(
         co(function*(data) {
-          if (data.ad >= 23 && data.ad <= 64) {
+          if (data.ad > 0) {
             // @todo move this to feathers map service.
             const allGeomDocsInAd = yield edGeometry.find({
               ad: data.ad

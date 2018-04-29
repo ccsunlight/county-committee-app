@@ -6,29 +6,14 @@ const extract = require("pdf-text-extract");
 const CertifiedList = require("./certified-list-model");
 const hooks = require("./hooks");
 const CountyCommitteeMember = require("../county-committee-member/county-committee-member-model");
-const service = require("feathers-mongoose");
+const FeathersMongoose = require("feathers-mongoose");
 
-class Service {
-  constructor(options) {
-    this.options = options || {};
+function ccExtractionException(message) {
+  this.message = message;
+  this.name = "CCMemberException";
+}
 
-    this.ccExtractionException = function(message) {
-      this.message = message;
-      this.name = "CCMemberException";
-    };
-  }
-
-  find(params) {
-    return Promise.resolve([]);
-  }
-
-  get(id, params) {
-    return Promise.resolve({
-      id,
-      text: `A new message with ID: ${id}!`
-    });
-  }
-
+class Service extends FeathersMongoose.Service {
   extractCountyFromPage(page) {
     var match = page.match(/IN THE CITY OF NEW YORK\s+(.+), .+Party/);
 
@@ -100,7 +85,7 @@ class Service {
    * @param  {String} state  [description]
    * @return {Object}        [description]
    */
-  extractCCMemberDataFromRow(row, county, state = "NY") {
+  extractCCMemberDataFromRow(row, county, state = "NY", party) {
     if (!county) {
       throw new this.ccExtractionException(
         "County not provided for member row: " + row
@@ -120,7 +105,8 @@ class Service {
       assembly_district: undefined,
       data_source: undefined,
       county: county,
-      state: state
+      state: state,
+      party: party
     };
 
     //
@@ -238,6 +224,10 @@ class Service {
     let certifiedList;
 
     return new Promise((resolve, reject) => {
+      if (!fs.existsSync(params.filepath)) {
+        reject("File does not exist: " + params.filepath);
+        return;
+      }
       this.getCCMembersFromCertifiedListPDF(params.filepath).then(
         certifiedList => {
           let importedList = new CertifiedList(certifiedList);
@@ -248,22 +238,9 @@ class Service {
               resolve(importedList);
             }
           });
-          //console.log(importedList);
         }
       );
     });
-  }
-
-  update(id, data, params) {
-    return Promise.resolve(data);
-  }
-
-  patch(id, data, params) {
-    return Promise.resolve(data);
-  }
-
-  remove(id, params) {
-    return Promise.resolve({ id });
   }
 }
 
@@ -279,7 +256,7 @@ module.exports = function() {
   };
 
   // Initialize our service with any options it requires
-  app.use(app.get("apiPath") + "/certified-list", service(options));
+  app.use(app.get("apiPath") + "/certified-list", new Service(options));
 
   // Get our initialize service to that we can bind hooks
   const certifiedListService = app.service(

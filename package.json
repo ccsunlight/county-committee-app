@@ -14,7 +14,7 @@
     "node": ">= 6.10.2"
   },
   "scripts": {
-    "install": "apt-get update && apt-get install poppler-utils",
+    "install-deps": "apt-get update && apt-get install poppler-utils",
     "dev": "nodemon -e js,json,hbs src/",
     "test": "npm run mocha",
     "jshint": "jshint src/. test/. --config",
@@ -23,6 +23,7 @@
     "mocha": "nodemon  --exec 'mocha --recursive --bail'",
     "precommit": "lint-staged",
     "format": "prettier",
+    "import-certified-list": "node scripts/import-certified-list",
     "prettier-watch": "onchange '**/*.js' -- prettier --write {{changed}}"
   },
   "lint-staged": {
@@ -92,6 +93,7 @@
     "serve-favicon": "^2.4.2",
     "slugify": "^1.2.6",
     "smtp-server": "^3.0.1",
+    "underscore": "^1.9.0",
     "winston": "^2.4.0",
     "winston-mongodb": "^3.0.1",
     "x-ray": "^2.3.2"

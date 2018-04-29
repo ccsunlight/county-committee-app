@@ -33,7 +33,7 @@ const countyCommitteeMemberSchema = new Schema(
     },
     part: {
       type: String,
-      part: ["A", "B"],
+      part: ["A", "B", "C", "D"],
       default: "",
       required: false
     },
@@ -48,6 +48,10 @@ const countyCommitteeMemberSchema = new Schema(
     assembly_district: {
       type: Number,
       required: true
+    },
+    party: {
+      type: String,
+      enum: ["Democratic", "Republican"]
     },
     county: {
       type: String,

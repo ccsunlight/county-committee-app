@@ -1,6 +1,6 @@
 // in src/posts.js
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 import {
   List,
   Edit,
@@ -18,10 +18,10 @@ import {
   SelectInput,
   SimpleForm,
   TextInput
-} from 'admin-on-rest';
-import { WithPermission, SwitchPermissions, Permission } from 'aor-permissions';
-import authClient from './feathersAuthClient';
-import { checkUserCanEdit } from './feathersAuthClient';
+} from "admin-on-rest";
+import { WithPermission, SwitchPermissions, Permission } from "aor-permissions";
+import authClient from "./feathersAuthClient";
+import { checkUserCanEdit } from "./feathersAuthClient";
 
 export const MemberList = props => (
   <List {...props} title="County Committee Members" filters={<MemberFilter />}>
@@ -37,7 +37,7 @@ export const MemberList = props => (
 );
 
 const MemberTitle = ({ record }) => {
-  return <span>Post {record ? `"${record.office_holder}"` : ''}</span>;
+  return <span>Post {record ? `"${record.office_holder}"` : ""}</span>;
 };
 
 const MemberFilter = props => (
@@ -47,9 +47,11 @@ const MemberFilter = props => (
     <SelectInput
       source="county"
       choices={[
-        { id: 'Queens County', name: 'Queens' },
-        { id: 'Kings County', name: 'Brooklyn' },
-        { id: 'New York County', name: 'Manhattan' }
+        { id: "Queens County", name: "Queens" },
+        { id: "Kings County", name: "Brooklyn" },
+        { id: "New York County", name: "Manhattan" },
+        { id: "Bronx County", name: "Bronx" },
+        { id: "Richmond County", name: "Staten Island" }
       ]}
     />
   </Filter>
