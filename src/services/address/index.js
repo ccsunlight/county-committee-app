@@ -1,22 +1,22 @@
-'use strict';
-const service = require('feathers-mongoose');
+"use strict";
+const service = require("feathers-mongoose");
 
-const _ = require('lodash');
-const bb = require('bluebird');
+const _ = require("lodash");
+const bb = require("bluebird");
 const co = bb.coroutine;
-const fs = bb.promisifyAll(require('fs'));
-const rp = require('request-promise');
-const countyCommittee = require('../county-committee/county-committee-model');
-const countyCommitteeMember = require('../county-committee-member/county-committee-member-model');
-const edGeometry = require('../edGeometry/edGeometry-model');
+const fs = bb.promisifyAll(require("fs"));
+const rp = require("request-promise");
+const countyCommittee = require("../county-committee/county-committee-model");
+const countyCommitteeMember = require("../county-committee-member/county-committee-member-model");
+const edGeometry = require("../edGeometry/edGeometry-model");
 
-const hooks = require('./hooks');
-const NodeGeocoder = require('node-geocoder');
+const hooks = require("./hooks");
+const NodeGeocoder = require("node-geocoder");
 
 const googleGeocoderOptions = {
-  provider: 'google',
-  apiKey: 'AIzaSyBWT_tSznzz1oSNXAql54sSKGIAC4EyQGg',
-  httpAdapter: 'https',
+  provider: "google",
+  apiKey: "AIzaSyBWT_tSznzz1oSNXAql54sSKGIAC4EyQGg",
+  httpAdapter: "https",
   formatter: null
 };
 
@@ -38,7 +38,7 @@ const intersectQuery = coordinates => {
       $geoIntersects: {
         $geometry: {
           // geojson expects its lat/long backwards (like long,lat)
-          type: 'Point',
+          type: "Point",
           coordinates: coordinates.reverse()
         }
       }
@@ -55,22 +55,24 @@ class Service {
     return Promise.resolve([]);
   }
 
-  get(address, params) {
+  get(address, params = {}) {
+    const party = params.party || "Democratic";
     const get_address = co(function*(address) {
       const data = yield googleGeocoder.geocode(address);
-      if (!data[0]) throw new Error('Bad address');
+      if (!data[0]) throw new Error("Bad address");
 
       const [lat, long] = [data[0].latitude, data[0].longitude];
       const yourGeomDoc = yield edGeometry.findOne(intersectQuery([lat, long]));
-      if (!yourGeomDoc) throw new Error('Not in NYC');
+      if (!yourGeomDoc) throw new Error("Not in NYC");
 
       const [ad, ed] = [yourGeomDoc.ad, yourGeomDoc.ed];
       const yourMembers = yield countyCommitteeMember.find({
         assembly_district: ad,
-        electoral_district: ed
+        electoral_district: ed,
+        party: party
       });
 
-      let county = '';
+      let county = "";
 
       const memberData = yield bb.map(
         yourMembers,
@@ -95,7 +97,8 @@ class Service {
         ad: ad,
         ed: ed,
         county: county,
-        members: memberData
+        members: memberData,
+        party: party
       };
 
       return result;
@@ -131,10 +134,10 @@ module.exports = function() {
   const app = this;
 
   // Initialize our service with any options it requires
-  app.use(app.get('apiPath') + '/address', new Service());
+  app.use(app.get("apiPath") + "/address", new Service());
 
   // Get our initialize service to that we can bind hooks
-  const addressService = app.service(app.get('apiPath') + '/address');
+  const addressService = app.service(app.get("apiPath") + "/address");
 
   // Set up our before hooks
   addressService.before(hooks.before);

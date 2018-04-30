@@ -4,6 +4,7 @@ const assert = require("assert");
 const app = require("../../../src/app");
 
 describe("Certified List service", function() {
+  this.timeout(10000);
   it("registered the certified-list service", () => {
     assert.ok(app.service(app.get("apiPath") + "/certified-list"));
   });
@@ -36,6 +37,7 @@ describe("Certified List service", function() {
           "NYCCDemCertifiedListPreview2017.pdf"
         );
         assert(Array.isArray(certifiedList.members));
+        assert.equal(certifiedList.members.pop().party, "Democratic");
         done();
       })
       .catch(err => {

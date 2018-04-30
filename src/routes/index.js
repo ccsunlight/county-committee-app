@@ -255,12 +255,15 @@ const intersectQuery = (coordinates) => {
 
 router.get("/get_address", function(req, res, next) {
   try {
+    // For legacy urls set to Democratic
+    const party = req.query.party || "Democratic";
+
     let addressSvc = new Address.Service();
     addressSvc
-      .get(req.query.address)
+      .get(req.query.address, { party: party })
       .then(
         co(function*(data) {
-          if (data.ad > 0) {
+          if (data.ad) {
             // @todo move this to feathers map service.
             const allGeomDocsInAd = yield edGeometry.find({
               ad: data.ad
@@ -278,9 +281,11 @@ router.get("/get_address", function(req, res, next) {
                     };
                   }
                 );
+                // For map seats.
                 const memberDocs = yield countyCommitteeMember.find({
                   assembly_district: doc.ad,
-                  electoral_district: doc.ed
+                  electoral_district: doc.ed,
+                  party: party
                 });
                 const filledDocs = _.filter(
                   memberDocs,
@@ -293,7 +298,8 @@ router.get("/get_address", function(req, res, next) {
                   co: singleEdCoords,
                   ed: doc.ed,
                   ns: numOfSeats,
-                  nf: numOfFilledSeats
+                  nf: numOfFilledSeats,
+                  party: party
                 };
               })
             );
@@ -305,8 +311,7 @@ router.get("/get_address", function(req, res, next) {
           } else {
             const locals = {
               address: req.query.address,
-              error: "No data for this district.",
-              new_district: true
+              error: "No data for this district."
             };
             res.render("get_address", locals);
           }

@@ -26,6 +26,7 @@ class Service extends FeathersMongoose.Service {
     var rows = page.match(/(.+)/g);
 
     var county = this.extractCountyFromPage(page);
+    const party = this.extractPartyFromPage(page);
 
     var headerRowIndex = rows.findIndex(this.isMemberTableHeaderRow);
     var footerRowIndex = rows.findIndex(this.isMemberTableFooterRow);
@@ -85,7 +86,7 @@ class Service extends FeathersMongoose.Service {
    * @param  {String} state  [description]
    * @return {Object}        [description]
    */
-  extractCCMemberDataFromRow(row, county, state = "NY", party) {
+  extractCCMemberDataFromRow(row, county, state = "NY") {
     if (!county) {
       throw new this.ccExtractionException(
         "County not provided for member row: " + row
@@ -105,8 +106,7 @@ class Service extends FeathersMongoose.Service {
       assembly_district: undefined,
       data_source: undefined,
       county: county,
-      state: state,
-      party: party
+      state: state
     };
 
     //
@@ -203,6 +203,7 @@ class Service extends FeathersMongoose.Service {
             members = members.concat(
               extractedMembers.map(member => {
                 const ccMember = new CountyCommitteeMember(member);
+                ccMember.party = party;
                 ccMember.data_source = path.basename(filepath);
                 return ccMember;
               })
