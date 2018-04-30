@@ -2,8 +2,6 @@
 
 const certifiedList = require("./certified-list");
 
-const document = require("./document");
-
 const invite = require("./invite");
 const edGeometry = require("./edGeometry");
 const countyCommitteeMember = require("./county-committee-member");
@@ -79,5 +77,4 @@ module.exports = function() {
   delete app.docs.paths[apiPath + "/profile/{_id}"];
   delete app.docs.paths[apiPath + "/certified-list"];
   delete app.docs.paths[apiPath + "/certified-list/{_id}"];
-  app.configure(document);
 };
