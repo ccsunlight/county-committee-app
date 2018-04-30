@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
-const handler = require('feathers-errors/handler');
-const notFound = require('./not-found-handler');
-const logger = require('./logger');
+const handler = require("feathers-errors/handler");
+const notFound = require("./not-found-handler");
+const logger = require("./logger");
 
 module.exports = function() {
   // Add your custom middleware here. Remember, that
@@ -15,11 +15,11 @@ module.exports = function() {
   // Log the error
   app.use(function(err, req, res, next) {
     if (err.code == 401) {
-      res.status(401).json({ message: 'Authentication failed.' });
+      res.status(401).json({ message: "Authentication failed." });
     } else {
       next(err);
     }
   });
 
-  // app.use(handler());
+  app.use(handler());
 };

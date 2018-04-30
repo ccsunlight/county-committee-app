@@ -1,6 +1,6 @@
 // in src/posts.js
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 import {
   List,
   Edit,
@@ -18,10 +18,7 @@ import {
   SelectInput,
   SimpleForm,
   TextInput
-} from 'admin-on-rest';
-import { WithPermission, SwitchPermissions, Permission } from 'aor-permissions';
-import authClient from './feathersAuthClient';
-import { checkUserCanEdit } from './feathersAuthClient';
+} from "admin-on-rest";
 
 export const CountyCommitteeList = props => (
   <List {...props} title="County Committees">
@@ -38,7 +35,7 @@ const CountyCommitteeTitle = ({ record }) => {
     <span>
       {record
         ? `Edit "${record.county}" County Committee`
-        : 'Create County Committee'}
+        : "Create County Committee"}
     </span>
   );
 };
@@ -51,8 +48,8 @@ export const CountyCommitteeEdit = props => (
       <SelectInput
         source="party"
         choices={[
-          { id: 'Democratic', name: 'Democratic' },
-          { id: 'Republican', name: 'Republican' }
+          { id: "Democratic", name: "Democratic" },
+          { id: "Republican", name: "Republican" }
         ]}
       />
       <TextInput source="chairman" />
@@ -72,8 +69,8 @@ export const CountyCommitteeCreate = props => (
       <SelectInput
         source="party"
         choices={[
-          { id: 'Democratic', name: 'Democratic' },
-          { id: 'Republican', name: 'Republican' }
+          { id: "Democratic", name: "Democratic" },
+          { id: "Republican", name: "Republican" }
         ]}
       />
       <TextInput source="party" />

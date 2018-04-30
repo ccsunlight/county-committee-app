@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 // Add any common hooks you want to share across services in here.
 //
@@ -6,31 +6,31 @@
 // see http://docs.feathersjs.com/hooks/readme.html for more details
 // on hooks.
 
-const util = require('util');
-const winston = require('winston');
+const util = require("util");
+const winston = require("winston");
 const app = this;
 
-const user = require('../services/user/user-model');
+const user = require("../services/user/user-model");
 
-require('winston-mongodb');
+require("winston-mongodb");
 
 exports.myHook = function(options) {
   return function(hook) {
-    logger.info('My custom global hook ran. Feathers is awesome!');
+    logger.info("My custom global hook ran. Feathers is awesome!");
   };
 };
 
 var MongooseLogger = (winston.transports.MongooseLogger = function(options) {
-  this.name = 'mongooseLogger';
+  this.name = "mongooseLogger";
 
   options = options || {};
 
-  this.level = options.level || 'info';
-  this.collection_name = options.collection_name || 'action-log';
+  this.level = options.level || "info";
+  this.collection_name = options.collection_name || "action-log";
 });
 
 util.inherits(MongooseLogger, winston.Transport);
-let LogModel = require('../services/action-log/action-log-model');
+let LogModel = require("../services/action-log/action-log-model");
 MongooseLogger.prototype.log = function(level, message, metadata, callback) {
   var entry = new LogModel({
     level: level,
@@ -44,10 +44,10 @@ MongooseLogger.prototype.log = function(level, message, metadata, callback) {
 };
 
 const logger = new winston.Logger({
-  level: 'info',
+  level: "info",
   transports: [
     new winston.transports.MongooseLogger({
-      level: 'info'
+      level: "info"
     })
     /* new(winston.transports.MongoDB)({
             db: 'mongodb://172.17.0.2:27017/county-committee',
@@ -63,20 +63,20 @@ exports.logAction = function(hook) {
     user = hook.params.user;
   } else {
     user = {
-      email: 'anonymous',
-      id: ''
+      email: "anonymous",
+      id: ""
     };
   }
 
   var logObject;
 
   switch (hook.path) {
-    case 'api/v1/authentication':
+    case "api/v1/authentication":
       logObject = {
         user: user.email,
         user_id: user.id,
-        type: 'authentication',
-        description: 'Login' // @todo add data changing
+        type: "authentication",
+        description: "Login" // @todo add data changing
       };
 
       break;
@@ -90,11 +90,9 @@ exports.logAction = function(hook) {
       break;
   }
 
-  logger.log('info', hook.method, {
+  logger.log("info", hook.method, {
     user: logObject.user,
     type: logObject.type,
     description: logObject.description
   });
-
-  //console.log('This hook is logged', hook.method)
 };

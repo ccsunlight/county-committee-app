@@ -5,30 +5,31 @@ import {
   GET_ONE,
   CREATE,
   UPDATE,
-  DELETE
-} from 'admin-on-rest/lib/rest/types';
+  DELETE,
+  PATCH
+} from "admin-on-rest/lib/rest/types";
 
 export default client => {
   const mapRequest = (type, resource, params) => {
     const service = client.service(resource);
     let query = {};
-
+    debugger;
     switch (type) {
       case GET_MANY:
         let ids = params.ids || [];
         query = { id: { $in: ids } };
-        query['$limit'] = ids.length;
+        query["$limit"] = ids.length;
         return service.find({ query });
       case GET_MANY_REFERENCE:
       case GET_LIST:
         const { page, perPage } = params.pagination || {};
         const { field, order } = params.sort || {};
 
-        let sortKey = '$sort[' + field + ']';
-        let sortVal = order === 'DESC' ? -1 : 1;
+        let sortKey = "$sort[" + field + "]";
+        let sortVal = order === "DESC" ? -1 : 1;
         if (perPage && page) {
-          query['$limit'] = perPage;
-          query['$skip'] = perPage * (page - 1);
+          query["$limit"] = perPage;
+          query["$skip"] = perPage * (page - 1);
         }
         if (order) {
           query[sortKey] = JSON.stringify(sortVal);
@@ -39,6 +40,8 @@ export default client => {
         return service.get(params.id);
       case UPDATE:
         return service.update(params.id, params.data);
+      case PATCH:
+        return service.patch(params.id, params.data);
       case CREATE:
         return service.create(params.data);
       case DELETE:
@@ -62,7 +65,7 @@ export default client => {
         return response;
     }
   };
-
+  debugger;
   return (type, resource, params) =>
     mapRequest(type, resource, params).then(response =>
       mapResponse(response, type, resource, params)

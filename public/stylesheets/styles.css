@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-html, body {
-  font-family: 'Open Sans', sans-serif;
+html,
+body {
+  font-family: "Open Sans", sans-serif;
   margin: 0;
   padding: 0;
 }
-h1, h2, h3 {
-  font-family: 'Roboto Slab', serif;
+h1,
+h2,
+h3 {
+  font-family: "Roboto Slab", serif;
   color: #009688;
 }
 h4 {
@@ -32,10 +35,11 @@ h4 {
   background-color: #f5f5f5;
 }
 .light-green {
-  color: #40B69A;
+  color: #40b69a;
 }
-.mdl-layout__title, .mdl-layout-title {
-  font-family: 'Roboto Slab';
+.mdl-layout__title,
+.mdl-layout-title {
+  font-family: "Roboto Slab";
 }
 .mdl-demo .mdl-layout__header-row {
   padding-left: 40px;
@@ -83,8 +87,8 @@ h4 {
   display: -ms-flexbox;
   display: flex;
   -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
 }
 .mdl-demo .mdl-card > * {
   height: auto;
@@ -92,8 +96,8 @@ h4 {
 .mdl-demo .mdl-card .mdl-card__supporting-text {
   margin: 40px;
   -webkit-flex-grow: 1;
-      -ms-flex-positive: 1;
-          flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
   padding: 0;
   color: inherit;
   width: calc(100% - 80px);
@@ -108,7 +112,7 @@ h4 {
   color: inherit;
 }
 .mdl-demo .mdl-card__actions a {
-  color: #FAA737;
+  color: #faa737;
   margin: 0;
 }
 .mdl-demo .mdl-card__actions a:hover,
@@ -136,16 +140,16 @@ h4 {
 .mdl-demo #features section.section--center {
   max-width: 620px;
 }
-.mdl-demo section > header{
+.mdl-demo section > header {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
   -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
 }
 .mdl-demo section > .section__play-btn {
   min-height: 200px;
@@ -164,25 +168,25 @@ h4 {
   display: -ms-flexbox;
   display: flex;
   -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
   -webkit-justify-content: flex-start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
   -webkit-flex-grow: 0;
-      -ms-flex-positive: 0;
-          flex-grow: 0;
+  -ms-flex-positive: 0;
+  flex-grow: 0;
   -webkit-flex-shrink: 1;
-      -ms-flex-negative: 1;
-          flex-shrink: 1;
+  -ms-flex-negative: 1;
+  flex-shrink: 1;
 }
 .mdl-demo section .section__text {
   -webkit-flex-grow: 1;
-      -ms-flex-positive: 1;
-          flex-grow: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
   -webkit-flex-shrink: 0;
-      -ms-flex-negative: 0;
-          flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
   padding-top: 8px;
 }
 .mdl-demo section .section__text h5 {
@@ -193,7 +197,10 @@ h4 {
 .mdl-demo section .section__text a {
   text-decoration: none;
 }
-.mdl-demo section .section__circle-container > .section__circle-container__circle {
+.mdl-demo
+  section
+  .section__circle-container
+  > .section__circle-container__circle {
   width: 64px;
   height: 64px;
   border-radius: 32px;
@@ -216,7 +223,7 @@ h4 {
   margin: 0 -8px -8px -8px;
 }
 .mdl-demo section.section--center .section__text:not(:last-child) {
-  border-bottom: 1px solid rgba(0,0,0,.13);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.13);
 }
 .mdl-demo .mdl-card .mdl-card__supporting-text > h3:first-child {
   margin-bottom: 24px;
@@ -227,11 +234,12 @@ h4 {
 .mdl-demo #features section {
   margin-bottom: 72px;
 }
-.mdl-demo #features h4, #features h5 {
+.mdl-demo #features h4,
+#features h5 {
   margin-bottom: 16px;
 }
 .mdl-demo .toc {
-  border-left: 4px solid #C1EEF4;
+  border-left: 4px solid #c1eef4;
   margin: 24px;
   padding: 0;
   padding-left: 8px;
@@ -239,15 +247,15 @@ h4 {
   display: -ms-flexbox;
   display: flex;
   -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
 }
 .mdl-demo .toc h4 {
   font-size: 0.9rem;
   margin-top: 0;
 }
 .mdl-demo .toc a {
-  color: #4DD0E1;
+  color: #4dd0e1;
   text-decoration: none;
   font-size: 16px;
   line-height: 28px;
@@ -275,7 +283,6 @@ h4 {
   display: inline-block;
   text-align: center;
   line-height: 40px;
-
 }
 
 .announcement_bar a {
@@ -287,10 +294,10 @@ h4 {
 
 .announcement_bar a:hover {
   text-decoration: underline;
-
 }
 
-#address, .mdl-textfield__label {
+#address,
+.mdl-textfield__label {
   font-size: 30px;
   line-height: 40px;
 }
@@ -304,12 +311,12 @@ h4 {
 }
 
 .pagination li {
-  display:inline-block;
-  padding:5px;
+  display: inline-block;
+  padding: 5px;
 }
 
 .mdl-card a {
-    color: #FAA737;
+  color: #faa737;
 }
 
 #cc-member-table {
@@ -320,15 +327,18 @@ h4 {
   overflow: scroll;
 }
 
-.logo-link, .logo-link .material-icons, .logo-link span  {
+.logo-link,
+.logo-link .material-icons,
+.logo-link span {
   text-decoration: none;
   vertical-align: middle;
   line-height: 20px;
   margin-left: 5px;
 }
 
-.logo-link:hover, .mdl-navigation__link:hover {
-  opacity: .75;
+.logo-link:hover,
+.mdl-navigation__link:hover {
+  opacity: 0.75;
 }
 
 #news a {
@@ -342,17 +352,16 @@ h4 {
 
 #news a .mdl-card__title-text {
   font-weight: 400;
-  color: #000000
+  color: #000000;
 }
 
 #news a:hover .mdl-card__title-text {
   text-decoration: underline;
-
 }
 
 #news .mdl-card__supporting-text {
-    padding: 15px 20px !important;
-    margin: 0;
+  padding: 15px 20px !important;
+  margin: 0;
 }
 
 #news .pagination {
@@ -365,12 +374,12 @@ h4 {
 }
 
 #overview a {
-    text-decoration-style: dotted;
-    color: #40B69A;
+  text-decoration-style: dotted;
+  color: #40b69a;
 }
 
 #overview a:hover {
-  color: #FAA737;
+  color: #faa737;
 }
 
 /**
@@ -378,14 +387,17 @@ h4 {
  * @todo find more permanent solution.
  */
 .mdl-layout__drawer-button {
-    margin-top: 40px !important; 
+  margin-top: 40px !important;
 }
 
-
 #menu-logo-text {
-    width: 200px;
-    display: block;
-    float: right;
-    line-height: 22px;
-    letter-spacing: .04em;
+  width: 200px;
+  display: block;
+  float: right;
+  line-height: 22px;
+  letter-spacing: 0.04em;
+}
+
+#party-choice-fieldset {
+  margin-right: 80px;
 }

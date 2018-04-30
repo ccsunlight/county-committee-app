@@ -1,41 +1,41 @@
-'use strict';
+"use strict";
 
-const dotenv = require('dotenv').config();
-const path = require('path');
-const serveStatic = require('feathers').static;
-const favicon = require('serve-favicon');
-const compress = require('compression');
-const cors = require('cors');
-const feathers = require('feathers');
-const configuration = require('feathers-configuration');
-const globalHooks = require('./hooks');
-const hooks = require('feathers-hooks');
-const rest = require('feathers-rest');
-const bodyParser = require('body-parser');
-const socketio = require('feathers-socketio');
-const memory = require('feathers-memory');
-const local = require('feathers-authentication-local');
-const jwt = require('feathers-authentication-jwt');
-const auth = require('feathers-authentication');
-const errors = require('feathers-errors');
-const swagger = require('feathers-swagger');
+const dotenv = require("dotenv").config();
+const path = require("path");
+const serveStatic = require("feathers").static;
+const favicon = require("serve-favicon");
+const compress = require("compression");
+const cors = require("cors");
+const feathers = require("feathers");
+const configuration = require("feathers-configuration");
+const globalHooks = require("./hooks");
+const hooks = require("feathers-hooks");
+const rest = require("feathers-rest");
+const bodyParser = require("body-parser");
+const socketio = require("feathers-socketio");
+const memory = require("feathers-memory");
+const local = require("feathers-authentication-local");
+const jwt = require("feathers-authentication-jwt");
+const auth = require("feathers-authentication");
+const errors = require("feathers-errors");
+const swagger = require("feathers-swagger");
 
 // const forceSSL = require('express-force-ssl');
-const errorHandler = require('feathers-errors/handler');
+const errorHandler = require("feathers-errors/handler");
 // const acl = require('feathers-acl');
-const middleware = require('./middleware');
-const services = require('./services');
-const routes = require('./routes');
-const hbs = require('hbs');
+const middleware = require("./middleware");
+const services = require("./services");
+const routes = require("./routes");
+const hbs = require("hbs");
 
-const paginate = require('handlebars-paginate');
+const paginate = require("handlebars-paginate");
 const app = feathers();
 
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
-hbs.registerPartials(__dirname + '/views/partials');
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "hbs");
+hbs.registerPartials(__dirname + "/views/partials");
 
-hbs.registerHelper('if_eq', function(a, b, opts) {
+hbs.registerHelper("if_eq", function(a, b, opts) {
   if (a == b) {
     return opts.fn(this);
   } else {
@@ -43,25 +43,25 @@ hbs.registerHelper('if_eq', function(a, b, opts) {
   }
 });
 
-hbs.registerHelper('dateFormat', require('handlebars-dateformat'));
+hbs.registerHelper("dateFormat", require("handlebars-dateformat"));
 
-hbs.registerHelper('paginate', paginate);
+hbs.registerHelper("paginate", paginate);
 
-app.configure(configuration(path.join(__dirname, '..')));
+app.configure(configuration(path.join(__dirname, "..")));
 
 // Load DB settings
 // MONGODB_URL overrides
-app.set('mongodb', process.env.MONGODB_URL); // ? process.env.MONGODB_URL : "mongodb://" + process.env.DB_USER + ":" + process.env.DB_PASS + '@' + process.env.DB_HOST + ':' + process.env.DB_PORT + '/' + process.env.DB_NAME);
+app.set("mongodb", process.env.MONGODB_URL); // ? process.env.MONGODB_URL : "mongodb://" + process.env.DB_USER + ":" + process.env.DB_PASS + '@' + process.env.DB_HOST + ':' + process.env.DB_PORT + '/' + process.env.DB_NAME);
 
 app.set(
-  'apiPath',
-  '/' + app.get('api').basePath + '/' + app.get('api').version
+  "apiPath",
+  "/" + app.get("api").basePath + "/" + app.get("api").version
 );
 
-app.set('gmail_un', process.env.GMAIL_UN);
-app.set('gmail_pw', process.env.GMAIL_PW);
+app.set("gmail_un", process.env.GMAIL_UN);
+app.set("gmail_pw", process.env.GMAIL_PW);
 
-const apiPath = app.get('apiPath');
+const apiPath = app.get("apiPath");
 // Site access auth for demo purposes
 /*if (app.get('env') === 'production') {
   const basicAuth = require('basic-auth-connect');
@@ -69,14 +69,14 @@ const apiPath = app.get('apiPath');
 }
 */
 
-const aclConfig = app.get('acl');
+const aclConfig = app.get("acl");
 
 const localConfig = {
-  entity: 'user',
-  service: apiPath + '/user',
-  usernameField: 'email',
-  passwordField: 'password',
-  payload: ['role']
+  entity: "user",
+  service: apiPath + "/user",
+  usernameField: "email",
+  passwordField: "password",
+  payload: ["role"]
 };
 
 //console.log('https://' + app.get('host'));
@@ -104,31 +104,35 @@ app
   //.use(forceSSL)
   .configure(
     auth({
-      path: apiPath + '/authentication',
-      secret: app.get('authentication').secret,
+      path: apiPath + "/authentication",
+      secret: app.get("authentication").secret,
       passReqToCallback: true
     })
   )
   .configure(local(localConfig))
   .configure(jwt(localConfig))
-  .options('*', cors())
+  .options("*", cors())
   .use(cors())
-  // .use(favicon(path.join(app.get('public'), 'favicon.ico')))
-  .use('/cc-admin', serveStatic(app.get('public') + '/cc-admin/build'))
+  // Maps react diretory to be served from app.
+  .use(
+    "/cc-admin/build/static",
+    serveStatic(app.get("public") + "/cc-admin/build/static")
+  )
+  .use("/cc-admin", serveStatic(app.get("public") + "/cc-admin/build"))
   .configure(
     swagger({
-      docsPath: apiPath + '/docs',
+      docsPath: apiPath + "/docs",
       uiIndex: true,
       info: {
-        title: 'CC Sunlight API',
+        title: "CC Sunlight API",
         description:
-          'Endpoints for main entities. Some endpoints require auth. Most non write operations do not. These endpoints are not yet stable. Please use for dev purposes only.'
+          "Endpoints for main entities. Some endpoints require auth. Most non write operations do not. These endpoints are not yet stable. Please use for dev purposes only."
       }
     })
   )
   .configure(services)
   .use(routes)
-  .use('/', serveStatic(app.get('public')))
+  .use("/", serveStatic(app.get("public")))
   .configure(middleware)
   .configure(local(localConfig));
 
@@ -137,17 +141,17 @@ app
 //.configure(auth());
 //.configure(auth());
 
-app.service(apiPath + '/authentication').hooks({
+app.service(apiPath + "/authentication").hooks({
   before: {
     create: [
       // You can chain multiple strategies
-      auth.hooks.authenticate(['jwt', 'local'])
+      auth.hooks.authenticate(["jwt", "local"])
     ],
-    remove: [auth.hooks.authenticate('jwt')]
+    remove: [auth.hooks.authenticate("jwt")]
   }
 });
 
-app.service(apiPath + '/authentication').hooks({
+app.service(apiPath + "/authentication").hooks({
   after: {
     create: [
       // You can chain multiple strategies
@@ -157,21 +161,27 @@ app.service(apiPath + '/authentication').hooks({
   }
 });
 
-app.service(apiPath + '/user').hooks({
+app.service(apiPath + "/user").hooks({
   before: {
-    all: [local.hooks.hashPassword(), auth.hooks.authenticate('jwt')]
+    all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
   }
 });
 
-app.service(apiPath + '/county-committee-member').hooks({
+app.service(apiPath + "/county-committee-member").hooks({
   before: {
-    all: [local.hooks.hashPassword(), auth.hooks.authenticate('jwt')]
+    all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
+  }
+});
+
+app.service(apiPath + "/certified-list").hooks({
+  before: {
+    // all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
   }
 });
 
 // app.service(apiPath + '/invite').sendInvite({ email: 'joncrockett@gmail.com', role: 'admin'});
 // app.all(apiPath + '/authentication', auth.express.authenticate('jwt'))
 
-console.log('Starting env: ', app.get('env'));
+console.log("Starting env: ", app.get("env"));
 
 module.exports = app;

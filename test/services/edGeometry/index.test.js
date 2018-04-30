@@ -1,10 +1,11 @@
-'use strict';
+"use strict";
 
-const assert = require('assert');
-const app = require('../../../src/app');
+const assert = require("assert");
 
-describe('edGeometry service', function() {
-  it('registered the edGeometries service', () => {
-    assert.ok(app.service('edGeometries'));
+describe("edGeometry service", function() {
+  const app = require("../../../src/app");
+
+  it("registered the edGeometries service", () => {
+    assert.ok(app.service("edGeometries"));
   });
 });

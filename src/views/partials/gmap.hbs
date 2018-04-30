@@ -9,6 +9,7 @@
 <script>
 	var infoWindow;
 	var map;
+	const party = '{{this.party}}';
 
 	function initGoogleMap() {
 		map = new google.maps.Map(document.getElementById('map'), {
@@ -44,10 +45,10 @@
 		};
 
 		var cleanedAllGeomDocsInAd = {{{cleanedAllGeomDocsInAd}}};
-		var filledColor = '#1874CD';
-		var partiallyFilledColor = '#CAE1FF';
-		var vacantColor = '#EFEFEF';
-		var nodataColor = '#40B69A';
+		var filledColor = (party === 'Democratic') ? '#1874CD' : '#ff0000';
+		var partiallyFilledColor = (party === 'Democratic') ? '#cae1ff' : '#ff8080';
+		var vacantColor = '#efefef';
+		var nodataColor = '#40b69a';
 		_.forEach(cleanedAllGeomDocsInAd, function(doc) {
 			var coordinates = doc.co;
 			var ed = doc.ed;

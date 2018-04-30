@@ -1,11 +1,9 @@
-var assert = require('assert');
-const mongoose = require('mongoose');
+var assert = require("assert");
+const mongoose = require("mongoose");
 
-describe('County Committee Extractor', function() {
-    console.log('hello')
-
-    // Commenting this out so it doesn't DDOS the voting site.
-    /* describe('find all CSVs', function() {
+describe("County Committee Extractor", function() {
+  // Commenting this out so it doesn't DDOS the voting site.
+  /* describe('find all CSVs', function() {
          var url = 'http://vote.nyc.ny.us/import/csv/election_results/2015/20150910Primary%20Election/01105670072New%20York%20Democratic%20County%20Committee%20072%2070%20EDLevel.csv';
 
          it('should get the CSV', function(done) {
@@ -64,7 +62,7 @@ describe('County Committee Extractor', function() {
         });
     });
     */
-
+  /*
     describe('CSV Extractor', function() {
 
         it('can extract the county committee members from a a csv', function(done) {
@@ -78,7 +76,7 @@ describe('County Committee Extractor', function() {
             // Load app to get access to ORM, services, etc (but don't lift an actual server onto a port)
             var ccExtractor = require('../../../src/services/county-committee/county-committee-extractor');
 
-            var filepath = __dirname + '/../../../import/kingsCCmembers.csv';
+            var filepath = __dirname + '/../../../import/NYCCDemCertifiedListPreview.pdf';
             // var filepath = __dirname + '/../../../import/democratic_county_committee_ny.pdf';
 
             ccExtractor.getCCMembersFromCSV(filepath, function(ccMembers) {
@@ -105,7 +103,8 @@ describe('County Committee Extractor', function() {
 
         });
     });
-    /*
+    */
+  /*
     describe('PDF Extractor', function() {
 
         it('can extract the county committee members from a party position certified list PDF', function(done) {
@@ -150,8 +149,7 @@ describe('County Committee Extractor', function() {
         });
     });
     */
-
-    /*
+  /*
     describe('CSV Extractor', function(done) {
 
         it('can get all the files', function() {
@@ -184,5 +182,4 @@ describe('County Committee Extractor', function() {
 
     })
     */
-
 });
