@@ -31,6 +31,8 @@ export const CertifiedListList = props => (
     <Datagrid>
       <TextField source="county" />
       <TextField source="party" />
+      <BooleanField label="Approved" source="isApproved" />
+      <BooleanField label="Imported" source="isImported" />
       <EditButton />
     </Datagrid>
   </List>

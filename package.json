@@ -19,10 +19,13 @@
     "test": "npm run mocha",
     "jshint": "jshint src/. test/. --config",
     "start": "node src/",
+    "sync-db": "bash scripts/sync-db-from-prod.sh",
+    "migrate": "bash ./init-migration.sh",
     "cert": "node cert/gene rate-cert.js",
     "mocha": "nodemon  --exec 'mocha --recursive --bail'",
     "precommit": "lint-staged",
     "format": "prettier",
+    "build-admin": "cd public/cc-admin && npm run build",
     "import-certified-list": "node scripts/import-certified-list",
     "prettier-watch": "onchange '**/*.js' -- prettier --write {{changed}}"
   },

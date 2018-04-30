@@ -113,18 +113,12 @@ app
   .configure(jwt(localConfig))
   .options("*", cors())
   .use(cors())
-  // These mappings are to allow for admin development with react.
+  // Maps react diretory to be served from app.
   .use(
     "/cc-admin/build/static",
     serveStatic(app.get("public") + "/cc-admin/build/static")
   )
-  /*
-  .use(
-    "/cc-admin",
-    serveStatic(app.get("public") + "/cc-admin/build/static")
-  )
-  */
-  //.use("/cc-admin", serveStatic(app.get("public") + "/cc-admin/public"))
+  .use("/cc-admin", serveStatic(app.get("public") + "/cc-admin/build"))
   .configure(
     swagger({
       docsPath: apiPath + "/docs",
