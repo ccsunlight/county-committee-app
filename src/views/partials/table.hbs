@@ -86,11 +86,7 @@ Appointed members serve at the pleasure<br/> of the executive committee.<br/>The
         
         var otherMembers = {{{membersJSON}}};
        
-        console.log(otherMembers.length);
-        console.log(Object.keys(otherMembers[0]));
-
         ccList.add(otherMembers, function(items) {
-          console.log('All ' + items.length + ' were added!');
         });
    
       {{/if}}

@@ -1,48 +1,44 @@
-
 <section class="section--center mdl-grid mdl-shadow--2dp mdl-card--border">
-
-<div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
-              <div class="mdl-card__supporting-text">
-                <h1 class="mdl-typography--display-1">{{county_committee.county}} {{county_committee.party}} County Committee</h1>
-                 </div>
-        </div>
-       <div class="mdl-card mdl-cell mdl-cell--6-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">  
-         <div class="mdl-card__supporting-text">     
-            {{#if county_committee.address}}
-          
-            <p>
-             <i class="material-icons">location_on</i>
-               {{county_committee.address}}
-            </p>
-         
-            {{/if}}
-            {{#if county_committee.phone}}
-            <p>
-              <i class="material-icons">phone</i> {{county_committee.phone}}
-            </p>
-            {{/if}}
-            {{#if county_committee.url}}
-            <p>
-                <i class="material-icons">insert_link</i>
-                <a href="{{county_committee.url}}" target="_blank">{{county_committee.url}}</a>
-            </p>
-            {{/if}}
-            {{#if county_committee.email}}
-            <p>
-              <i class="material-icons">&#xE0BE;</i>
-               {{county_committee.email}}
-            </p>
-            {{/if}}
-            </div>
+  <div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
+    <div class="mdl-card__supporting-text">
+      <h1 class="mdl-typography--display-1">{{county_committee.county}} {{county_committee.party}} County Committee</h1>
     </div>
-    <div class="mdl-card mdl-cell mdl-cell--6-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">    
-            {{#if county_committee.chairman}}
-            <div class="mdl-card__supporting-text">
-              <i class="material-icons">account_circle</i> Chairman
-               {{county_committee.chairman}}
-            </div>
-            {{/if}}
-      </div>
-
-
+  </div>
+  <div class="mdl-card mdl-cell mdl-cell--6-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
+    <div class="mdl-card__supporting-text">
+      {{#if county_committee.address}}
+      
+      <p>
+        <i class="material-icons">location_on</i>
+        {{county_committee.address}}
+      </p>
+      
+      {{/if}}
+      {{#if county_committee.phone}}
+      <p>
+        <i class="material-icons">phone</i> {{county_committee.phone}}
+      </p>
+      {{/if}}
+      {{#if county_committee.url}}
+      <p>
+        <i class="material-icons">insert_link</i>
+        <a href="{{county_committee.url}}" target="_blank">{{county_committee.url}}</a>
+      </p>
+      {{/if}}
+      {{#if county_committee.email}}
+      <p>
+        <i class="material-icons">&#xE0BE;</i>
+        {{county_committee.email}}
+      </p>
+      {{/if}}
+    </div>
+  </div>
+  <div class="mdl-card mdl-cell mdl-cell--6-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
+    {{#if county_committee.chairman}}
+    <div class="mdl-card__supporting-text">
+      <i class="material-icons">account_circle</i> Chairman
+      {{county_committee.chairman}}
+    </div>
+    {{/if}}
+  </div>
 </section>

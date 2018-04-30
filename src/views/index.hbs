@@ -1,29 +1,29 @@
 <div class="mdl-layout__tab-panel is-active" id="overview">
-
 	<div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--12-col-tablet mdl-cell--12-col-phone">
 		<div class="mdl-grid mdl-cell--16-col-tablet mdl-cell--12-col-phone">
 			<div class="mdl-cell mdl-cell--12-col ">
 				<h2 class="splash-text">We are a group of citizens shedding light on <a href="#membership"><span class="light-green">local political party membership</span></a> in New York, <a href="https://ccsunlight.org/what-is-a-county-committee" target="_blank"><span class="light-green">why they matter</span></a>, and <a href="https://ccsunlight.org/how-to-run-for-county-committee" target="_blank"><span class="light-green">how to get involved.</span></a></h2>
 				{{> addressform}}
-
 				{{> include_autocomplete}}
-
-					
+				
 				</div>
-			</div>
-
+		</div>
 	</div>
-
 	<div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--12-col-tablet mdl-cell--12-col-phone" id="membership">
-	<div class="mdl-card__supporting-text"><h3>County Committee Data</h3>
-				<small>This data is approximate for demo purposes. Source: NY BOE</small>
-				</div>
-
-	<div class="mdl-grid mdl-cell--12-col-tablet mdl-cell--12-col-phone">
+		<div class="mdl-card__supporting-text"><h3>County Committee Data</h3>
+			<small>This data is approximate for demo purposes. Source: NY BOE</small>
+		</div>
+		<div class="mdl-grid mdl-cell--12-col-tablet mdl-cell--12-col-phone">
 			
-		{{> cc_chart countySeatBreakdowns.[0]}}
-
-		{{> cc_chart countySeatBreakdowns.[1]}}
+			{{> cc_chart countySeatBreakdowns.[0]}}
+			{{> cc_chart countySeatBreakdowns.[1]}}
+		
+			
+			{{> cc_chart countySeatBreakdowns.[2]}}
+			{{> cc_chart countySeatBreakdowns.[3]}}
+	
+			
+			{{> cc_chart countySeatBreakdowns.[4]}}
 		</div>
-		</div>
+	</div>
 </div>

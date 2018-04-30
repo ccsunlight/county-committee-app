@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
-const app = require('./app');
+const app = require("./app");
 
-const fs = require('fs');
-const port = app.get('port');
-const path = require('path');
-const https = require('https');
+const fs = require("fs");
+const port = app.get("port");
+const path = require("path");
+const https = require("https");
 const appDir = path.dirname(require.main.filename);
 //const SMTPServer = require('smtp-server').SMTPServer;
 
@@ -37,6 +37,6 @@ const smtpServer = new SMTPServer({
 });
 smtpServer.listen(465);
 */
-server.on('listening', () =>
-    console.log(`Feathers application started on ${app.get('host')}:${port}`)
+server.on("listening", () =>
+  console.log(`Feathers application started on ${app.get("host")}:${port}`)
 );
