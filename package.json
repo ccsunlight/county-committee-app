@@ -14,7 +14,7 @@
     "node": ">= 6.10.2"
   },
   "scripts": {
-    "install-deps": "apt-get update && apt-get install poppler-utils",
+    "install-deps": "apt-get -y update && apt-get -y install poppler-utils",
     "dev": "nodemon -e js,json,hbs src/",
     "test": "npm run mocha",
     "jshint": "jshint src/. test/. --config",
