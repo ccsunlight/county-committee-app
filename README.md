@@ -14,13 +14,16 @@ The data is stored in a local dockerized mongo and the entire image is backed up
 
 ### Docker
 
-The app runs via docker. Docker creates containers
+The app runs via docker but you'll have to install those two application manually before starting.
+* Mongo DB 3.4.4
+* Node 6.10 with NPM
+
+Docker creates containers
 with the specs below. You can try to use without docker, but
 if you can use docker, it will install and set everything
 up automatically for you.
 
-* Mongo DB 3.4.4
-* Node 6.10 with NPM
+
 
 \*On production server there is a NGINX reverse proxy to enable SSL. It's not necessary for local dev.
 
