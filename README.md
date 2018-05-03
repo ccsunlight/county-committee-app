@@ -76,13 +76,13 @@ npm install
 
 This will install the node dependancies. It's important the this is done inside the running app container otherwise there may be errors with bcrypt. (see troubleshooting below)
 
-4. Copy the ".env_example" to a new file named ".env" in the root of your app dir. This will be where your keys and pws will go for the app.
+5. Copy the ".env_example" to a new file named ".env" in the root of your app dir. This will be where your keys and pws will go for the app.
 
-5. If you have proprietary DB setup info update the ".env" file to your settings. Otherwise the DB vars can be left as is for dev, however, **it is strongly discouraged to leave for production use as this DB would have no PW.**
+6. If you have proprietary DB setup info update the ".env" file to your settings. Otherwise the DB vars can be left as is for dev, however, **it is strongly discouraged to leave for production use as this DB would have no PW.**
 
 Enter a alphanumeric key for AUTHENTICATION_SECRET. (512 chars recommended for production).
 
-4. run
+7. run
 
    ```
    bash ./init-migration.sh
@@ -95,7 +95,7 @@ a un and pw.
 
 You will not be able to see this again once your terminal session closes.
 
-6. Start your app
+8. Start your app
 
    ```
    npm start
