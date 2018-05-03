@@ -82,7 +82,13 @@ This will install the node dependancies. It's important the this is done inside 
 cp .env_example .env
 ```
 
-7. If you have proprietary DB setup info update the ".env" file to your settings. Otherwise the DB vars can be left as is for dev, however, **it is strongly discouraged to leave for production use as this DB would have no PW.**
+7. If you have proprietary DB setup info update the ".env" file to your settings. Otherwise the DB vars can be left as is for dev, however, **it is strongly discouraged to leave for production use as this DB would have no PW.** You'll need a GMAIL account, and is suggested you get a new one for this project.
+
+```
+sed -i.bak s/AUTHENTICATION_SECRET\"\"/AUTHENTICATION_SECRET=\"SOMEKEY\"/g .env
+sed -i.bak s/GMAIL_UN=\"\"/GMAIL_UN=\"<SomeUsername>@gmail\.com\"/g .env
+sed -i.bak s/GMAIL_PW=\"\"/GMAIL_PW=\"<SomePassord>\"/g .env
+```
 
 Enter a alphanumeric key for AUTHENTICATION_SECRET. (512 chars recommended for production).
 
