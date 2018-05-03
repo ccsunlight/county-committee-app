@@ -76,7 +76,11 @@ npm install
 
 This will install the node dependancies. It's important the this is done inside the running app container otherwise there may be errors with bcrypt. (see troubleshooting below)
 
-6. Copy the ".env_example" to a new file named ".env" in the root of your app dir. This will be where your keys and pws will go for the app.
+6. Copy the ".env_example" to a new file named ".env" in the root of your app dir (/usr/src/app). This will be where your keys and pws will go for the app.
+
+```
+cp .env_example .env
+```
 
 7. If you have proprietary DB setup info update the ".env" file to your settings. Otherwise the DB vars can be left as is for dev, however, **it is strongly discouraged to leave for production use as this DB would have no PW.**
 
