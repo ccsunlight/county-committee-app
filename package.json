@@ -27,7 +27,8 @@
     "format": "prettier",
     "build-admin": "cd public/cc-admin && npm run build",
     "import-certified-list": "node scripts/import-certified-list",
-    "prettier-watch": "onchange '**/*.js' -- prettier --write {{changed}}"
+    "prettier-watch":
+      "onchange '**/*.{js,json,css,md}' -- prettier --write {{changed}}"
   },
   "lint-staged": {
     "*.{js,json,css,md}": ["prettier --write", "git add"]

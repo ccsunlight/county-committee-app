@@ -30,6 +30,11 @@ h4 {
   font-weight: 700;
   font-size: 20px;
 }
+.mdl-grid .mdl-grid.mdl-grid--nesting {
+  padding: 0;
+  margin: 0 -8px;
+}
+
 .splash-text {
   text-align: center;
   background-color: #f5f5f5;
@@ -407,6 +412,15 @@ h4 {
   height: calc(33vw * (9 / 16)) !important;
 }
 
+#lookup {
+  text-align: center;
+  margin: 40px;
+}
+
+#membership {
+  text-align: center;
+}
+
 /*
  * Author: http://stuffandnonsense.co.uk/blog/about/hardboiled_css3_media_queries/
  */
@@ -425,10 +439,12 @@ h4 {
     line-height: 39px;
   }
 
+  /*
   #lookup .mdl-card__supporting-text {
     margin: 0;
     width: 100%;
   }
+  */
 
   #party-choice-fieldset {
     margin: 20px;
