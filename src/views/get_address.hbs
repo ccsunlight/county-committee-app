@@ -1,5 +1,5 @@
 <div class="mdl-grid">
-<div class="mdl-card mdl-cell mdl-cell--8-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone">
+<div class="mdl-card mdl-cell mdl-cell--8-col">
 	<div class="mdl-card__supporting-text" id="get_address_results">
 		<h3>Your local {{party}} Party seats</h3>
 
@@ -22,12 +22,5 @@
 			{{> include_gmap_and_autocomplete}}
 	</div>
 </div>
-<div class="mdl-card mdl-cell mdl-cell--4-col-desktop mdl-cell--4-col-tablet mdl-cell--4-col-phone" >
-	<iframe style="width: 100%; height: calc(33vw * (9 / 16))" src="https://www.youtube.com/embed/XAYfbdNTvcY" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-	
-	{{> addressform}}
-
-	{{>newsletter_signup}}
-
-</div>
+{{> sidebar}}
 </div>
