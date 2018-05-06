@@ -1,4 +1,5 @@
-<section id="news" class="section--center mdl-grid mdl-shadow--2dp">
+<section id="news" class="mdl-grid">
+  <div class="mdl-card mdl-cell mdl-cell--8-col">
   <div class="mdl-card mdl-cell mdl-cell--12-col">
     <div class="mdl-card__supporting-text">
       <h1>County Committee News</h1>
@@ -7,6 +8,8 @@
       <a href="/" class="mdl-button">Back to home</a>
     </div>
   </div>
+  <div class="mdl-card mdl-cell mdl-cell--12-col">
+    <div class="mdl-grid">
   {{#each this.news_links}}
   <div class="mdl-card mdl-cell mdl-cell--6-col">
     <a href="{{url}}" target="_blank"><div class="mdl-card__media mdl-color-text--grey-50" style="background-image: url({{image}}); background-size: cover; background-repeat:no-repeat; height: 300px" >
@@ -33,5 +36,12 @@
   </a>
 </div>
 {{/each}}
+</div>
+</div>
+
 {{> pagination}}
+</div>
+{{> sidebar}}
 </section>
+
+

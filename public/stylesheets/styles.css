@@ -407,18 +407,47 @@ h4 {
   margin-right: 80px;
 }
 
-.youtube-vid {
+.mdl-cell--4-col .youtube-vid {
   width: 100%;
-  height: calc(33vw * (9 / 16)) !important;
+  height: calc(33vmax * (9 / 16)) !important;
+}
+
+.mdl-cell--6-col .youtube-vid {
+  width: 100%;
+  height: calc(50vmax * (9 / 16)) !important;
+}
+
+.mdl-cell--8-col .youtube-vid {
+  width: 100%;
+  height: calc(66vmax * (9 / 16)) !important;
 }
 
 #lookup {
   text-align: center;
-  margin: 40px;
+  margin: 20px;
+}
+
+.sidebar #lookup {
+  line-height: 1.3em;
+  text-align: center;
+}
+
+.sidebar #lookup h2 {
+  font-size: 29px;
+  margin: 0;
+}
+
+.sidebar #lookup #party-choice-fieldset {
+  font-size: 12px;
+  text-align: center;
+  margin: 20px;
 }
 
 #membership {
   text-align: center;
+}
+.mdl-card__media {
+  background-color: #000;
 }
 
 /*
