@@ -30,6 +30,11 @@ h4 {
   font-weight: 700;
   font-size: 20px;
 }
+.mdl-grid .mdl-grid.mdl-grid--nesting {
+  padding: 0;
+  margin: 0 -8px;
+}
+
 .splash-text {
   text-align: center;
   background-color: #f5f5f5;
@@ -400,4 +405,122 @@ h4 {
 
 #party-choice-fieldset {
   margin-right: 80px;
+}
+
+.mdl-cell--4-col .youtube-vid {
+  width: 100%;
+  height: calc(33vmax * (9 / 16)) !important;
+}
+
+.mdl-cell--6-col .youtube-vid {
+  width: 100%;
+  height: calc(50vmax * (9 / 16)) !important;
+}
+
+.mdl-cell--8-col .youtube-vid {
+  width: 100%;
+  height: calc(66vmax * (9 / 16)) !important;
+}
+
+#lookup {
+  text-align: center;
+  margin: 20px;
+}
+
+.sidebar #lookup {
+  line-height: 1.3em;
+  text-align: center;
+}
+
+.sidebar #lookup h2 {
+  font-size: 29px;
+  margin: 0;
+}
+
+.sidebar #lookup #party-choice-fieldset {
+  font-size: 12px;
+  text-align: center;
+  margin: 20px;
+}
+
+#membership {
+  text-align: center;
+}
+.mdl-card__media {
+  background-color: #000;
+}
+
+/*
+ * Author: http://stuffandnonsense.co.uk/blog/about/hardboiled_css3_media_queries/
+ */
+
+/* Smartphones (portrait and landscape) ----------- */
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+  /* Styles */
+
+  .youtube-vid {
+    width: 100%;
+    height: calc(100vw * (9 / 16)) !important;
+  }
+
+  .splash-text {
+    font-size: 30px;
+    line-height: 39px;
+  }
+
+  /*
+  #lookup .mdl-card__supporting-text {
+    margin: 0;
+    width: 100%;
+  }
+  */
+
+  #party-choice-fieldset {
+    margin: 20px;
+  }
+
+  .address-button {
+    width: 100%;
+  }
+}
+
+/* Smartphones (landscape) ----------- */
+@media only screen and (min-width: 321px) {
+  /* Styles */
+}
+
+/* Smartphones (portrait) ----------- */
+@media only screen and (max-width: 320px) {
+  /* Styles */
+}
+
+/* iPads (portrait and landscape) ----------- */
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+  /* Styles */
+}
+
+/* iPads (landscape) ----------- */
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: landscape) {
+  /* Styles */
+}
+
+/* iPads (portrait) ----------- */
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation: portrait) {
+  /* Styles */
+}
+
+/* Desktops and laptops ----------- */
+@media only screen and (min-width: 1224px) {
+  /* Styles */
+}
+
+/* Large screens ----------- */
+@media only screen and (min-width: 1824px) {
+  /* Styles */
+}
+
+/* iPhone 4 ----------- */
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5),
+  only screen and (min-device-pixel-ratio: 1.5) {
+  /* Styles */
 }

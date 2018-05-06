@@ -1,37 +1,33 @@
-
-
 <div class="mdl-grid">
-<div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--12-col-tablet mdl-cell--4-col-phone">
-<div class="mdl-card__supporting-text" id="get_address_results">
-	<h3>Showing Results for {{party}} Party</h4>
-	<h4>Assembly District: {{ad}}</h4>
-	<h4>Election District: {{ed}}</h4>
-	<p>
-	Manhattan, Bronx & Richmond currently do not show appointed members. Vacancies could have members appointed to them. Appointments (along with all county committee seats) expire at the end of every term.
-	</p>
-	
-	{{#if error}}
+<div class="mdl-card mdl-cell mdl-cell--8-col-desktop mdl-cell--8-col-tablet mdl-cell--4-col-phone">
+	<div class="mdl-card__supporting-text" id="get_address_results">
+		<h3>Your local {{party}} Party seats</h3>
 
-	<h4><i class="material-icons">error_outline</i>  Sorry we do not have seat information for this district yet. Consider <a href="https://goo.gl/forms/BpeKaPz7rSa4hXdU2" target="_blank">volunteering</a> to help get this info!</h4>
-	{{else}}
-		{{> table }}
-	{{/if}}
+		<h4>Assembly District: {{ad}}</h4>
+		<h4>Election District: {{ed}}</h4>
+		<p>
+		Manhattan, Bronx & Richmond currently do not show appointed members. Vacancies could have members appointed to them. Appointments (along with all county committee seats) expire at the end of every term.
+		</p>
+		
+		{{#if error}}
 
-</div>
-</div>
-<div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--12-col-tablet mdl-cell--4-col-phone">
+		<h4><i class="material-icons">error_outline</i>  Sorry we do not have seat information for this district yet. Consider <a href="https://goo.gl/forms/BpeKaPz7rSa4hXdU2" target="_blank">volunteering</a> to help get this info!</h4>
+		{{else}}
+			{{> table }}
+		{{/if}}
+
+	</div>
 	<div class="mdl-card__supporting-text">
-		{{> gmap}}
-		{{> include_gmap_and_autocomplete}}
+			{{> gmap}}
+			{{> include_gmap_and_autocomplete}}
 	</div>
+</div>
+<div class="mdl-card mdl-cell mdl-cell--4-col-desktop mdl-cell--4-col-tablet mdl-cell--4-col-phone" >
+	<iframe style="width: 100%; height: calc(33vw * (9 / 16))" src="https://www.youtube.com/embed/XAYfbdNTvcY" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+	
+	{{> addressform}}
+
+	{{>newsletter_signup}}
 
 </div>
-</div>
-<div class="mdl-grid">
-	<div class="mdl-card mdl-cell mdl-cell--8-col-desktop mdl-cell--9-col-tablet mdl-cell--4-col-phone mdl-shadow--2dp through mdl-shadow--2dp">
-	{{> addressform}}
-	</div>
-	<div class="mdl-card mdl-cell mdl-cell--4-col-desktop mdl-cell--4-col-tablet mdl-cell--12-col-phone  mdl-shadow--2dp through mdl-shadow--2dp">
-		{{>newsletter_signup}}
-	</div>
 </div>
