@@ -14,13 +14,13 @@ The data is stored in a local dockerized mongo and the entire image is backed up
 
 ### Docker
 
-The app runs via docker. Docker creates containers
-with the specs below. You can try to use without docker, but
-if you can use docker, it will install and set everything
-up automatically for you.
-
+The app runs via docker but you'll have to install those two applications manually before starting.
 * Mongo DB 3.4.4
 * Node 6.10 with NPM
+
+Docker creates containers with the specs below. You can try to use without docker, but
+if you can use docker, it will install and set everything
+up automatically for you.
 
 \*On production server there is a NGINX reverse proxy to enable SSL. It's not necessary for local dev.
 
@@ -68,7 +68,7 @@ This will create three docker containers, one with mongo, the other with node an
 root@121fsfsw:/usr/src/app
 ```
 
-4. Run
+5. Run
 
 ```
 npm install
@@ -76,13 +76,23 @@ npm install
 
 This will install the node dependancies. It's important the this is done inside the running app container otherwise there may be errors with bcrypt. (see troubleshooting below)
 
-4. Copy the ".env_example" to a new file named ".env" in the root of your app dir. This will be where your keys and pws will go for the app.
+6. Copy the ".env_example" to a new file named ".env" in the root of your app dir (/usr/src/app). This will be where your keys and pws will go for the app.
 
-5. If you have proprietary DB setup info update the ".env" file to your settings. Otherwise the DB vars can be left as is for dev, however, **it is strongly discouraged to leave for production use as this DB would have no PW.**
+```
+cp .env_example .env
+```
+
+7. If you have proprietary DB setup info update the ".env" file to your settings. Otherwise the DB vars can be left as is for dev, however, **it is strongly discouraged to leave for production use as this DB would have no PW.** You'll need a GMAIL account, and is suggested you get a new one for this project.
+
+```
+sed -i.bak s/AUTHENTICATION_SECRET\"\"/AUTHENTICATION_SECRET=\"SOMEKEY\"/g .env
+sed -i.bak s/GMAIL_UN=\"\"/GMAIL_UN=\"<SomeUsername>@gmail\.com\"/g .env
+sed -i.bak s/GMAIL_PW=\"\"/GMAIL_PW=\"<SomePassord>\"/g .env
+```
 
 Enter a alphanumeric key for AUTHENTICATION_SECRET. (512 chars recommended for production).
 
-4. run
+8. run
 
    ```
    bash ./init-migration.sh
@@ -95,7 +105,7 @@ a un and pw.
 
 You will not be able to see this again once your terminal session closes.
 
-6. Start your app
+9. Start your app
 
    ```
    npm start
@@ -105,13 +115,13 @@ alternatively you could run through PM2 with `./node_modules/.bin/pm2 start`, wh
 
 When the app starts for the first time it will run additional imports for the map geometry which will take a little while.
 
-9. Go to your homepage
+10. Go to your homepage
    http://localhost
 
-10. Try logging into the admin with the sadmin creds you saved before.
+11. Try logging into the admin with the sadmin creds you saved before.
     http://localhost/cc-admin/
 
-11. Report any bugs in the issues section of the repo.
+12. Report any bugs in the issues section of the repo.
 
 ## Deploying
 
