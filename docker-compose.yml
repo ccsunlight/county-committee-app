@@ -1,0 +1,26 @@
+version: '3' # version of docker-compose to use
+
+services: # configuring each container
+  cc-app:
+    build: .
+    #command: /usr/src/app/node_modules/.bin/pm2 start src --name=app --no-daemon
+    command: npm run dev
+    links:
+      - mongo
+    ports:
+      - "8000:80"
+      - "8587:587"
+      - "8465:465" 
+    environment:
+      NODE_ENV: 'local'
+      MONGODB_URL: "mongodb://mongo:27017/ccsunlight"
+
+    depends_on:
+      - mongo
+  mongo: # name of our mysql container
+    image: mongo:latest # which image to pull, in this case latest
+    ports:
+      - "27017:27017"
+    command: "mongod --port 27017 --smallfiles --bind_ip_all"
+    volumes: # data to map to the container
+      - './data:/data/db'
