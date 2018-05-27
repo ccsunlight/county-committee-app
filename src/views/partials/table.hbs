@@ -27,9 +27,12 @@
           <span id="{{@../index}}-{{@key}}-{{@index}}">{{this}}</span>
  
 {{#if_eq this 'Appointed'}}
-          <div class="mdl-tooltip" for="{{@../index}}-{{@key}}-{{@index}}">
+          <div class="mdl-tooltip disclaimer" for="{{@../index}}-{{@key}}-{{@index}}">
 Appointed members serve at the pleasure<br/> of the executive committee.<br/>These are unelected positions and expire at at the end of each cc term.
-</div>
+          </div>
+
+
+
 
  {{/if_eq}}
  </td>
@@ -41,8 +44,6 @@ Appointed members serve at the pleasure<br/> of the executive committee.<br/>The
       
     </tbody>
   </table>
-
-
 {{else}}
 
 <p><i class="material-icons">error_outline</i>This election district has been newly created after the last election and therefore does not yet have seat information.
@@ -56,6 +57,8 @@ Appointed members serve at the pleasure<br/> of the executive committee.<br/>The
 {{/if}}
 </div>
  
+  <small class="mobile-tip">Table is scrollable on mobile devices.</small>
+
   <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.js"></script>
 
   <script>
