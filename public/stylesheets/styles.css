@@ -329,7 +329,7 @@ h4 {
 }
 
 #cc-list-table {
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .logo-link,
@@ -494,27 +494,6 @@ img {
   }
 }
 
-#cc-list-table::-webkit-scrollbar {
-  height: 12px;
-  width: 12px;
-  background: rgba(0, 0, 0, 0.15);
-}
-
-#cc-list-table::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.25);
-  -webkit-border-radius: 2ex;
-}
-
-#cc-list-table::-webkit-scrollbar-corner {
-  -webkit-border-radius: 2ex;
-  background: rgba(0, 0, 0, 0.15);
-}
-
-#cc-list-table::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-}
-
 .mobile-tip {
   display: none;
 }
@@ -534,6 +513,27 @@ img {
   .mobile-tip {
     display: block;
   }
+
+  #cc-list-table::-webkit-scrollbar {
+    height: 12px;
+    width: 12px;
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  #cc-list-table::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.25);
+    -webkit-border-radius: 2ex;
+  }
+
+  #cc-list-table::-webkit-scrollbar-corner {
+    -webkit-border-radius: 2ex;
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  #cc-list-table::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+  }
 }
 
 /* iPads (portrait and landscape) ----------- */
@@ -542,6 +542,27 @@ img {
 
   .mobile-tip {
     display: block;
+  }
+
+  #cc-list-table::-webkit-scrollbar {
+    height: 12px;
+    width: 12px;
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  #cc-list-table::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.25);
+    -webkit-border-radius: 2ex;
+  }
+
+  #cc-list-table::-webkit-scrollbar-corner {
+    -webkit-border-radius: 2ex;
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  #cc-list-table::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
   }
 }
 
@@ -580,5 +601,26 @@ img {
 
   .mobile-tip {
     display: block;
+  }
+
+  #cc-list-table::-webkit-scrollbar {
+    height: 12px;
+    width: 12px;
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  #cc-list-table::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.25);
+    -webkit-border-radius: 2ex;
+  }
+
+  #cc-list-table::-webkit-scrollbar-corner {
+    -webkit-border-radius: 2ex;
+    background: rgba(0, 0, 0, 0.15);
+  }
+
+  #cc-list-table::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
   }
 }
