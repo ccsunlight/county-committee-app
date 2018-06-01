@@ -23,8 +23,6 @@ const googleGeocoderOptions = {
 const googleGeocoder = NodeGeocoder(googleGeocoderOptions);
 
 function* getCountySeatBreakdown(county) {
-  console.log(numOfSeats, numOfVacancies);
-
   return {
     county: county,
     numOfSeats: numOfSeats - numOfVacancies,
@@ -85,6 +83,16 @@ class Service {
             entry_type: member.entry_type,
             office_holder: member.office_holder,
             petition_number: member.petition_number,
+            term_begins: member.term_begins.toLocaleString("en-US", {
+              year: "2-digit",
+              month: "numeric",
+              day: "numeric"
+            }),
+            term_ends: member.term_ends.toLocaleString("en-US", {
+              year: "2-digit",
+              month: "numeric",
+              day: "numeric"
+            }),
             entry_type: member.entry_type
           };
         })

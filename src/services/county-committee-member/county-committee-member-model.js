@@ -13,6 +13,7 @@ const countyCommitteeMemberSchema = new Schema(
     petition_number: {
       type: Number
     },
+
     office: {
       type: String,
       required: true
@@ -116,7 +117,9 @@ const countyCommitteeMemberSchema = new Schema(
     data_source: {
       type: String,
       required: true
-    }
+    },
+    term_begins: { type: Date, required: true },
+    term_ends: { type: Date, required: true }
   },
   {
     toObject: {
