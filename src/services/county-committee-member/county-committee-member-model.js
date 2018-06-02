@@ -42,6 +42,10 @@ const countyCommitteeMemberSchema = new Schema(
       type: String,
       required: true
     },
+    sex: {
+      type: String,
+      enum: ["Male", "Female", "Undefined"]
+    },
     electoral_district: {
       type: Number,
       required: true

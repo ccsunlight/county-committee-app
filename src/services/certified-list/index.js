@@ -7,6 +7,7 @@ const CertifiedList = require("./certified-list-model");
 const hooks = require("./hooks");
 const CountyCommitteeMember = require("../county-committee-member/county-committee-member-model");
 const FeathersMongoose = require("feathers-mongoose");
+const moment = require("moment");
 
 function ccExtractionException(message) {
   this.message = message;
@@ -55,6 +56,21 @@ class Service extends FeathersMongoose.Service {
 
     if (match) {
       return match[1];
+    }
+  }
+  /**
+   * { function_description }
+   *
+   * @param      {<type>}  firstPage  The first page
+   */
+  extractElectionDate(firstPage) {
+    var re = /(?=Primary Election held).+?,\s(.+)\b/i;
+    var matches = firstPage.match(re);
+
+    if (matches.length === 2) {
+      return matches[1];
+    } else {
+      return false;
     }
   }
 
@@ -183,10 +199,13 @@ class Service extends FeathersMongoose.Service {
           reject(err);
           console.log(err);
         }
-
+        let electionDate = undefined;
         let members = [];
         let county, party;
         pages.forEach((page, index) => {
+          if (index === 0) {
+            electionDate = this.extractElectionDate(page);
+          }
           // Keeps checking pages until it can extract county
           // Some pages have county on them others don't
           if (!county) {
@@ -205,6 +224,12 @@ class Service extends FeathersMongoose.Service {
                 const ccMember = new CountyCommitteeMember(member);
                 ccMember.party = party;
                 ccMember.data_source = path.basename(filepath);
+
+                ccMember.term_begins = new Date(electionDate);
+                ccMember.term_ends = moment(ccMember.term_begins).add(
+                  2,
+                  "years"
+                );
                 return ccMember;
               })
             );
