@@ -14,8 +14,13 @@
 
 		{{#if partyPositionsToBeFilled}}
 			<h5>Petitioning season for this County Committee starts <strong>June 5th</strong>. Below are the petitionable seats for the upcoming election:</h5>
-			<a target="_blank" href="/how-to-run-for-county-committee">Learn how to petition and run!</a>
+			
 			{{> table members=partyPositionsToBeFilled}}
+			<div class="petition-cta">
+			<a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank" href="/how-to-run-for-county-committee">
+			  Learn how to petition!
+			</a>
+			</div>
 		{{/if}}
 		
 

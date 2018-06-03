@@ -32,6 +32,33 @@ const moment = require("moment");
  * @type       {Function}
  */
 class Service extends FeathersMongoose.Service {
+  getCSVColumnFormat(headerRow) {
+    var district_columns = "";
+    var offices = [];
+    if (headerRow[0] === "district_key") {
+      district_columns = "district_key";
+      // It's a combined district key so iterate through
+      // the rest and assign to offices.
+      for (let x = 1; x < headerRow.length; x++) {
+        offices.push(headerRow[x]);
+      }
+    } else if (headerRow[0] === "AD" && headerRow[1] === "ED") {
+      district_columns = "split";
+      // Start after second column
+      for (let x = 2; x < headerRow.length; x++) {
+        offices.push(headerRow[x]);
+      }
+    } else {
+      throw new Error(
+        "Invalid CSV Columns. CSV columns need to be in either [district_key, office1, office2,etc.] or [AD,ED,office1,offce2,etc.]"
+      );
+    }
+
+    return {
+      district_columns: district_columns,
+      offices: offices
+    };
+  }
   districtKeyToADED(districtKey) {
     let ed_ad = { ed: undefined, ad: undefined };
 
@@ -72,28 +99,64 @@ class Service extends FeathersMongoose.Service {
     var parse = require("csv-parse");
 
     var positions = [];
+    var csvConfig;
+    let officeColumnStartIndex;
 
     return new Promise((resolve, reject) => {
       fs
         .createReadStream(filepath)
         .pipe(parse({ delimiter: "," }))
         .on("data", csvrow => {
-          if (positions.length === 0 && !position.office) {
-            position.office = csvrow[1];
+          let ed_ad;
+          if (!csvConfig) {
+            csvConfig = this.getCSVColumnFormat(csvrow);
+            if (csvConfig.district_columns === "district_key") {
+              officeColumnStartIndex = 1;
+            } else {
+              officeColumnStartIndex = 2;
+            }
           } else {
-            let ed_ad = this.districtKeyToADED(csvrow[0]);
-            let seatCount = parseInt(csvrow[1], 10);
-            if (ed_ad) {
-              position.ed_ad = ed_ad.ed + "/" + ed_ad.ad;
-              position.assembly_district = ed_ad.ad;
-              position.electoral_district = ed_ad.ed;
+            if (csvConfig.district_columns === "district_key") {
+              ed_ad = this.districtKeyToADED(csvrow[0]);
+            } else {
+              ed_ad = {
+                ad: csvrow[0],
+                ed: csvrow[1]
+              };
+            }
 
-              if (seatCount > 0) {
-                for (let x = 0; x < seatCount; x++) {
-                  positions.push(new CountyCommitteeMember(position));
+            // Create the CC seats for all the CC office columns
+
+            if (ed_ad) {
+              for (
+                let officeColumnIndex = officeColumnStartIndex;
+                officeColumnIndex <
+                csvConfig.offices.length + officeColumnStartIndex;
+                officeColumnIndex++
+              ) {
+                let seatCount = parseInt(csvrow[officeColumnIndex], 10);
+
+                position.ed_ad = ed_ad.ed + "/" + ed_ad.ad;
+                position.assembly_district = ed_ad.ad;
+                position.electoral_district = ed_ad.ed;
+
+                // Determin position
+                if (csvConfig.district_columns === "district_key") {
+                  //ed_ad = this.districtKeyToADED(csvrow[0]);
+                  position.office = csvConfig.offices[0];
+                } else {
+                  position.office =
+                    csvConfig.offices[
+                      officeColumnIndex - officeColumnStartIndex
+                    ];
+                }
+
+                if (seatCount > 0) {
+                  for (let x = 0; x < seatCount; x++) {
+                    positions.push(new CountyCommitteeMember(position));
+                  }
                 }
               }
-              //do something with csvrow
             }
           }
         })

@@ -26,7 +26,6 @@ describe("Certified List service", function() {
     const CertifiedListService = app.service(
       app.get("apiPath") + "/certified-list"
     );
-    console.log("PATH", filepath);
     CertifiedListService.create({ filepath: filepath })
       .then(certifiedList => {
         assert.ok(certifiedList);

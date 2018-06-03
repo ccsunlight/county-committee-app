@@ -60,7 +60,6 @@ class Service {
       const data = yield googleGeocoder.geocode(address);
       if (!data[0]) throw new Error("Bad address");
       const [lat, long] = [data[0].latitude, data[0].longitude];
-      console.log(data);
       const yourGeomDoc = yield edGeometry.findOne(intersectQuery([lat, long]));
       if (!yourGeomDoc) throw new Error("Not in NYC");
 
@@ -99,14 +98,6 @@ class Service {
         })
       );
 
-      console.log(
-        "searching for party positions",
-        ed,
-        ad,
-        party,
-        ed + "/" + ad
-      );
-
       const partyCallForEd = yield partyCall
         .findOne({
           positions: {
@@ -115,12 +106,12 @@ class Service {
               electoral_district: ed,
               party: party
             }
-          }
+          },
+          isApproved: true
         })
         .exec();
 
       if (partyCallForEd) {
-        console.log("party Call", partyCallForEd);
         let partyPositions = partyCallForEd.positions.filter(position => {
           return (
             position.assembly_district === ad &&
@@ -129,7 +120,6 @@ class Service {
         });
 
         if (partyPositions) {
-          console.log("partyPositions", partyPositions);
           partyPositionsToBeFilled = partyPositions.map(function(position) {
             return {
               office: position.office,
