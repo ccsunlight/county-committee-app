@@ -1,6 +1,7 @@
 "use strict";
 
 const certifiedList = require("./certified-list");
+const partyCall = require("./party-call");
 
 const invite = require("./invite");
 const edGeometry = require("./edGeometry");
@@ -41,6 +42,7 @@ module.exports = function() {
   app.configure(newsLink);
   app.configure(address);
   app.configure(certifiedList);
+  app.configure(partyCall);
 
   address.docs = {
     description: "A service to send and receive messages",
@@ -77,4 +79,6 @@ module.exports = function() {
   delete app.docs.paths[apiPath + "/profile/{_id}"];
   delete app.docs.paths[apiPath + "/certified-list"];
   delete app.docs.paths[apiPath + "/certified-list/{_id}"];
+  delete app.docs.paths[apiPath + "/party-call"];
+  delete app.docs.paths[apiPath + "/party-call/{_id}"];
 };

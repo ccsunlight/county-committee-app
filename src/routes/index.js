@@ -12,6 +12,7 @@ const download = require("download");
 const serveStatic = require("feathers").static;
 const auth = require("feathers-authentication");
 const countyCommittee = require("../services/county-committee/county-committee-model");
+
 const countyCommitteeMember = require("../services/county-committee-member/county-committee-member-model");
 const edGeometry = require("../services/edGeometry/edGeometry-model");
 const page = require("../services/page/page-model");
@@ -307,6 +308,7 @@ router.get("/get_address", function(req, res, next) {
             data.cleanedAllGeomDocsInAd = JSON.stringify(
               cleanedAllGeomDocsInAd
             );
+
             res.render("get_address", data);
           } else {
             const locals = {
@@ -318,6 +320,7 @@ router.get("/get_address", function(req, res, next) {
         })
       )
       .catch(function(error) {
+        console.log(error);
         const locals = {
           address: req.query.address,
           error: error.message
@@ -325,7 +328,7 @@ router.get("/get_address", function(req, res, next) {
         res.render("get_address", locals);
       });
   } catch (err) {
-    console.log("err no data");
+    console.log("err no data", err);
 
     if (err.message === "Not in NYC")
       console.log("TODO: the address must be in NYC");
