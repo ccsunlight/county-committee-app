@@ -17,7 +17,10 @@ import {
   ReferenceInput,
   SelectInput,
   SimpleForm,
-  TextInput
+  TextInput,
+  ReferenceManyField,
+  SingleFieldList,
+  ChipField
 } from "admin-on-rest";
 
 export const CountyCommitteeList = props => (
@@ -58,6 +61,22 @@ export const CountyCommitteeEdit = props => (
       <TextInput source="url" type="url" />
       <TextInput source="party_rules" type="url" />
       <TextInput source="email" type="email" />
+      <h4>Sample of members. </h4>
+      <ReferenceManyField
+        perPage={5}
+        label="Members"
+        reference="county-committee-member"
+        target="committee"
+      >
+        <Datagrid>
+          <TextField source="id" />
+          <TextField source="office" />
+          <TextField source="office_holder" />
+          <TextField source="assembly_district" />
+          <TextField source="electoral_district" />
+          <EditButton />
+        </Datagrid>
+      </ReferenceManyField>
     </SimpleForm>
   </Edit>
 );

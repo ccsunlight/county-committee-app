@@ -13,7 +13,6 @@ export default client => {
   const mapRequest = (type, resource, params) => {
     const service = client.service(resource);
     let query = {};
-    debugger;
     switch (type) {
       case GET_MANY:
         let ids = params.ids || [];
@@ -65,7 +64,6 @@ export default client => {
         return response;
     }
   };
-  debugger;
   return (type, resource, params) =>
     mapRequest(type, resource, params).then(response =>
       mapResponse(response, type, resource, params)

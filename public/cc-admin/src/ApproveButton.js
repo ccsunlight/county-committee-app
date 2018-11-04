@@ -19,7 +19,6 @@ export class ApproveButton extends Component {
 
   handleClick() {
     const { record } = this.props;
-    debugger;
     feathersRestClient(feathersClient)(PATCH, "certified-list", {
       id: record.id,
       data: { isApproved: true },
