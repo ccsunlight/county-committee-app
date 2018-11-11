@@ -7,6 +7,7 @@ const invite = require("./invite");
 const edGeometry = require("./edGeometry");
 const countyCommitteeMember = require("./county-committee-member");
 const countyCommittee = require("./county-committee");
+const countyCommitteeArchive = require("./county-committee-archive");
 const actionLog = require("./action-log");
 const glossaryTerm = require("./glossary-term");
 const newsLink = require("./news-link");
@@ -14,6 +15,7 @@ const newsLink = require("./news-link");
 const user = require("./user");
 const page = require("./page");
 const address = require("./address");
+
 const mongoose = require("mongoose");
 
 // Mongoose promise lib is deprecated.
@@ -35,6 +37,7 @@ module.exports = function() {
   app.configure(page);
   app.configure(countyCommitteeMember);
   app.configure(countyCommittee);
+  app.configure(countyCommitteeArchive);
   app.configure(edGeometry);
   app.configure(invite);
   app.configure(actionLog);

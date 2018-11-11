@@ -22,6 +22,12 @@ import {
   CountyCommitteeCreate
 } from "./county-committees";
 
+import {
+  CountyCommitteeArchiveList,
+  CountyCommitteeArchiveEdit,
+  CountyCommitteeArchiveCreate
+} from "./county-committee-archives";
+
 import { CertifiedListList, CertifiedListEdit } from "./certified-lists";
 
 import { PageList, PageEdit, PageCreate } from "./pages";
@@ -67,6 +73,14 @@ const App = () => (
       list={CountyCommitteeList}
       edit={CountyCommitteeEdit}
       create={CountyCommitteeCreate}
+      remove={Delete}
+    />
+
+    <Resource
+      name="county-committee-archive"
+      options={{ label: "Archive" }}
+      list={CountyCommitteeArchiveList}
+      edit={CountyCommitteeArchiveEdit}
       remove={Delete}
     />
 

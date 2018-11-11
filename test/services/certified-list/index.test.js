@@ -29,7 +29,7 @@ describe("Certified List service", function() {
     CertifiedListService.create({ filepath: filepath })
       .then(certifiedList => {
         assert.ok(certifiedList);
-        assert.equal(certifiedList.county, "New York County");
+        assert.equal(certifiedList.county, "New York");
         assert.equal(certifiedList.party, "Democratic");
         assert.equal(
           certifiedList.source,

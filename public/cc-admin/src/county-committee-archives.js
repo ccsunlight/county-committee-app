@@ -23,9 +23,9 @@ import {
   ChipField,
   DateInput
 } from "admin-on-rest";
-import ArchiveButton from "./ArchiveButton";
+import UnArchiveButton from "./UnArchiveButton";
 
-export const CountyCommitteeList = props => (
+export const CountyCommitteeArchiveList = props => (
   <List {...props} title="County Committees">
     <Datagrid>
       <TextField source="county" />
@@ -45,7 +45,7 @@ const CountyCommitteeTitle = ({ record }) => {
   );
 };
 
-export const CountyCommitteeEdit = props => (
+export const CountyCommitteeArchiveEdit = props => (
   <Edit title={<CountyCommitteeTitle />} {...props}>
     <SimpleForm>
       <DisabledInput label="Id" source="id" />
@@ -65,7 +65,7 @@ export const CountyCommitteeEdit = props => (
       <TextInput source="url" type="url" />
       <TextInput source="party_rules" type="url" />
       <TextInput source="email" type="email" />
-      <ArchiveButton />
+      <UnArchiveButton />
       <h4>Sample of members. </h4>
       <ReferenceManyField
         perPage={5}
@@ -84,26 +84,4 @@ export const CountyCommitteeEdit = props => (
       </ReferenceManyField>
     </SimpleForm>
   </Edit>
-);
-
-export const CountyCommitteeCreate = props => (
-  <Create {...props}>
-    <SimpleForm>
-      <TextInput source="county" />
-      <SelectInput
-        source="party"
-        choices={[
-          { id: "Democratic", name: "Democratic" },
-          { id: "Republican", name: "Republican" }
-        ]}
-      />
-      <TextInput source="party" />
-      <TextInput source="chairman" />
-      <TextInput source="address" />
-      <TextInput source="phone" />
-      <TextInput source="url" type="url" />
-      <TextInput source="party_rules" type="url" />
-      <TextInput source="email" type="email" />
-    </SimpleForm>
-  </Create>
 );

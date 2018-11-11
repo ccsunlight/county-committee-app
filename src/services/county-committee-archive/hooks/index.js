@@ -11,26 +11,30 @@ exports.before = {
   create: [generateAlias],
   update: [generateAlias],
   patch: [generateAlias],
-  remove: [archive]
+  remove: [unArchive]
 };
 
 /**
  * This hook overrides the regular delete instead
- * calling the "archive" function which moves the collection
- * and the cc members collection to archive collections.
+ * calling the "unArchive" function which moves the collection
+ * and the cc members collection back to the regular collections.
  *
  * @param      {<type>}  context  The context
  * @return     {<type>}  { description_of_the_return_value }
  */
-function archive(context) {
+function unArchive(context) {
+  const apiPath = context.app.get("apiPath");
   return context.service.get(context.id).then(county_committee => {
     if (county_committee) {
       delete county_committee.__v;
     }
-    return context.service.archive(county_committee).then(result => {
-      context.result = result;
-      return context;
-    });
+    return context.app
+      .service(apiPath + "/county-committee")
+      .unArchive(county_committee)
+      .then(result => {
+        context.result = result;
+        return context;
+      });
   });
 }
 

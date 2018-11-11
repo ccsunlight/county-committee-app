@@ -22,7 +22,9 @@
     "sync-db": "bash scripts/sync-db-from-prod.sh",
     "migrate": "bash ./init-migration.sh",
     "cert": "node cert/gene rate-cert.js",
-    "mocha": "nodemon  --exec 'mocha --recursive --bail'",
+    "mocha": "nodemon  --exec 'mocha --recursive --bail {filename}'",
+    "mocha:watch":
+      "onchange '**/*.js' -- ./node_modules/.bin/mocha test/services/county-committee/index.test.js",
     "precommit": "lint-staged",
     "format": "prettier",
     "build-admin": "cd public/cc-admin && npm run build",

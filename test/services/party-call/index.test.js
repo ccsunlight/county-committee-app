@@ -46,14 +46,14 @@ describe("Party Call Service", function() {
 
     PartyCallService.create({
       filepath: filepath,
-      county: "Mock Bronx County",
+      county: "Bronx",
       party: "Democratic",
       electionDate: "September 13, 2018",
       state: "NY"
     })
       .then(partyCall => {
         assert.ok(partyCall);
-        assert.equal(partyCall.county, "Mock Bronx County");
+        assert.equal(partyCall.county, "Bronx");
         assert.equal(partyCall.party, "Democratic");
         assert.equal(partyCall.source, "Bronx Party Call 2018 - Sheet1.csv");
         assert(Array.isArray(partyCall.positions));
@@ -75,14 +75,14 @@ describe("Party Call Service", function() {
 
     PartyCallService.create({
       filepath: filepath,
-      county: "Mock Kings County",
+      county: "Kings",
       party: "Democratic",
       electionDate: "September 13, 2018",
       state: "NY"
     })
       .then(partyCall => {
         assert.ok(partyCall);
-        assert.equal(partyCall.county, "Mock Kings County");
+        assert.equal(partyCall.county, "Kings");
         assert.equal(partyCall.party, "Democratic");
         assert.equal(partyCall.source, "Kings County Party Call - Sheet1.csv");
         assert(Array.isArray(partyCall.positions));

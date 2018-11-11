@@ -35,6 +35,8 @@ const countyCommitteeSchema = new Schema(
       type: String,
       required: true
     },
+    term_begins: { type: Date, required: false },
+    term_ends: { type: Date },
     state: {
       type: String,
       enum: [

@@ -6,7 +6,9 @@ const extract = require("pdf-text-extract");
 const CertifiedList = require("./certified-list-model");
 const hooks = require("./hooks");
 const CountyCommitteeMember = require("../county-committee-member/county-committee-member-model");
+const CountyCommittee = require("../county-committee/county-committee-model");
 const FeathersMongoose = require("feathers-mongoose");
+const mongoose = require("mongoose");
 const moment = require("moment");
 
 function ccExtractionException(message) {
@@ -16,7 +18,7 @@ function ccExtractionException(message) {
 
 class Service extends FeathersMongoose.Service {
   extractCountyFromPage(page) {
-    var match = page.match(/IN THE CITY OF NEW YORK\s+(.+), .+Party/);
+    var match = page.match(/IN THE CITY OF NEW YORK\s+(.+) County, .+Party/);
 
     if (match) {
       return match[1];
@@ -201,7 +203,9 @@ class Service extends FeathersMongoose.Service {
         }
         let electionDate = undefined;
         let members = [];
-        let county, party;
+        let county, party, committee_id;
+
+        // Goes through each page and creates new members to import
         pages.forEach((page, index) => {
           if (index === 0) {
             electionDate = this.extractElectionDate(page);
@@ -212,6 +216,10 @@ class Service extends FeathersMongoose.Service {
             county = this.extractCountyFromPage(page);
           }
 
+          if (!committee_id) {
+            committee_id = "5ae69c059404c403ea06f8b1";
+          }
+
           if (!party) {
             party = this.extractPartyFromPage(page);
           }
@@ -220,7 +228,8 @@ class Service extends FeathersMongoose.Service {
 
           if (extractedMembers) {
             members = members.concat(
-              extractedMembers.map(member => {
+              extractedMembers.map(function(member) {
+                member.committee = committee_id;
                 const ccMember = new CountyCommitteeMember(member);
                 ccMember.party = party;
                 ccMember.data_source = path.basename(filepath);

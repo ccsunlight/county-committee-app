@@ -7,6 +7,7 @@ const extract = require("pdf-text-extract");
 const PartyCall = require("./party-call-model");
 const hooks = require("./hooks");
 const CountyCommitteeMember = require("../county-committee-member/county-committee-member-model");
+const CountyCommittee = require("../county-committee/county-committee-model");
 const FeathersMongoose = require("feathers-mongoose");
 const moment = require("moment");
 
@@ -76,7 +77,14 @@ class Service extends FeathersMongoose.Service {
     }
   }
   getPartyCallPositionsFromCSV(params) {
-    const { filepath, electionDate, party, county, state } = params;
+    const {
+      filepath,
+      electionDate,
+      party,
+      county,
+      state,
+      committeeId
+    } = params;
     // Data object for CC Member
     let position = {
       petition_number: undefined,
@@ -91,6 +99,7 @@ class Service extends FeathersMongoose.Service {
       data_source: undefined,
       county: county,
       state: state,
+      committee: committeeId,
       party: party,
       data_source: path.basename(filepath),
       term_begins: new Date(electionDate),
@@ -173,19 +182,26 @@ class Service extends FeathersMongoose.Service {
         reject("File does not exist: " + params.filepath);
         return;
       }
-      this.getPartyCallPositionsFromCSV(params).then(partyCallPositions => {
-        let importedList = new PartyCall({
-          county: params.county,
-          party: params.party,
-          source: path.basename(params.filepath),
-          positions: partyCallPositions
-        });
-        importedList.save(err => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(importedList);
-          }
+
+      CountyCommittee.findOne({
+        county: params.county,
+        party: params.party
+      }).then(countyCommitee => {
+        params.committeeId = countyCommitee.id;
+        this.getPartyCallPositionsFromCSV(params).then(partyCallPositions => {
+          let importedList = new PartyCall({
+            county: params.county,
+            party: params.party,
+            source: path.basename(params.filepath),
+            positions: partyCallPositions
+          });
+          importedList.save(err => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(importedList);
+            }
+          });
         });
       });
     });
