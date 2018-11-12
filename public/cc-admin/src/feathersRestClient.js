@@ -16,10 +16,19 @@ export default client => {
     switch (type) {
       case GET_MANY:
         let ids = params.ids || [];
+
         query = { id: { $in: ids } };
         query["$limit"] = ids.length;
+
         return service.find({ query });
       case GET_MANY_REFERENCE:
+        query = {
+          [params.target]: params.id,
+          ["$limit"]: params.pagination.perPage,
+          ["$skip"]: params.pagination.skip
+        };
+
+        return service.find({ query });
       case GET_LIST:
         const { page, perPage } = params.pagination || {};
         const { field, order } = params.sort || {};
