@@ -8,6 +8,7 @@ const mongoose = require("mongoose");
 
 describe("county-committee service", function() {
   this.timeout(5000);
+
   it("registered the county-committees service", () => {
     const service = app.service(app.get("apiPath") + "/county-committee");
     assert.ok(service);
@@ -16,11 +17,15 @@ describe("county-committee service", function() {
   it("can archive a county-committees", done => {
     const service = app.service(app.get("apiPath") + "/county-committee");
 
+    // @todo make sure this cleans up gracefully.
+    // If this fails, check that the object is in the DB
+    //
     CountyCommittee.findOne({
       county: "Queens",
       party: "Democratic"
     }).then(function(county_committee) {
       //console.log(county_committee);
+
       assert(county_committee);
       //
       assert(county_committee.id);

@@ -3,6 +3,8 @@
 const globalHooks = require("../../../hooks");
 const hooks = require("feathers-hooks");
 const slugify = require("slugify");
+const os = require("os");
+const fs = require("fs");
 
 exports.before = {
   all: [],
@@ -40,6 +42,43 @@ function generateAlias(hook) {
   ).toLowerCase();
 }
 
+function savePartyCall(context) {
+  const PartyCallService = context.app.service(
+    context.app.get("apiPath") + "/party-call"
+  );
+
+  let party_call_upload;
+  if (context.data.party_call_uploads.length) {
+    party_call_upload = context.data.party_call_uploads[0];
+
+    const tempFileFullPath = os.tmpdir() + "/" + party_call_upload.title;
+    // Extracts the base64 data
+    // @todo handle this cleaner
+    var utf8encoded = Buffer.from(
+      party_call_upload.src.split(",")[1],
+      "base64"
+    ).toString("utf8");
+
+    fs.writeFileSync(tempFileFullPath, utf8encoded);
+
+    const options = {
+      filepath: tempFileFullPath,
+      county: context.data.county,
+      party: context.data.party,
+      electionDate: "September 13, 2018",
+      state: "NY"
+    };
+
+    return PartyCallService.create(options)
+      .then(partyCall => {
+        return context;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+}
+
 exports.after = {
   all: [
     function(hook) {
@@ -64,7 +103,7 @@ exports.after = {
     }
   ],
   get: [],
-  create: [globalHooks.logAction],
+  create: [savePartyCall, globalHooks.logAction],
   update: [globalHooks.logAction],
   patch: [globalHooks.logAction],
   remove: [globalHooks.logAction]

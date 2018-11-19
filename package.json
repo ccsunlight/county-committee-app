@@ -2,12 +2,14 @@
   "name": "county-committee",
   "description": "App for county committee information",
   "version": "0.0.0",
-  "homepage": "",
+  "homepage": "https://ccsunlight.org",
   "main": "src/",
   "keywords": ["feathers"],
   "license": "MIT",
   "repository": {},
-  "author": {},
+  "author": {
+    "name": "Jonathan Crockett & Dave Druelinger"
+  },
   "contributors": [],
   "bugs": {},
   "engines": {
@@ -16,21 +18,30 @@
   "scripts": {
     "install-deps": "apt-get -y update && apt-get -y install poppler-utils",
     "dev": "nodemon -e js,json,hbs src/",
-    "test": "npm run mocha",
-    "jshint": "jshint src/. test/. --config",
-    "start": "node src/",
+    "start": "node  --inspect=0.0.0.0 src/",
     "sync-db": "bash scripts/sync-db-from-prod.sh",
     "migrate": "bash ./init-migration.sh",
+    "build-admin": "cd public/cc-admin && npm run build",
     "cert": "node cert/gene rate-cert.js",
-    "mocha": "nodemon  --exec 'mocha --recursive --bail {filename}'",
+    "mocha":
+      "nodemon  --inspect-brk=0.0.0.0 --exec 'mocha --recursive --bail test/services/county-committee/index.test.js'",
+    "nodemon:debug": "./node_modules/.bin/nodemon --inspect=0.0.0.0",
     "mocha:watch":
-      "onchange '**/*.js' -- ./node_modules/.bin/mocha test/services/county-committee/index.test.js",
+      "./node_modules/.bin/onchange '**/*.js' -- ./node_modules/.bin/mocha test/services/county-committee/index.test.js",
     "precommit": "lint-staged",
     "format": "prettier",
-    "build-admin": "cd public/cc-admin && npm run build",
+    "jshint": "jshint src/. test/. --config",
     "import-certified-list": "node scripts/import-certified-list",
     "prettier-watch":
       "onchange '**/*.{js,json,css,md}' -- prettier --write {{changed}}"
+  },
+  "nodemonConfig": {
+    "ext": "js",
+    "ignore": [],
+    "events": {
+      "start": "echo starting NODEMON",
+      "restart": "./node_modules/.bin/mocha  \"$FILENAME\""
+    }
   },
   "lint-staged": {
     "*.{js,json,css,md}": ["prettier --write", "git add"]
@@ -42,7 +53,7 @@
     "aor-permissions": "^1.0.2",
     "async": "^2.6.1",
     "basic-auth-connect": "^1.0.0",
-    "bcrypt": "^1.0.2",
+    "bcrypt": "^3.0.0",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
     "commander": "^2.15.1",
@@ -70,6 +81,7 @@
     "feathers-seeder": "^1.0.8",
     "feathers-socketio": "^1.5.2",
     "feathers-swagger": "^0.6.0",
+    "filereader": "^0.10.3",
     "generate-password": "^1.3.0",
     "greenlock-express": "^2.0.11",
     "handlebars-dateformat": "^1.1.1",

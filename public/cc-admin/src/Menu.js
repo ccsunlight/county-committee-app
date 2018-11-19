@@ -4,12 +4,15 @@ import PropTypes from "prop-types";
 import inflection from "inflection";
 import MenuItem from "material-ui/MenuItem";
 import { Link } from "react-router-dom";
+import { connect } from 'react-redux';
+import { MenuItemLink, getResources } from 'admin-on-rest';
+
 import pure from "recompose/pure";
 import compose from "recompose/compose";
 
-import { WithPermission, SwitchPermissions, Permission } from "aor-permissions";
+// import { WithPermission, SwitchPermissions, Permission } from "aor-permissions";
 import authClient from "./feathersAuthClient";
-import { checkUserCanEdit, checkUserHasAccess } from "./feathersAuthClient";
+//import { checkUserCanEdit, checkUserHasAccess } from "./feathersAuthClient";
 
 /* <MenuItem
                         key={resource.name}
@@ -23,8 +26,7 @@ import { checkUserCanEdit, checkUserHasAccess } from "./feathersAuthClient";
 function MenuItemWithAccess(props) {
   const resource = props.resource;
   const onMenuTap = props.onMenuTap;
-
-  if (checkUserHasAccess(resource)) {
+  
     return (
       <MenuItem
         key={resource.name}
@@ -41,12 +43,12 @@ function MenuItemWithAccess(props) {
         onTouchTap={onMenuTap}
       />
     );
-  } else {
-    return false;
-  }
+  
 }
 
-export default ({ onMenuTap, resources, logout }) => (
+const Menu = ({ resources, onMenuTap, logout }) => { 
+  
+  return(
   <div>
     {resources
       .filter(r => r.list)
@@ -55,4 +57,12 @@ export default ({ onMenuTap, resources, logout }) => (
       ))}
     {logout}
   </div>
-);
+)};
+
+const mapStateToProps = state => ({
+  resources: getResources(state),
+})
+export default connect(mapStateToProps)(Menu);
+/*
+export default 
+*/

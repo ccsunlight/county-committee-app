@@ -21,7 +21,11 @@ import {
   ReferenceManyField,
   SingleFieldList,
   ChipField,
-  DateInput
+  DateInput,
+  FileInput,
+  FileField,
+  ImageInput,
+  ImageField
 } from "admin-on-rest";
 import ArchiveButton from "./ArchiveButton";
 
@@ -57,6 +61,10 @@ export const CountyCommitteeEdit = props => (
           { id: "Republican", name: "Republican" }
         ]}
       />
+
+      <FileInput source="party_call_files" label="Party Call" accept=".csv">
+        <FileField source="src" title="title" />
+      </FileInput>
       <DateInput source="term_begins" />
       <DateInput source="term_ends" />
       <TextInput source="chairman" />
@@ -97,7 +105,9 @@ export const CountyCommitteeCreate = props => (
           { id: "Republican", name: "Republican" }
         ]}
       />
-      <TextInput source="party" />
+      <FileInput source="party_call_files" label="Party Call" accept=".csv">
+        <FileField source="src" title="title" />
+      </FileInput>
       <TextInput source="chairman" />
       <TextInput source="address" />
       <TextInput source="phone" />

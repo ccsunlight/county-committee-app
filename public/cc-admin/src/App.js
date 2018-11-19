@@ -14,6 +14,7 @@ import AccountIcon from "material-ui/svg-icons/action/account-box";
 import feathersRestClient from "./feathersRestClient";
 import feathersAuthClient from "./feathersAuthClient";
 import feathersClient from "./feathersClient";
+import addUploadCapabilities from "./addUploadCapabilities";
 
 import { MemberList, MemberEdit, MemberCreate } from "./members";
 import {
@@ -56,7 +57,7 @@ const App = () => (
     title="CC Admin"
     menu={Menu}
     authClient={feathersAuthClient(feathersClient, authClientOptions)}
-    restClient={feathersRestClient(feathersClient)}
+    restClient={addUploadCapabilities(feathersRestClient(feathersClient))}
   >
     <Resource
       name="county-committee-member"
