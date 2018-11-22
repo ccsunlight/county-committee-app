@@ -193,7 +193,8 @@ class Service extends FeathersMongoose.Service {
             county: params.county,
             party: params.party,
             source: path.basename(params.filepath),
-            positions: partyCallPositions
+            positions: partyCallPositions,
+            committee_id: params.committeeId
           });
           importedList.save(err => {
             if (err) {

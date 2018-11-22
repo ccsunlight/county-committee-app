@@ -21,8 +21,6 @@ exports.after = {
           record.id = record._id;
           return record;
         });
-      } else {
-        console.log(hook.result);
       }
     }
   ],
@@ -33,12 +31,16 @@ exports.after = {
           record.id = record._id;
           return record;
         });
-      } else {
-        console.log(hook.result);
       }
     }
   ],
-  get: [],
+  get: [
+    function(hook) {
+      if (hook.result) {
+        hook.result.id = hook.result._id;
+      }
+    }
+  ],
   create: [globalHooks.logAction],
   update: [globalHooks.logAction],
   patch: [globalHooks.logAction],

@@ -61,7 +61,6 @@ export const CountyCommitteeEdit = props => (
           { id: "Republican", name: "Republican" }
         ]}
       />
-
       <FileInput source="party_call_files" label="Party Call" accept=".csv">
         <FileField source="src" title="title" />
       </FileInput>
@@ -73,8 +72,10 @@ export const CountyCommitteeEdit = props => (
       <TextInput source="url" type="url" />
       <TextInput source="party_rules" type="url" />
       <TextInput source="email" type="email" />
+
       <ArchiveButton />
       <h4>Sample of members. </h4>
+
       <ReferenceManyField
         perPage={5}
         label="Members"

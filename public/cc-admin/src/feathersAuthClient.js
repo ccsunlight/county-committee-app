@@ -64,8 +64,8 @@ export default (client, options = {}) => (type, params) => {
           return client.service("user").get(payload.userId);
         })
         .then(user => {
-          localStorage.setItem("userId", client.get("user").id);
-          localStorage.setItem("role", client.get("user").role);
+          localStorage.setItem("userId", client.id);
+          localStorage.setItem("role", client.role);
 
           return Promise.resolve();
         })

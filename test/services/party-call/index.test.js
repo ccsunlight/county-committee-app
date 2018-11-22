@@ -2,6 +2,7 @@
 
 const assert = require("assert");
 const app = require("../../../src/app");
+const mongoose = require("mongoose");
 
 describe("Party Call Service", function() {
   this.timeout(10000);

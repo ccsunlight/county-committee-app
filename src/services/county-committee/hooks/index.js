@@ -48,7 +48,10 @@ function savePartyCall(context) {
   );
 
   let party_call_upload;
-  if (context.data.party_call_uploads.length) {
+  if (
+    context.data.hasOwnProperty("party_call_upload") &&
+    ontext.data.party_call_uploads.length > 0
+  ) {
     party_call_upload = context.data.party_call_uploads[0];
 
     const tempFileFullPath = os.tmpdir() + "/" + party_call_upload.title;
@@ -64,9 +67,7 @@ function savePartyCall(context) {
     const options = {
       filepath: tempFileFullPath,
       county: context.data.county,
-      party: context.data.party,
-      electionDate: "September 13, 2018",
-      state: "NY"
+      party: context.data.party
     };
 
     return PartyCallService.create(options)
@@ -102,7 +103,13 @@ exports.after = {
       }
     }
   ],
-  get: [],
+  get: [
+    function(hook) {
+      if (hook.result) {
+        hook.result.id = hook.result._id;
+      }
+    }
+  ],
   create: [savePartyCall, globalHooks.logAction],
   update: [globalHooks.logAction],
   patch: [globalHooks.logAction],

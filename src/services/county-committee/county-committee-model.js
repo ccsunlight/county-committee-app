@@ -6,6 +6,7 @@
 // for more of what you can do here.
 
 const mongoose = require("mongoose");
+const mongooseLeanVirtuals = require("mongoose-lean-virtuals");
 const Schema = mongoose.Schema;
 
 const countyCommitteeSchema = new Schema(
@@ -122,12 +123,19 @@ countyCommitteeSchema.virtual("members", {
   options: { sort: { _id: 1 } } // Query options, see http://bit.ly/mongoose-query-options
 });
 
-countyCommitteeSchema.pre("findOne", function() {
-  this.populate("members");
+countyCommitteeSchema.virtual("party_call", {
+  ref: "party_call", // The model to use
+  localField: "_id", // Find people where `localField`
+  foreignField: "committee_id", // is equal to `foreignField`
+  // If `justOne` is true, 'members' will be a single doc as opposed to
+  // an array. `justOne` is false by default.
+  justOne: true,
+  options: { sort: { _id: 1 } } // Query options, see http://bit.ly/mongoose-query-options
 });
 
-countyCommitteeSchema.virtual("id").get(function() {
-  return this._id;
+countyCommitteeSchema.pre("findOne", function() {
+  this.populate("members");
+  this.populate("party_call");
 });
 
 const countyCommitteeModel = mongoose.model(

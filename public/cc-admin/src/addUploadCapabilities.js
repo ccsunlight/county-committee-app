@@ -21,8 +21,9 @@ const convertFileToBase64 = file =>
  */
 const addUploadCapabilities = requestHandler => (type, resource, params) => {
   // @todo generalize this for multiple uploads
+
   if (type === "CREATE" && resource === "county-committee") {
-    if (params.data.party_call_files && params.data.party_call_files.length) {
+    if (params.data.hasOwnProperty("party_call_files")) {
       // only freshly dropped pictures are instance of File
       const formerFiles = params.data.party_call_files.filter(
         p => !(p.rawFile instanceof File)
@@ -47,7 +48,11 @@ const addUploadCapabilities = requestHandler => (type, resource, params) => {
             }
           })
         );
+    } else {
+      requestHandler(type, resource, params);
     }
+
+    debugger;
   }
 
   return requestHandler(type, resource, params);

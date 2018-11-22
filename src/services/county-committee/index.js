@@ -17,8 +17,6 @@ module.exports = function() {
       max: 25
     }
   };
-  mongoose.set("debug", false);
-
   const countyCommitteeArchiveSchema = CountyCommittee.schema.clone();
 
   countyCommitteeArchiveSchema.virtual("members", {

@@ -67,7 +67,13 @@ exports.after = {
       }
     }
   ],
-  get: [],
+  get: [
+    function(hook) {
+      if (hook.result) {
+        hook.result.id = hook.result._id;
+      }
+    }
+  ],
   create: [globalHooks.logAction],
   update: [globalHooks.logAction],
   patch: [globalHooks.logAction],

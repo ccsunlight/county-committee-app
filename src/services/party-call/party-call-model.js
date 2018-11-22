@@ -8,6 +8,7 @@ const partyCallSchema = new Schema({
   county: { type: String, required: true },
   party: { type: String, required: true },
   source: { type: String, required: true },
+  committee_id: { type: "ObjectId", ref: "CountyCommittee", required: true },
   positions: [ccMemberModelSchema],
   isApproved: { type: Boolean, default: false },
   isImported: { type: Boolean, default: false },
