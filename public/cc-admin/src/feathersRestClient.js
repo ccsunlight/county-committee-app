@@ -16,8 +16,9 @@ export default client => {
     switch (type) {
       case GET_MANY:
         let ids = params.ids || [];
-
-        query = { id: { $in: ids } };
+        query = {
+          _id: { ["$in"]: ids }
+        };
         query["$limit"] = ids.length;
 
         return service.find({ query });

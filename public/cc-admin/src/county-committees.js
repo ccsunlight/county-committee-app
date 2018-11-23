@@ -12,6 +12,7 @@ import {
   ReferenceField,
   TextField,
   EditButton,
+  CreateButton,
   DisabledInput,
   LongTextInput,
   ReferenceInput,
@@ -61,9 +62,6 @@ export const CountyCommitteeEdit = props => (
           { id: "Republican", name: "Republican" }
         ]}
       />
-      <FileInput source="party_call_files" label="Party Call" accept=".csv">
-        <FileField source="src" title="title" />
-      </FileInput>
       <ReferenceManyField
         perPage={5}
         label="Party Call"
@@ -72,7 +70,7 @@ export const CountyCommitteeEdit = props => (
       >
         <Datagrid>
           <TextField source="id" />
-          <TextField source="county" />
+          <TextField source="positions.length" />
           <EditButton />
         </Datagrid>
       </ReferenceManyField>
@@ -118,9 +116,6 @@ export const CountyCommitteeCreate = props => (
           { id: "Republican", name: "Republican" }
         ]}
       />
-      <FileInput source="party_call_files" label="Party Call" accept=".csv">
-        <FileField source="src" title="title" />
-      </FileInput>
       <TextInput source="chairman" />
       <TextInput source="address" />
       <TextInput source="phone" />

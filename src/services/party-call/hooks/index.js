@@ -4,14 +4,16 @@ const globalHooks = require("../../../hooks");
 const hooks = require("feathers-hooks");
 const CountyCommitteeMemberModel = require("../../county-committee-member/county-committee-member-model");
 const PartyCallModel = require("../party-call-model");
+const os = require("os");
+const fs = require("fs");
 
 exports.before = {
   all: [],
   find: [],
   get: [],
-  create: [],
-  update: [],
-  patch: [],
+  create: [savePartyCallJsonDataCSV],
+  update: [savePartyCallJsonDataCSV],
+  patch: [savePartyCallJsonDataCSV],
   remove: []
 };
 
@@ -75,3 +77,52 @@ exports.after = {
   ],
   remove: [globalHooks.logAction]
 };
+
+/**
+ * Takes a string of data and saves it to a temp file
+ * @param {String} base64Data A string of base64 data with or without the data uri prefix.
+ * @param {String} filename
+ * @returns {String} The full path of the newly created temp file
+ */
+function saveBase64DataToTempFile(base64Data, filename) {
+  const tempFileFullPath = os.tmpdir() + "/" + filename;
+  let utf8encoded;
+  debugger;
+  // Extracts the base64 data prefix from the json if present
+  // @todo handle this cleaner with converting to base64
+  if (base64Data.indexOf(",") > -1) {
+    utf8encoded = Buffer.from(base64Data.split(",")[1], "base64").toString(
+      "utf8"
+    );
+  } else {
+    utf8encoded = Buffer.from(base64Data, "base64").toString("utf8");
+  }
+
+  fs.writeFileSync(tempFileFullPath, utf8encoded);
+
+  return tempFileFullPath;
+}
+
+/**
+ * Checks for a data json string for party call and if present uses that
+ * to create the party call. For use with JSON rest POST requests.
+ *
+ * @param {Object} context The hook context
+ * @return {Object} The modified hook context
+ */
+function savePartyCallJsonDataCSV(context) {
+  if (context.data.hasOwnProperty("party_call_file_data")) {
+    let csvBase64DataObject = context.data.party_call_file_data.pop();
+    debugger;
+    if (csvBase64DataObject) {
+      let csvFileTempFilePath = saveBase64DataToTempFile(
+        csvBase64DataObject.src,
+        csvBase64DataObject.title
+      );
+
+      context.data.filepath = csvFileTempFilePath;
+    }
+  }
+
+  return context;
+}

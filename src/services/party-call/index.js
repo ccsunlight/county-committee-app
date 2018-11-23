@@ -76,15 +76,16 @@ class Service extends FeathersMongoose.Service {
       return false;
     }
   }
+
+  /**
+   * Takes a Party Call CSV filepath and converts it to an array of
+   * CountyCommittee model objects
+   * @todo break out the extraction and the model creation to two different
+   * functions
+   * @param {Object} params The params object passed to the service
+   */
   getPartyCallPositionsFromCSV(params) {
-    const {
-      filepath,
-      electionDate,
-      party,
-      county,
-      state,
-      committeeId
-    } = params;
+    const { filepath, party, county, state, committee_id } = params;
     // Data object for CC Member
     let position = {
       petition_number: undefined,
@@ -99,11 +100,9 @@ class Service extends FeathersMongoose.Service {
       data_source: undefined,
       county: county,
       state: state,
-      committee: committeeId,
+      committee: committee_id,
       party: party,
-      data_source: path.basename(filepath),
-      term_begins: new Date(electionDate),
-      term_ends: moment(new Date(electionDate)).add(2, "years")
+      data_source: path.basename(filepath)
     };
     var parse = require("csv-parse");
 
@@ -189,24 +188,26 @@ class Service extends FeathersMongoose.Service {
         if (!countyCommittee) {
           reject("County Committee does not exist");
           return;
+        } else {
+          this.getPartyCallPositionsFromCSV({
+            county: countyCommittee.county,
+            party: countyCommittee.party,
+            ...params
+          }).then(partyCallPositions => {
+            let importedList = new PartyCall({
+              source: path.basename(params.filepath),
+              positions: partyCallPositions,
+              committee_id: countyCommittee._id
+            });
+            importedList.save(err => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(importedList);
+              }
+            });
+          });
         }
-        params.committeeId = countyCommittee.id;
-        this.getPartyCallPositionsFromCSV(params).then(partyCallPositions => {
-          let importedList = new PartyCall({
-            county: params.county,
-            party: params.party,
-            source: path.basename(params.filepath),
-            positions: partyCallPositions,
-            committee_id: params.committeeId
-          });
-          importedList.save(err => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(importedList);
-            }
-          });
-        });
       });
     });
   }

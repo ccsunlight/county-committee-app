@@ -18,14 +18,13 @@
   "scripts": {
     "install-deps": "apt-get -y update && apt-get -y install poppler-utils",
     "dev": "nodemon -e js,json,hbs src/",
-    "start": "node  --inspect=0.0.0.0 src/",
+    "start": "node --inspect=0.0.0.0 src/",
     "sync-db": "bash scripts/sync-db-from-prod.sh",
     "migrate": "bash ./init-migration.sh",
     "build-admin": "cd public/cc-admin && npm run build",
     "cert": "node cert/gene rate-cert.js",
     "mocha":
-      "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/county-committee/index.test.js'",
-    "nodemon:debug": "./node_modules/.bin/nodemon --inspect=0.0.0.0",
+      "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/party-call/index.test.js'",
     "mocha:watch":
       "./node_modules/.bin/onchange '**/*.js' -- ./node_modules/.bin/mocha test/services/county-committee/index.test.js",
     "precommit": "lint-staged",

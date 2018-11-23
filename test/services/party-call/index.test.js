@@ -3,22 +3,32 @@
 const assert = require("assert");
 const app = require("../../../src/app");
 const mongoose = require("mongoose");
-
+const CountyCommitteeModel = require("../../../src/services/county-committee/county-committee-model");
 
 describe("Party Call Service", function() {
   this.timeout(10000);
 
+  let county_committee_id;
+
+  beforeEach(function(done) {
+    // ...
+    CountyCommitteeModel.findOne({ county: "Bronx", party: "Democratic" }).then(
+      county_committee => {
+        county_committee_id = county_committee.id;
+        done();
+      }
+    );
+  });
+
   it("registered the party-call service", () => {
     assert.ok(app.service(app.get("apiPath") + "/party-call"));
   });
-
 
   it("can extract ED/AD", () => {
     const PartyCallService = app.service(app.get("apiPath") + "/party-call");
     let ed_ad = PartyCallService.districtKeyToADED("82067");
     assert.deepStrictEqual(ed_ad, { ed: 67, ad: 82 });
   });
-
 
   it("can extract CSV Config", () => {
     const headerRowMock = ["district_key", "County Committee"];
@@ -29,7 +39,6 @@ describe("Party Call Service", function() {
       offices: ["County Committee"]
     });
   });
-
 
   it("can extract alternate CSV Config", () => {
     const headerRowMock = [
@@ -45,7 +54,6 @@ describe("Party Call Service", function() {
       offices: ["Male County Committee", "Female County Committee"]
     });
   });
-  
 
   it("can read a party call formatted csv", done => {
     let filepath = "/usr/src/app/import/Bronx Party Call 2018 - Sheet1.csv";
@@ -55,16 +63,16 @@ describe("Party Call Service", function() {
       filepath: filepath,
       county: "Bronx",
       party: "Democratic",
+      committee_id: county_committee_id,
       electionDate: "September 13, 2018",
       state: "NY"
     })
       .then(partyCall => {
         assert.ok(partyCall);
-        assert.equal(partyCall.county, "Bronx");
-        assert.equal(partyCall.party, "Democratic");
         assert(mongoose.Types.ObjectId.isValid(partyCall.committee_id));
         assert.equal(partyCall.source, "Bronx Party Call 2018 - Sheet1.csv");
         assert(Array.isArray(partyCall.positions));
+        assert.equal(partyCall.committee_id, county_committee_id);
         assert.equal(partyCall.positions.length, 2663);
         assert.equal(partyCall.positions[0].party, "Democratic");
         assert.equal(partyCall.positions[0].office, "County Committee");
@@ -80,30 +88,42 @@ describe("Party Call Service", function() {
   it("can read different field configurations for formatted csv", done => {
     let filepath = "/usr/src/app/import/Kings County Party Call - Sheet1.csv";
     const PartyCallService = app.service(app.get("apiPath") + "/party-call");
+    CountyCommitteeModel.findOne({ county: "Kings", party: "Democratic" }).then(
+      county_committee => {
+        county_committee_id = county_committee.id;
 
-    PartyCallService.create({
-      filepath: filepath,
-      county: "Kings",
-      party: "Democratic",
-      electionDate: "September 13, 2018",
-      state: "NY"
-    })
-      .then(partyCall => {
-        assert.ok(partyCall);
-        assert.equal(partyCall.county, "Kings");
-        assert.equal(partyCall.party, "Democratic");
-        assert.equal(partyCall.source, "Kings County Party Call - Sheet1.csv");
-        assert(Array.isArray(partyCall.positions));
-        assert.equal(partyCall.positions.length, 5346);
-        assert.equal(partyCall.positions[0].party, "Democratic");
-        assert.equal(partyCall.positions[0].office, "Male County Committee");
-        assert.equal(partyCall.positions[1].office, "Female County Committee");
-        done();
-      })
-      .catch(err => {
-        console.log(err);
-        assert(!err);
-        done();
-      });
+        PartyCallService.create({
+          filepath: filepath,
+          committee_id: county_committee_id,
+          electionDate: "September 13, 2018",
+          state: "NY"
+        })
+          .then(partyCall => {
+            assert.ok(partyCall);
+            assert.equal(
+              partyCall.source,
+              "Kings County Party Call - Sheet1.csv"
+            );
+            assert(Array.isArray(partyCall.positions));
+            assert(partyCall.committee_id, county_committee_id);
+            assert.equal(partyCall.positions.length, 5346);
+            assert.equal(partyCall.positions[0].party, "Democratic");
+            assert.equal(
+              partyCall.positions[0].office,
+              "Male County Committee"
+            );
+            assert.equal(
+              partyCall.positions[1].office,
+              "Female County Committee"
+            );
+            done();
+          })
+          .catch(err => {
+            console.log(err);
+            assert(!err);
+            done();
+          });
+      }
+    );
   });
 });

@@ -29,6 +29,8 @@ import {
   CountyCommitteeArchiveCreate
 } from "./county-committee-archives";
 
+import { PartyCallList, PartyCallEdit, PartyCallCreate } from "./party-calls";
+
 import { CertifiedListList, CertifiedListEdit } from "./certified-lists";
 
 import { PageList, PageEdit, PageCreate } from "./pages";
@@ -157,8 +159,10 @@ const App = () => (
       name="party-call"
       options={{ label: "Party Call" }}
       icon={ActionLogIcon}
-      list={CertifiedListList}
-      edit={CertifiedListEdit}
+      list={PartyCallList}
+      edit={PartyCallEdit}
+      create={PartyCallCreate}
+      remove={Delete}
     />
   </Admin>
 );
