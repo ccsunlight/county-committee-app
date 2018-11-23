@@ -31,12 +31,11 @@ const countyCommitteeSchema = new Schema(
     address: {
       type: String
     },
-
     county: {
       type: String,
       required: true
     },
-    term_begins: { type: Date, required: false },
+    term_begins: { type: Date },
     term_ends: { type: Date },
     state: {
       type: String,
@@ -124,11 +123,9 @@ countyCommitteeSchema.virtual("members", {
 });
 
 countyCommitteeSchema.virtual("party_call", {
-  ref: "party_call", // The model to use
-  localField: "_id", // Find people where `localField`
-  foreignField: "committee_id", // is equal to `foreignField`
-  // If `justOne` is true, 'members' will be a single doc as opposed to
-  // an array. `justOne` is false by default.
+  ref: "party-call",
+  localField: "_id",
+  foreignField: "committee_id",
   justOne: true,
   options: { sort: { _id: 1 } } // Query options, see http://bit.ly/mongoose-query-options
 });
@@ -137,6 +134,8 @@ countyCommitteeSchema.pre("findOne", function() {
   this.populate("members");
   this.populate("party_call");
 });
+
+countyCommitteeSchema.plugin(mongooseLeanVirtuals);
 
 const countyCommitteeModel = mongoose.model(
   "county-committee",

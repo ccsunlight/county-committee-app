@@ -152,6 +152,14 @@ const App = () => (
       list={CertifiedListList}
       edit={CertifiedListEdit}
     />
+
+    <Resource
+      name="party-call"
+      options={{ label: "Party Call" }}
+      icon={ActionLogIcon}
+      list={CertifiedListList}
+      edit={CertifiedListEdit}
+    />
   </Admin>
 );
 

@@ -122,8 +122,6 @@ const countyCommitteeMemberSchema = new Schema(
       type: String,
       required: true
     },
-    term_begins: { type: Date, required: true },
-    term_ends: { type: Date, required: true },
     committee: {
       type: Schema.Types.ObjectId,
       required: true,

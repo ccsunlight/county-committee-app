@@ -24,7 +24,7 @@
     "build-admin": "cd public/cc-admin && npm run build",
     "cert": "node cert/gene rate-cert.js",
     "mocha":
-      "nodemon  --inspect-brk=0.0.0.0 --exec 'mocha --recursive --bail test/services/party-call/index.test.js'",
+      "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/county-committee/index.test.js'",
     "nodemon:debug": "./node_modules/.bin/nodemon --inspect=0.0.0.0",
     "mocha:watch":
       "./node_modules/.bin/onchange '**/*.js' -- ./node_modules/.bin/mocha test/services/county-committee/index.test.js",
@@ -39,8 +39,7 @@
     "ext": "js",
     "ignore": [],
     "events": {
-      "start": "echo starting NODEMON",
-      "restart": "./node_modules/.bin/mocha  \"$FILENAME\""
+      "start": "echo starting NODEMON"
     }
   },
   "lint-staged": {

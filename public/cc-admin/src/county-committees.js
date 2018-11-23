@@ -64,6 +64,18 @@ export const CountyCommitteeEdit = props => (
       <FileInput source="party_call_files" label="Party Call" accept=".csv">
         <FileField source="src" title="title" />
       </FileInput>
+      <ReferenceManyField
+        perPage={5}
+        label="Party Call"
+        reference="party-call"
+        target="committee_id"
+      >
+        <Datagrid>
+          <TextField source="id" />
+          <TextField source="county" />
+          <EditButton />
+        </Datagrid>
+      </ReferenceManyField>
       <DateInput source="term_begins" />
       <DateInput source="term_ends" />
       <TextInput source="chairman" />

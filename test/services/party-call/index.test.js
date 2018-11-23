@@ -4,17 +4,21 @@ const assert = require("assert");
 const app = require("../../../src/app");
 const mongoose = require("mongoose");
 
+
 describe("Party Call Service", function() {
   this.timeout(10000);
+
   it("registered the party-call service", () => {
     assert.ok(app.service(app.get("apiPath") + "/party-call"));
   });
+
 
   it("can extract ED/AD", () => {
     const PartyCallService = app.service(app.get("apiPath") + "/party-call");
     let ed_ad = PartyCallService.districtKeyToADED("82067");
     assert.deepStrictEqual(ed_ad, { ed: 67, ad: 82 });
   });
+
 
   it("can extract CSV Config", () => {
     const headerRowMock = ["district_key", "County Committee"];
@@ -25,6 +29,7 @@ describe("Party Call Service", function() {
       offices: ["County Committee"]
     });
   });
+
 
   it("can extract alternate CSV Config", () => {
     const headerRowMock = [
@@ -40,6 +45,7 @@ describe("Party Call Service", function() {
       offices: ["Male County Committee", "Female County Committee"]
     });
   });
+  
 
   it("can read a party call formatted csv", done => {
     let filepath = "/usr/src/app/import/Bronx Party Call 2018 - Sheet1.csv";
@@ -56,6 +62,7 @@ describe("Party Call Service", function() {
         assert.ok(partyCall);
         assert.equal(partyCall.county, "Bronx");
         assert.equal(partyCall.party, "Democratic");
+        assert(mongoose.Types.ObjectId.isValid(partyCall.committee_id));
         assert.equal(partyCall.source, "Bronx Party Call 2018 - Sheet1.csv");
         assert(Array.isArray(partyCall.positions));
         assert.equal(partyCall.positions.length, 2663);

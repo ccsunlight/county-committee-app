@@ -4,7 +4,11 @@ const app = require("../../../src/app");
 
 const assert = require("assert");
 const CountyCommittee = require("../../../src/services/county-committee/county-committee-model");
+const hooks = require("../../../src/services/county-committee/hooks");
+
 const mongoose = require("mongoose");
+const moment = require("moment");
+const mockCountyCommitteePostJson = require("./mock-county-committee-post.json");
 
 describe("county-committee service", function() {
   this.timeout(5000);
@@ -14,6 +18,50 @@ describe("county-committee service", function() {
     assert.ok(service);
   });
 
+  it("can create a county-committee with a party call", done => {
+    const service = app.service(app.get("apiPath") + "/county-committee");
+
+    const partyCallService = app.service(app.get("apiPath") + "/party-call");
+    service
+      .create({
+        chairman: "George Washington",
+        county: "Test",
+        state: "NY",
+        address: "1 Test Street",
+        phone: "212-123-4567",
+        party: "Democratic",
+        term_begins: moment.now(),
+        term_ends: moment().add(2, "Years"),
+        party_call_uploads: mockCountyCommitteePostJson.party_call_uploads
+      })
+      .then(county_committee => {
+        assert.equal(county_committee.chairman, "George Washington");
+
+        assert(county_committee.id);
+
+        partyCallService
+          .find({
+            query: {
+              committee_id: county_committee.id
+            }
+          })
+          .then(response => {
+            debugger;
+            assert(response);
+            assert(response.data);
+            assert(
+              response.data.length === 1,
+              "There are no duplicate associations."
+            );
+            assert.deepEqual(
+              response.data[0].committee_id,
+              county_committee._id
+            );
+            done();
+          });
+      });
+  });
+
   it("can archive a county-committees", done => {
     const service = app.service(app.get("apiPath") + "/county-committee");
 
@@ -21,7 +69,7 @@ describe("county-committee service", function() {
     // If this fails, check that the object is in the DB
     //
     CountyCommittee.findOne({
-      county: "Queens",
+      county: "Bronx",
       party: "Democratic"
     }).then(function(county_committee) {
       //console.log(county_committee);
@@ -40,7 +88,7 @@ describe("county-committee service", function() {
             );
 
             const archived_cc = CountyCommitteeArchive.findOne({
-              _id: county_committee.id
+              _id: mongoose.Types.ObjectId(county_committee.id)
             }).then(archivedCC => {
               assert(archivedCC);
               done();
@@ -56,7 +104,7 @@ describe("county-committee service", function() {
     const CountyCommitteeArchive = mongoose.model("county-committee-archive");
 
     CountyCommitteeArchive.findOne({
-      county: "Queens",
+      county: "Bronx",
       party: "Democratic"
     }).then(function(archived_county_committee) {
       //console.log(county_committee);
@@ -89,7 +137,7 @@ describe("county-committee service", function() {
     const CountyCommitteeArchive = mongoose.model("county-committee-archive");
 
     CountyCommittee.findOne({
-      county: "Queens",
+      county: "Bronx",
       party: "Democratic"
     }).then(function(county_committee) {
       assert(county_committee);
@@ -109,7 +157,7 @@ describe("county-committee service", function() {
     const CountyCommitteeArchive = mongoose.model("county-committee-archive");
 
     CountyCommittee.findOne({
-      county: "Queens",
+      county: "Bronx",
       party: "Democratic"
     }).then(function(county_committee) {
       assert(county_committee);

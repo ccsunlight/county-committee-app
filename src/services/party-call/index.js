@@ -184,10 +184,13 @@ class Service extends FeathersMongoose.Service {
       }
 
       CountyCommittee.findOne({
-        county: params.county,
-        party: params.party
-      }).then(countyCommitee => {
-        params.committeeId = countyCommitee.id;
+        _id: params.committee_id
+      }).then(countyCommittee => {
+        if (!countyCommittee) {
+          reject("County Committee does not exist");
+          return;
+        }
+        params.committeeId = countyCommittee.id;
         this.getPartyCallPositionsFromCSV(params).then(partyCallPositions => {
           let importedList = new PartyCall({
             county: params.county,
