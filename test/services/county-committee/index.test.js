@@ -4,6 +4,7 @@ const app = require("../../../src/app");
 
 const assert = require("assert");
 const CountyCommittee = require("../../../src/services/county-committee/county-committee-model");
+const Term = require("../../../src/services/term/term-model");
 const hooks = require("../../../src/services/county-committee/hooks");
 
 const mongoose = require("mongoose");
@@ -18,10 +19,11 @@ describe("county-committee service", function() {
     assert.ok(service);
   });
 
-  it("can create a county-committee with a party call", done => {
+  it("can create a county-committee with a term", done => {
     const service = app.service(app.get("apiPath") + "/county-committee");
 
-    const partyCallService = app.service(app.get("apiPath") + "/party-call");
+    const termService = app.service(app.get("apiPath") + "/term");
+
     service
       .create({
         chairman: "George Washington",
@@ -29,36 +31,41 @@ describe("county-committee service", function() {
         state: "NY",
         address: "1 Test Street",
         phone: "212-123-4567",
-        party: "Democratic",
-        term_begins: moment.now(),
-        term_ends: moment().add(2, "Years"),
-        party_call_uploads: mockCountyCommitteePostJson.party_call_uploads
+        party: "Democratic"
       })
       .then(county_committee => {
-        assert.equal(county_committee.chairman, "George Washington");
+        let term = new Term({
+          start_date: moment(),
+          end_date: moment().add(2, "Years"),
+          committee_id: county_committee._id
+        });
 
-        assert(county_committee.id);
+        term.save(function(err) {
+          assert.equal(county_committee.chairman, "George Washington");
+          assert(county_committee.id);
+          debugger;
 
-        partyCallService
-          .find({
-            query: {
-              committee_id: county_committee.id
-            }
-          })
-          .then(response => {
-            debugger;
-            assert(response);
-            assert(response.data);
-            assert(
-              response.data.length === 1,
-              "There are no duplicate associations."
-            );
-            assert.deepEqual(
-              response.data[0].committee_id,
-              county_committee._id
-            );
-            done();
-          });
+          termService
+            .find({
+              query: {
+                committee_id: county_committee.id
+              }
+            })
+            .then(response => {
+              assert(response);
+              assert(response.data);
+              debugger;
+              assert(
+                response.data.length === 1,
+                "There are no duplicate associations."
+              );
+              assert.deepEqual(
+                response.data[0].committee_id,
+                county_committee._id
+              );
+              done();
+            });
+        });
       });
   });
 

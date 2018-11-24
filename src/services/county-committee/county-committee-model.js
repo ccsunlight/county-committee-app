@@ -9,6 +9,23 @@ const mongoose = require("mongoose");
 const mongooseLeanVirtuals = require("mongoose-lean-virtuals");
 const Schema = mongoose.Schema;
 
+// var termSchema = new Schema({
+//   start_date: { type: Date, required: true },
+//   end_date: { type: Date, required: true }
+// });
+
+// termSchema.virtual("party_call", {
+//   ref: "party-call",
+//   localField: "_id",
+//   foreignField: "term_id",
+//   justOne: true,
+//   options: { sort: { _id: 1 } } // Query options, see http://bit.ly/mongoose-query-options
+// });
+
+// termSchema.pre("findOne", function() {
+//   this.populate("party_call");
+// });
+
 const countyCommitteeSchema = new Schema(
   {
     chairman: {
@@ -35,8 +52,6 @@ const countyCommitteeSchema = new Schema(
       type: String,
       required: true
     },
-    term_begins: { type: Date },
-    term_ends: { type: Date },
     state: {
       type: String,
       enum: [
@@ -130,9 +145,18 @@ countyCommitteeSchema.virtual("party_call", {
   options: { sort: { _id: 1 } } // Query options, see http://bit.ly/mongoose-query-options
 });
 
+countyCommitteeSchema.virtual("terms", {
+  ref: "term",
+  localField: "_id",
+  foreignField: "committee_id",
+  justOne: false,
+  options: { sort: { _id: 1 } } // Query options, see http://bit.ly/mongoose-query-options
+});
+
 countyCommitteeSchema.pre("findOne", function() {
   this.populate("members");
-  this.populate("party_call");
+  this.populate("party_call"); // @deprecated
+  this.populate("terms");
 });
 
 countyCommitteeSchema.plugin(mongooseLeanVirtuals);

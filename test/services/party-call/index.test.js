@@ -4,18 +4,29 @@ const assert = require("assert");
 const app = require("../../../src/app");
 const mongoose = require("mongoose");
 const CountyCommitteeModel = require("../../../src/services/county-committee/county-committee-model");
+const TermModel = require("../../../src/services/term/term-model");
+const moment = require("moment");
 
 describe("Party Call Service", function() {
   this.timeout(10000);
 
   let county_committee_id;
+  let term_id;
 
   beforeEach(function(done) {
     // ...
-    CountyCommitteeModel.findOne({ county: "Bronx", party: "Democratic" }).then(
+    CountyCommitteeModel.findOne({ county: "Test", party: "Democratic" }).then(
       county_committee => {
         county_committee_id = county_committee.id;
-        done();
+        let term = new TermModel({
+          start_date: moment(),
+          end_date: moment().add(2, "Years"),
+          committee_id: county_committee.id
+        });
+        term.save(err => {
+          term_id = term.id;
+          done();
+        });
       }
     );
   });
@@ -63,6 +74,7 @@ describe("Party Call Service", function() {
       filepath: filepath,
       county: "Bronx",
       party: "Democratic",
+      term_id: term_id,
       committee_id: county_committee_id,
       electionDate: "September 13, 2018",
       state: "NY"

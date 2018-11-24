@@ -15,7 +15,7 @@ const newsLink = require("./news-link");
 const user = require("./user");
 const page = require("./page");
 const address = require("./address");
-
+const term = require("./term");
 const mongoose = require("mongoose");
 
 // Mongoose promise lib is deprecated.
@@ -46,6 +46,7 @@ module.exports = function() {
   app.configure(address);
   app.configure(certifiedList);
   app.configure(partyCall);
+  app.configure(term);
 
   address.docs = {
     description: "A service to send and receive messages",
@@ -84,4 +85,6 @@ module.exports = function() {
   delete app.docs.paths[apiPath + "/certified-list/{_id}"];
   delete app.docs.paths[apiPath + "/party-call"];
   delete app.docs.paths[apiPath + "/party-call/{_id}"];
+  delete app.docs.paths[apiPath + "/term"];
+  delete app.docs.paths[apiPath + "/term/{_id}"];
 };

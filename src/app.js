@@ -179,6 +179,12 @@ app.service(apiPath + "/certified-list").hooks({
   }
 });
 
+app.service(apiPath + "/term").hooks({
+  before: {
+    // all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
+  }
+});
+
 // app.service(apiPath + '/invite').sendInvite({ email: 'joncrockett@gmail.com', role: 'admin'});
 // app.all(apiPath + '/authentication', auth.express.authenticate('jwt'))
 

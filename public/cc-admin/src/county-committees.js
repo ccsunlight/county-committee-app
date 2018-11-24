@@ -26,7 +26,8 @@ import {
   FileInput,
   FileField,
   ImageInput,
-  ImageField
+  ImageField,
+  DateField
 } from "admin-on-rest";
 import ArchiveButton from "./ArchiveButton";
 
@@ -64,18 +65,17 @@ export const CountyCommitteeEdit = props => (
       />
       <ReferenceManyField
         perPage={5}
-        label="Party Call"
-        reference="party-call"
+        label="Terms"
+        reference="term"
         target="committee_id"
       >
         <Datagrid>
           <TextField source="id" />
-          <TextField source="positions.length" />
+          <DateField source="start_date" />
+          <DateField source="end_date" />
           <EditButton />
         </Datagrid>
       </ReferenceManyField>
-      <DateInput source="term_begins" />
-      <DateInput source="term_ends" />
       <TextInput source="chairman" />
       <TextInput source="address" />
       <TextInput source="phone" />

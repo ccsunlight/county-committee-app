@@ -31,6 +31,8 @@ import {
 
 import { PartyCallList, PartyCallEdit, PartyCallCreate } from "./party-calls";
 
+import { TermList, TermEdit, TermCreate } from "./terms";
+
 import { CertifiedListList, CertifiedListEdit } from "./certified-lists";
 
 import { PageList, PageEdit, PageCreate } from "./pages";
@@ -162,6 +164,16 @@ const App = () => (
       list={PartyCallList}
       edit={PartyCallEdit}
       create={PartyCallCreate}
+      remove={Delete}
+    />
+
+    <Resource
+      name="term"
+      options={{ label: "Terms" }}
+      icon={ActionLogIcon}
+      list={TermList}
+      edit={TermEdit}
+      create={TermCreate}
       remove={Delete}
     />
   </Admin>
