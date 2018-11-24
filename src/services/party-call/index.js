@@ -220,8 +220,9 @@ module.exports = function() {
     Model: PartyCall,
     paginate: {
       default: 10,
-      max: 25
-    }
+      max: 10
+    },
+    lean: false
   };
 
   // Initialize our service with any options it requires

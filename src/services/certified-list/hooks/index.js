@@ -16,26 +16,8 @@ exports.before = {
 };
 
 exports.after = {
-  all: [
-    function(hook) {
-      if (hook.result.data) {
-        hook.result.data.map(function(record) {
-          record.id = record._id;
-          return record;
-        });
-      }
-    }
-  ],
-  find: [
-    function(hook) {
-      if (hook.result.data) {
-        hook.result.data.map(function(record) {
-          record.id = record._id;
-          return record;
-        });
-      }
-    }
-  ],
+  all: [],
+  find: [],
   get: [],
   create: [globalHooks.logAction],
   update: [globalHooks.logAction],

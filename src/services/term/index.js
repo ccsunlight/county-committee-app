@@ -1,18 +1,19 @@
 "use strict";
 
 const service = require("feathers-mongoose");
-const term = require("./term-model");
+const TermModel = require("./term-model");
 const hooks = require("./hooks");
 
 module.exports = function() {
   const app = this;
 
   const options = {
-    Model: term,
+    Model: TermModel,
     paginate: {
       default: 5,
       max: 25
-    }
+    },
+    lean: false
   };
 
   // Initialize our service with any options it requires
@@ -20,7 +21,6 @@ module.exports = function() {
 
   // Get our initialize service to that we can bind hooks
   const termService = app.service(app.get("apiPath") + "/term");
-
   // Set up our before hooks
   termService.before(hooks.before);
 

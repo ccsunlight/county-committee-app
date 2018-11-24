@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-const globalHooks = require('../../../hooks');
-const hooks = require('feathers-hooks');
+const globalHooks = require("../../../hooks");
+const hooks = require("feathers-hooks");
 
 exports.before = {
   all: [],
@@ -14,29 +14,8 @@ exports.before = {
 };
 
 exports.after = {
-  all: [
-    function(hook) {
-      if (hook.result.data) {
-        hook.result.data.map(function(record) {
-          record.id = record._id;
-          return record;
-        });
-      } else {
-        console.log(hook.result);
-      }
-    }
-  ],
-  find: [
-    function(hook) {
-      if (hook.result.data) {
-        hook.result.data.map(function(record) {
-          record.id = record._id;
-          return record;
-        });
-      } else {
-      }
-    }
-  ],
+  all: [],
+  find: [],
   get: [],
   create: [globalHooks.logAction],
   update: [globalHooks.logAction],

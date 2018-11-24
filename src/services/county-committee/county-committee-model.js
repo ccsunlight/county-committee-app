@@ -6,7 +6,6 @@
 // for more of what you can do here.
 
 const mongoose = require("mongoose");
-const mongooseLeanVirtuals = require("mongoose-lean-virtuals");
 const Schema = mongoose.Schema;
 
 // var termSchema = new Schema({
@@ -158,8 +157,6 @@ countyCommitteeSchema.pre("findOne", function() {
   this.populate("party_call"); // @deprecated
   this.populate("terms");
 });
-
-countyCommitteeSchema.plugin(mongooseLeanVirtuals);
 
 const countyCommitteeModel = mongoose.model(
   "county-committee",

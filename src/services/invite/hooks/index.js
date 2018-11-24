@@ -1,13 +1,13 @@
-'use strict';
+"use strict";
 
-const globalHooks = require('../../../hooks');
-const hooks = require('feathers-hooks');
-const auth = require('feathers-authentication').hooks;
-const confirm = require('../email-confirm');
-const local = require('feathers-authentication-local');
-const _hash = require('../hash');
-const mongoose = require('mongoose');
-const Invite = require('../invite-model');
+const globalHooks = require("../../../hooks");
+const hooks = require("feathers-hooks");
+const auth = require("feathers-authentication").hooks;
+const confirm = require("../email-confirm");
+const local = require("feathers-authentication-local");
+const _hash = require("../hash");
+const mongoose = require("mongoose");
+const Invite = require("../invite-model");
 
 exports.before = {
   all: [
@@ -19,7 +19,7 @@ exports.before = {
   get: [],
   create: [
     function(hook) {
-      var generator = require('generate-password');
+      var generator = require("generate-password");
 
       var password = generator.generate({
         length: 6,
@@ -60,7 +60,7 @@ exports.before = {
         },
         function(err, invite) {
           if (!err && invite) {
-            mongoose.connection.db.collection('temporary_users').remove(
+            mongoose.connection.db.collection("temporary_users").remove(
               {
                 email: invite.email
               },
@@ -91,27 +91,14 @@ exports.before = {
 };
 
 exports.after = {
-  all: [_idToId],
-  find: [_idToId],
-  get: [_idToId],
-  create: [_idToId, globalHooks.logAction],
-  update: [_idToId, globalHooks.logAction],
-  patch: [_idToId, globalHooks.logAction],
-  remove: [_idToId, globalHooks.logAction]
+  all: [],
+  find: [],
+  get: [],
+  create: [globalHooks.logAction],
+  update: [globalHooks.logAction],
+  patch: [globalHooks.logAction],
+  remove: [globalHooks.logAction]
 };
-
-function _idToId(hook) {
-  if (hook.result) {
-    if (hook.result.data) {
-      hook.result.data.map(function(record) {
-        record.id = record._id;
-        return record;
-      });
-    } else if (hook.result._id) {
-      hook.result.id = hook.result._id;
-    }
-  }
-}
 
 function _sendConfirmEmail(url) {
   confirm.confirmUser(url);

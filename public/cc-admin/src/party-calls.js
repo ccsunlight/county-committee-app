@@ -53,19 +53,28 @@ export const PartyCallList = props => (
 export const PartyPositionsList = ({ record, props }) => {
   let data = {};
 
-  const ids = record.positions.slice(0, 100).map(position => {
-    data[position._id] = position;
-    return position._id;
-  });
-
-  return (
-    <Datagrid ids={ids} data={data} currentSort={{ _id: "ASC" }}>
-      <TextField source="_id" />
-      <TextField source="office" />
-      <TextField source="assembly_district" />
-      <TextField source="electoral_district" />
-    </Datagrid>
-  );
+  const ids = record.positions
+    ? record.positions.slice(0, 50).map(position => {
+        data[position._id] = position;
+        return position._id;
+      })
+    : [];
+  if (ids.length > 0) {
+    return (
+      <Datagrid ids={ids} data={data} currentSort={{ _id: "ASC" }}>
+        <TextField source="_id" />
+        <TextField source="office" />
+        <TextField source="assembly_district" />
+        <TextField source="electoral_district" />
+      </Datagrid>
+    );
+  } else {
+    return (
+      <div>
+        Loading preview of positions. If it takes a while try hitting refresh.
+      </div>
+    );
+  }
 };
 
 export const PartyCallEdit = props => {
@@ -73,7 +82,6 @@ export const PartyCallEdit = props => {
     <Edit title={"Import list members"} {...props}>
       <SimpleForm>
         <DisabledInput label="Id" source="id" />
-
         <ReferenceInput
           label="County Committee"
           source="committee_id"
@@ -88,7 +96,7 @@ export const PartyCallEdit = props => {
             }
           />
         </ReferenceInput>
-        <PartyPositionsList title="Only first 100 rows shown" props={props} />
+        <PartyPositionsList props={props} />
       </SimpleForm>
     </Edit>
   );

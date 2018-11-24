@@ -84,35 +84,9 @@ function generateAlias(hook) {
 // }
 
 exports.after = {
-  all: [
-    function(hook) {
-      if (hook.result.data) {
-        hook.result.data.map(function(record) {
-          record.id = record._id;
-          return record;
-        });
-      } else {
-      }
-    }
-  ],
-  find: [
-    function(hook) {
-      if (hook.result.data) {
-        hook.result.data.map(function(record) {
-          record.id = record._id;
-          return record;
-        });
-      } else {
-      }
-    }
-  ],
-  get: [
-    function(hook) {
-      if (hook.result) {
-        hook.result.id = hook.result._id;
-      }
-    }
-  ],
+  all: [],
+  find: [],
+  get: [],
   create: [globalHooks.logAction],
   update: [globalHooks.logAction],
   patch: [globalHooks.logAction],

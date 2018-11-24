@@ -20,9 +20,9 @@ const termSchema = new Schema({
   }
 });
 
-termSchema.virtual("id").get(function() {
-  return this._id;
-});
+// termSchema.virtual("id").get(function() {
+//   return this._id;
+// });
 
 termSchema.virtual("party_call", {
   ref: "party-call",
@@ -31,6 +31,10 @@ termSchema.virtual("party_call", {
   justOne: true,
   options: { sort: { _id: 1 } } // Query options, see http://bit.ly/mongoose-query-options
 });
+
+termSchema.set("toJSON", { getters: true, virtuals: true });
+
+termSchema.set("toObject", { getters: true, virtuals: true });
 
 const termModel = mongoose.model("term", termSchema);
 

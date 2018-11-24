@@ -34,6 +34,7 @@ describe("county-committee service", function() {
         party: "Democratic"
       })
       .then(county_committee => {
+        
         let term = new Term({
           start_date: moment(),
           end_date: moment().add(2, "Years"),

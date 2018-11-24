@@ -15,8 +15,10 @@ module.exports = function() {
     paginate: {
       default: 10,
       max: 25
-    }
+    },
+    lean: false
   };
+
   const countyCommitteeArchiveSchema = CountyCommittee.schema.clone();
 
   countyCommitteeArchiveSchema.virtual("members", {

@@ -35,8 +35,19 @@ module.exports = function() {
     paginate: {
       default: 10,
       max: 25
-    }
+    },
+    lean: false
   };
+
+  countyCommitteeArchiveSchema.set("toObject", {
+    getters: true,
+    virtuals: true
+  });
+
+  countyCommitteeArchiveSchema.set("toJSON", {
+    getters: true,
+    virtuals: true
+  });
   // Initialize our service with any options it requires
   app.use(app.get("apiPath") + "/county-committee-archive", service(options));
 

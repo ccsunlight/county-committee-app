@@ -19,42 +19,10 @@ exports.before = {
 };
 
 exports.after = {
-  all: [
-    function(hook) {
-      if (hook.result.data) {
-        hook.result.data.map(function(record) {
-          record.id = record._id;
-          return record;
-        });
-      } else {
-        // console.log(hook.result);
-      }
-    }
-  ],
-  find: [
-    function(hook) {
-      if (hook.result.data) {
-        hook.result.data.map(function(record) {
-          record.id = record._id;
-          return record;
-        });
-      }
-    }
-  ],
-  get: [
-    function(hook) {
-      if (hook.result) {
-        hook.result.id = hook.result._id;
-      }
-    }
-  ],
-  create: [
-    function(hook) {
-      if (hook.result) {
-        hook.result.id = hook.result._id;
-      }
-    }
-  ],
+  all: [],
+  find: [],
+  get: [],
+  create: [],
   update: [],
   patch: [],
   remove: []

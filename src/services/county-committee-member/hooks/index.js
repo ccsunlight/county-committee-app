@@ -14,33 +14,9 @@ exports.before = {
 };
 
 exports.after = {
-  all: [
-    function(hook) {
-      if (hook.result.data) {
-        hook.result.data.map(function(record) {
-          record.id = record._id;
-          return record;
-        });
-      }
-    }
-  ],
-  find: [
-    function(hook) {
-      if (hook.result.data) {
-        hook.result.data.map(function(record) {
-          record.id = record._id;
-          return record;
-        });
-      }
-    }
-  ],
-  get: [
-    function(hook) {
-      if (hook.result) {
-        hook.result.id = hook.result._id;
-      }
-    }
-  ],
+  all: [],
+  find: [],
+  get: [],
   create: [globalHooks.logAction],
   update: [globalHooks.logAction],
   patch: [globalHooks.logAction],

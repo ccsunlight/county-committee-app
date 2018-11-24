@@ -139,10 +139,6 @@ const countyCommitteeMemberSchema = new Schema(
   }
 );
 
-countyCommitteeMemberSchema.virtual("id").get(function() {
-  return this._id;
-});
-
 const countyCommitteeMemberModel = mongoose.model(
   "county-committee-member",
   countyCommitteeMemberSchema

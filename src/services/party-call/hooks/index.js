@@ -9,7 +9,16 @@ const fs = require("fs");
 
 exports.before = {
   all: [],
-  find: [],
+  find: [
+    // Excludes the "positions" property from finds
+    // to avoid memory overload of returning
+    // 1000+ array.
+    // @todo move positions to their own collection
+    function(context) {
+      context.params.query.$select = { positions: 0 };
+      return context;
+    }
+  ],
   get: [],
   create: [savePartyCallJsonDataCSV],
   update: [savePartyCallJsonDataCSV],
@@ -18,33 +27,9 @@ exports.before = {
 };
 
 exports.after = {
-  all: [
-    function(hook) {
-      if (hook.result.data) {
-        hook.result.data.map(function(record) {
-          record.id = record._id;
-          return record;
-        });
-      }
-    }
-  ],
-  find: [
-    function(hook) {
-      if (hook.result.data) {
-        hook.result.data.map(function(record) {
-          record.id = record._id;
-          return record;
-        });
-      }
-    }
-  ],
-  get: [
-    function(hook) {
-      if (hook.result) {
-        hook.result.id = hook.result._id;
-      }
-    }
-  ],
+  all: [],
+  find: [],
+  get: [],
   create: [globalHooks.logAction],
   update: [globalHooks.logAction],
   patch: [
@@ -87,7 +72,6 @@ exports.after = {
 function saveBase64DataToTempFile(base64Data, filename) {
   const tempFileFullPath = os.tmpdir() + "/" + filename;
   let utf8encoded;
-  debugger;
   // Extracts the base64 data prefix from the json if present
   // @todo handle this cleaner with converting to base64
   if (base64Data.indexOf(",") > -1) {
