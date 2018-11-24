@@ -8,17 +8,28 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const termSchema = new Schema({
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-  start_date: { type: Date, required: true },
-  end_date: { type: Date, required: true },
-  committee_id: {
-    type: "ObjectId",
-    ref: "CountyCommittee",
-    required: true
+const termSchema = new Schema(
+  {
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
+    start_date: { type: Date, required: true },
+    end_date: { type: Date, required: true },
+    committee_id: {
+      type: "ObjectId",
+      ref: "CountyCommittee",
+      required: true
+    }
+  },
+  {
+    toObject: {
+      virtuals: true
+    },
+    toJSON: {
+      virtuals: true
+    },
+    timestamps: true
   }
-});
+);
 
 // termSchema.virtual("id").get(function() {
 //   return this._id;

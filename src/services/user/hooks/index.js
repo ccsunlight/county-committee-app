@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
-const globalHooks = require('../../../hooks');
-const hooks = require('feathers-hooks');
-const errorHandler = require('feathers-errors/handler');
-const local = require('feathers-authentication-local');
-const _hash = require('../../invite/hash'); // @hack
+const globalHooks = require("../../../hooks");
+const hooks = require("feathers-hooks");
+const errorHandler = require("feathers-errors/handler");
+const local = require("feathers-authentication-local");
+const _hash = require("../../invite/hash"); // @hack
 
 exports.before = {
   all: [],
@@ -39,25 +39,12 @@ function _passwordChangeHandler(hook) {
   }
 }
 
-function _idToId(hook) {
-  if (hook.result) {
-    if (hook.result.data) {
-      hook.result.data.map(function(record) {
-        record.id = record._id;
-        return record;
-      });
-    } else if (hook.result._id) {
-      hook.result.id = hook.result._id;
-    }
-  }
-}
-
 exports.after = {
-  all: [_idToId],
-  find: [_idToId],
-  get: [_idToId],
-  create: [_idToId, globalHooks.logAction],
-  update: [_idToId, globalHooks.logAction],
-  patch: [_idToId, globalHooks.logAction],
-  remove: [_idToId, globalHooks.logAction]
+  all: [],
+  find: [],
+  get: [],
+  create: [globalHooks.logAction],
+  update: [globalHooks.logAction],
+  patch: [globalHooks.logAction],
+  remove: [globalHooks.logAction]
 };
