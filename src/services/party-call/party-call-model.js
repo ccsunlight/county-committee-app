@@ -8,10 +8,10 @@ const partyCallSchema = new Schema(
   {
     source: { type: String, required: true },
     committee_id: { type: "ObjectId", ref: "CountyCommittee", required: true },
-    // term_id: {
-    //   type: "ObjectId",
-    //   ref: "Term"
-    // },
+    term_id: {
+      type: "ObjectId",
+      ref: "Term"
+    },
     positions: [ccMemberModelSchema],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
