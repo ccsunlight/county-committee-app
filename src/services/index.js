@@ -3,6 +3,7 @@
 const certifiedList = require("./certified-list");
 const partyCall = require("./party-call");
 
+const utils = require("./utils");
 const invite = require("./invite");
 const edGeometry = require("./edGeometry");
 const countyCommitteeMember = require("./county-committee-member");
@@ -47,6 +48,7 @@ module.exports = function() {
   app.configure(certifiedList);
   app.configure(partyCall);
   app.configure(term);
+  app.configure(utils);
 
   address.docs = {
     description: "A service to send and receive messages",

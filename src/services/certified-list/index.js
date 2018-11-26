@@ -69,7 +69,7 @@ class Service extends FeathersMongoose.Service {
     var re = /(?=Primary Election held).+?,\s(.+)\b/i;
     var matches = firstPage.match(re);
 
-    if (matches.length === 2) {
+    if (matches && matches.length === 2) {
       return matches[1];
     } else {
       return false;
@@ -216,6 +216,7 @@ class Service extends FeathersMongoose.Service {
             county = this.extractCountyFromPage(page);
           }
 
+          // @todo remove this
           if (!committee_id) {
             committee_id = "5ae69c059404c403ea06f8b1";
           }
@@ -258,24 +259,38 @@ class Service extends FeathersMongoose.Service {
   create(params) {
     let certifiedList;
 
+    certifiedList = new CertifiedList(params);
+
     return new Promise((resolve, reject) => {
-      if (!fs.existsSync(params.filepath)) {
-        reject("File does not exist: " + params.filepath);
-        return;
-      }
-      this.getCCMembersFromCertifiedListPDF(params.filepath).then(
-        certifiedList => {
-          let importedList = new CertifiedList(certifiedList);
-          importedList.save(err => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(importedList);
-            }
-          });
+      debugger;
+      certifiedList.save(err => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(certifiedList);
         }
-      );
+      });
     });
+
+    // @todo PDF uploads not working.
+    // return new Promise((resolve, reject) => {
+    //   if (!fs.existsSync(params.filepath)) {
+    //     reject("File does not exist: " + params.filepath);
+    //     return;
+    //   }
+    //   this.getCCMembersFromCertifiedListPDF(params.filepath).then(
+    //     certifiedList => {
+    //       let importedList = new CertifiedList(certifiedList);
+    //       importedList.save(err => {
+    //         if (err) {
+    //           reject(err);
+    //         } else {
+    //           resolve(importedList);
+    //         }
+    //       });
+    //     }
+    //   );
+    // });
   }
 }
 

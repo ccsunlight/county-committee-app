@@ -2,6 +2,13 @@
 
 const assert = require("assert");
 const app = require("../../../src/app");
+const cerfied_list_path = "/usr/src/app/test/mocks/CertifiedList.mock.pdf";
+const base64 = require("base64topdf");
+
+const FileAPI = require("file-api"),
+  File = FileAPI.File,
+  FileList = FileAPI.FileList,
+  FileReader = FileAPI.FileReader;
 
 describe("Certified List service", function() {
   this.timeout(10000);
@@ -14,7 +21,7 @@ describe("Certified List service", function() {
     const CertifiedListService = app.service(
       app.get("apiPath") + "/certified-list"
     );
-    let filepath = "/usr/src/app/import/NYCCDemCertifiedListPreview2017.pdf";
+    let filepath = cerfied_list_path;
     extract(filepath, (err, pages) => {
       let party = CertifiedListService.extractPartyFromPage(pages[0]);
       assert.equal(party, "Democratic");
@@ -22,19 +29,16 @@ describe("Certified List service", function() {
   });
 
   it("can import a certified list PDF", done => {
-    let filepath = "/usr/src/app/import/NYCCDemCertifiedListPreview2017.pdf";
+    let filepath = cerfied_list_path;
     const CertifiedListService = app.service(
       app.get("apiPath") + "/certified-list"
     );
     CertifiedListService.create({ filepath: filepath })
       .then(certifiedList => {
         assert.ok(certifiedList);
-        assert.equal(certifiedList.county, "New York");
+        assert.equal(certifiedList.county, "Bronx");
         assert.equal(certifiedList.party, "Democratic");
-        assert.equal(
-          certifiedList.source,
-          "NYCCDemCertifiedListPreview2017.pdf"
-        );
+        assert.equal(certifiedList.source, "CertifiedList.mock.pdf");
         assert(Array.isArray(certifiedList.members));
         assert.equal(certifiedList.members.pop().party, "Democratic");
         done();
@@ -65,5 +69,24 @@ describe("Certified List service", function() {
     assert.equal(member.county, "Disney County");
     assert.equal(member.state, "NY");
     assert.equal(member.entry_type, "Uncontested");
+  });
+
+  it("can handle a certified pdf in JSON format", done => {
+    const CertifiedListService = app.service(
+      app.get("apiPath") + "/certified-list"
+    );
+    let encodedPdf = base64.base64Encode(cerfied_list_path);
+
+    let file_upload_base64 = [
+      { title: "CertifiedList.mock.pdf", src: encodedPdf }
+    ];
+
+    CertifiedListService.create({
+      file_data: file_upload_base64
+    }).then(certified_list => {
+      assert.ok(certified_list);
+      assert.equal(certified_list.source, "CertifiedList.mock.pdf");
+      done();
+    });
   });
 });

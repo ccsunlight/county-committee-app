@@ -37,13 +37,15 @@ export const PartyCallList = props => (
       <TextField source="source" />
       <ReferenceField
         label="County Committee"
-        source="committee_id"
-        reference="county-committee"
+        source="term_id"
+        reference="term"
         allowEmpty={true}
       >
         <FunctionField
           label="Name"
-          render={record => `${record.county} ${record.party}`}
+          render={record =>
+            `${record.committee.county} ${record.committee.party}`
+          }
         />
       </ReferenceField>
       <EditButton />
@@ -133,7 +135,7 @@ export const PartyCallCreate = props => {
             }
           />
         </ReferenceInput>
-        <FileInput source="party_call_files" label="Party Call" accept=".csv">
+        <FileInput source="files_to_upload" label="Party Call" accept=".csv">
           <FileField source="src" title="title" />
         </FileInput>
       </SimpleForm>

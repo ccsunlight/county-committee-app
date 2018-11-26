@@ -1,3 +1,5 @@
+import base64 from "base64topdf";
+
 /**
  * Convert a `File` object returned by the upload input into
  * a base 64 string. That's easier to use on FakeRest, used on
@@ -7,11 +9,13 @@
 const convertFileToBase64 = file =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
+
     reader.readAsDataURL(file.rawFile);
 
     reader.onload = () => {
       resolve({ title: file.title, data: reader.result });
     };
+
     reader.onerror = reject;
   });
 
@@ -22,13 +26,14 @@ const convertFileToBase64 = file =>
 const addUploadCapabilities = requestHandler => (type, resource, params) => {
   // @todo generalize this for multiple uploads
 
-  if (type === "CREATE" && resource === "party-call") {
-    if (params.data.hasOwnProperty("party_call_files")) {
+  if (type === "CREATE") {
+    // @todo PDF uploads not encoding properly
+    if (params.data.hasOwnProperty("files_to_upload")) {
       // only freshly dropped pictures are instance of File
-      const formerFiles = params.data.party_call_files.filter(
+      const formerFiles = params.data.files_to_upload.filter(
         p => !(p.rawFile instanceof File)
       );
-      const newFiles = params.data.party_call_files.filter(
+      const newFiles = params.data.files_to_upload.filter(
         p => p.rawFile instanceof File
       );
 
@@ -44,7 +49,7 @@ const addUploadCapabilities = requestHandler => (type, resource, params) => {
             ...params,
             data: {
               ...params.data,
-              party_call_file_data: [...transformedNewFiles, ...formerFiles]
+              file_data: [...transformedNewFiles, ...formerFiles]
             }
           })
         );

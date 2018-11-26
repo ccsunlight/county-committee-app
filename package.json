@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "homepage": "https://ccsunlight.org",
   "main": "src/",
-  "keywords": ["feathers"],
+  "keywords": [
+    "feathers"
+  ],
   "license": "MIT",
   "repository": {},
   "author": {
@@ -21,14 +23,13 @@
     "start": "node --inspect=0.0.0.0 src/",
     "build-admin": "cd public/cc-admin && npm run build",
     "cert": "node cert/gene rate-cert.js",
-    "test:watch":
-      "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/**/*.test.js'",
+    "test:watch": "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/**/*.test.js'",
+    "test": "mocha  --inspect=0.0.0.0 --recursive --bail test/services/**/*.test.js",
     "precommit": "lint-staged",
     "format": "prettier",
     "jshint": "jshint src/. test/. --config",
     "import-certified-list": "node scripts/import-certified-list",
-    "prettier-watch":
-      "onchange '**/*.{js,json,css,md}' -- prettier --write {{changed}}",
+    "prettier-watch": "onchange '**/*.{js,json,css,md}' -- prettier --write {{changed}}",
     "sync-db": "bash scripts/sync-db-from-prod.sh",
     "migrate": "bash ./init-migration.sh"
   },
@@ -40,7 +41,10 @@
     }
   },
   "lint-staged": {
-    "*.{js,json,css,md}": ["prettier --write", "git add"]
+    "*.{js,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "dependencies": {
     "@feathers-plus/cache": "^1.4.0",
@@ -48,6 +52,7 @@
     "admin-lte-express": "^1.4.2",
     "aor-permissions": "^1.0.2",
     "async": "^2.6.1",
+    "base64topdf": "^1.1.8",
     "basic-auth-connect": "^1.0.0",
     "bcrypt": "^3.0.0",
     "bluebird": "^3.5.0",
@@ -77,6 +82,7 @@
     "feathers-seeder": "^1.0.8",
     "feathers-socketio": "^1.5.2",
     "feathers-swagger": "^0.6.0",
+    "file-api": "^0.10.4",
     "filereader": "^0.10.3",
     "generate-password": "^1.3.0",
     "greenlock-express": "^2.0.11",

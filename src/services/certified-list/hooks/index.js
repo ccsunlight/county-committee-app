@@ -9,8 +9,8 @@ exports.before = {
   all: [],
   find: [],
   get: [],
-  create: [],
-  update: [],
+  create: [saveCertifiedListJsonDataPDF],
+  update: [saveCertifiedListJsonDataPDF],
   patch: [],
   remove: []
 };
@@ -51,3 +51,28 @@ exports.after = {
   ],
   remove: [globalHooks.logAction]
 };
+
+/**
+ * Checks for a data json string for party call and if present uses that
+ * to create the party call. For use with JSON rest POST requests.
+ *
+ * @param {Object} context The hook context
+ * @return {Object} The modified hook context
+ */
+function saveCertifiedListJsonDataPDF(context) {
+  if (context.data.hasOwnProperty("file_data")) {
+    let csvBase64DataObject = context.data.file_data.pop();
+    debugger;
+    if (csvBase64DataObject) {
+      let csvFileTempFilePath = context.app
+        .service("utils")
+        .saveBase64PDFDataToTempFile(
+          csvBase64DataObject.src,
+          csvBase64DataObject.title
+        );
+      context.data.filepath = csvFileTempFilePath;
+    }
+  }
+
+  return context;
+}

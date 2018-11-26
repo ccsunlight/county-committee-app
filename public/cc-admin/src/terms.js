@@ -32,7 +32,7 @@ import authClient from "./feathersAuthClient";
 import { checkUserCanEdit } from "./feathersAuthClient";
 
 export const TermList = props => (
-  <List {...props} title="County Committee Terms">
+  <List {...props} title="Terms">
     <Datagrid>
       <TextField source="id" />
       <ReferenceField
@@ -71,6 +71,30 @@ export const TermEdit = props => {
             }
           />
         </ReferenceInput>
+
+        <ReferenceManyField
+          label="Certified List"
+          target="term_id"
+          reference="certified-list"
+        >
+          <Datagrid>
+            <TextField source="_id" />
+            <TextField source="source" />
+            <EditButton />
+          </Datagrid>
+        </ReferenceManyField>
+
+        <ReferenceManyField
+          label="Party Call"
+          target="term_id"
+          reference="party-call"
+        >
+          <Datagrid>
+            <TextField source="_id" />
+            <TextField source="source" />
+            <EditButton />
+          </Datagrid>
+        </ReferenceManyField>
 
         <DateInput source="start_date" />
         <DateInput source="end_date" />
