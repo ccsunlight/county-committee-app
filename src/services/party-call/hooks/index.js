@@ -16,6 +16,7 @@ exports.before = {
     // @todo move positions to their own collection
     function(context) {
       context.params.query.$select = { positions: 0 };
+
       return context;
     }
   ],
@@ -97,7 +98,6 @@ function saveBase64DataToTempFile(base64Data, filename) {
 function savePartyCallJsonDataCSV(context) {
   if (context.data.hasOwnProperty("party_call_file_data")) {
     let csvBase64DataObject = context.data.party_call_file_data.pop();
-    debugger;
     if (csvBase64DataObject) {
       let csvFileTempFilePath = saveBase64DataToTempFile(
         csvBase64DataObject.src,

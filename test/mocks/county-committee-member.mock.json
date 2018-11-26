@@ -1,0 +1,15 @@
+{
+  "party": "Democratic",
+  "petition_number": 1,
+  "office": "County Committee",
+  "office_holder": "Paul Revere",
+  "address": "1 Colonial Way",
+  "tally": 0,
+  "ed_ad": "002/77",
+  "entry_type": "Uncontested",
+  "electoral_district": 1,
+  "assembly_district": 1,
+  "data_source": "Test.pdf",
+  "county": "Test",
+  "state": "NY"
+}

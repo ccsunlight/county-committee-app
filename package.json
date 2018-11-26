@@ -17,7 +17,7 @@
   },
   "scripts": {
     "install-deps": "apt-get -y update && apt-get -y install poppler-utils",
-    "dev": "nodemon -e js,json,hbs src/",
+    "dev": "nodemon  --inspect=0.0.0.0 -e js,json,hbs src/",
     "start": "node --inspect=0.0.0.0 src/",
     "build-admin": "cd public/cc-admin && npm run build",
     "cert": "node cert/gene rate-cert.js",

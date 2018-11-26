@@ -8,6 +8,7 @@ const PartyCall = require("./party-call-model");
 const hooks = require("./hooks");
 const CountyCommitteeMember = require("../county-committee-member/county-committee-member-model");
 const CountyCommittee = require("../county-committee/county-committee-model");
+const Term = require("../term/term-model");
 const FeathersMongoose = require("feathers-mongoose");
 const moment = require("moment");
 
@@ -27,8 +28,6 @@ const moment = require("moment");
  * district_key,County Committee
  * 02044,2
  * 02045,4
- *
- *
  *
  * @type       {Function}
  */
@@ -182,16 +181,17 @@ class Service extends FeathersMongoose.Service {
         return;
       }
 
-      CountyCommittee.findOne({
-        _id: params.committee_id
-      }).then(countyCommittee => {
-        if (!countyCommittee) {
-          reject("County Committee does not exist");
+      Term.findOne({ _id: params.term_id }).then(term => {
+        term.populate();
+        if (!term) {
+          reject("Term does not exist");
           return;
         } else {
+          let countyCommittee = term.committee;
           this.getPartyCallPositionsFromCSV({
             county: countyCommittee.county,
             party: countyCommittee.party,
+            committee_id: countyCommittee._id,
             ...params
           }).then(partyCallPositions => {
             let importedList = new PartyCall({

@@ -95,10 +95,11 @@ app
          }
        })) */
   .configure(hooks())
-  .use(bodyParser.json())
+  .use(bodyParser.json({ limit: "50mb" })) // Needed for large embedded arrays. @todo optimize requests such that this isn't necessary.
   .use(
     bodyParser.urlencoded({
-      extended: true
+      extended: true,
+      limit: "50mb" // Needed for large embedded arrays. @todo optimize requests such that this isn't necessary.
     })
   )
   //.use(forceSSL)

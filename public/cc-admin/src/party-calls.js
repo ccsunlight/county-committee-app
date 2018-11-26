@@ -28,6 +28,7 @@ import {
 import { WithPermission, SwitchPermissions, Permission } from "aor-permissions";
 import authClient from "./feathersAuthClient";
 import { checkUserCanEdit } from "./feathersAuthClient";
+import moment from "moment";
 
 export const PartyCallList = props => (
   <List {...props} title="Party Calls">
@@ -83,15 +84,21 @@ export const PartyCallEdit = props => {
       <SimpleForm>
         <DisabledInput label="Id" source="id" />
         <ReferenceInput
-          label="County Committee"
-          source="committee_id"
-          reference="county-committee"
+          label="Committee Term"
+          source="term_id"
+          reference="term"
         >
           <SelectInput
             optionText={
               <FunctionField
-                label="Name"
-                render={record => `${record.county} ${record.party}`}
+                label="Dates"
+                render={record =>
+                  `${record.committee.county} ${
+                    record.committee.party
+                  } ${moment(record.start_date).format("ll")} to ${moment(
+                    record.end_date
+                  ).format("ll")}`
+                }
               />
             }
           />
@@ -107,15 +114,21 @@ export const PartyCallCreate = props => {
     <Create title={"Create Party Call"} {...props}>
       <SimpleForm>
         <ReferenceInput
-          label="County Committee"
-          source="committee_id"
-          reference="county-committee"
+          label="Committee Term"
+          source="term_id"
+          reference="term"
         >
           <SelectInput
             optionText={
               <FunctionField
-                label="Name"
-                render={record => `${record.county} ${record.party}`}
+                label="Dates"
+                render={record =>
+                  `${record.committee.county} + ${
+                    record.committee.party
+                  } ${moment(record.start_date).format("ll")} to ${moment(
+                    record.start_date
+                  ).format("ll")}`
+                }
               />
             }
           />

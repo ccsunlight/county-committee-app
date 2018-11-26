@@ -51,8 +51,6 @@ const addUploadCapabilities = requestHandler => (type, resource, params) => {
     } else {
       requestHandler(type, resource, params);
     }
-
-    debugger;
   }
 
   return requestHandler(type, resource, params);

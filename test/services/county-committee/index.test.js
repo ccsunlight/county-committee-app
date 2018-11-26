@@ -4,13 +4,14 @@ const app = require("../../../src/app");
 
 const assert = require("assert");
 const CountyCommittee = require("../../../src/services/county-committee/county-committee-model");
+const ccMock = require("../../mocks/county-committee.mock.json");
+const ccMemberMock = require("../../mocks/county-committee-member.mock.json");
+const ccPostRequestJsonMock = require("../../mocks/county-committee-post-request.mock.json");
 
 const Term = require("../../../src/services/term/term-model");
 const hooks = require("../../../src/services/county-committee/hooks");
-
 const mongoose = require("mongoose");
 const moment = require("moment");
-const mockCountyCommitteePostJson = require("./mock-county-committee-post.json");
 
 describe("county-committee service", function() {
   this.timeout(5000);
@@ -28,49 +29,28 @@ describe("county-committee service", function() {
     ccMemberService = app.service(
       app.get("apiPath") + "/county-committee-member"
     );
-    ccService
-      .create({
-        chairman: "George Washington",
-        county: "Test",
-        state: "NY",
-        address: "1 Test Street",
-        phone: "212-123-4567",
-        party: "Democratic"
-      })
-      .then(county_committee => {
-        let term = new Term({
-          start_date: moment(),
-          end_date: moment().add(2, "Years"),
-          committee_id: county_committee._id
-        });
-        mock_county_committee = county_committee;
-
-        term.save(function(err) {
-          mock_term = term;
-
-          ccMemberService
-            .create({
-              committee: mock_county_committee._id,
-              party: "Democratic",
-              petition_number: 1,
-              office: "County Committee",
-              office_holder: "Paul Revere",
-              address: "1 Colonial Way",
-              tally: 0,
-              ed_ad: "002/77",
-              entry_type: "Uncontested",
-              electoral_district: 1,
-              assembly_district: 1,
-              data_source: "Test.pdf",
-              county: "Test",
-              state: "NY"
-            })
-            .then(function(member) {
-              mock_county_committee_member = member;
-              done();
-            });
-        });
+    ccService.create(ccMock).then(county_committee => {
+      let term = new Term({
+        start_date: moment(),
+        end_date: moment().add(2, "Years"),
+        committee_id: county_committee._id
       });
+      mock_county_committee = county_committee;
+
+      term.save(function(err) {
+        mock_term = term;
+
+        ccMemberService
+          .create({
+            committee: mock_county_committee._id,
+            ...ccMemberMock
+          })
+          .then(function(member) {
+            mock_county_committee_member = member;
+            done();
+          });
+      });
+    });
   });
 
   /**
@@ -90,14 +70,7 @@ describe("county-committee service", function() {
 
   it("can create a county-committee with a term", done => {
     ccService
-      .create({
-        chairman: "Benjamin Franklin",
-        county: "Test",
-        state: "NY",
-        address: "2 Test Street",
-        phone: "212-123-4567",
-        party: "Republican"
-      })
+      .create(ccMock)
       .then(county_committee => {
         let term = new Term({
           start_date: moment(),

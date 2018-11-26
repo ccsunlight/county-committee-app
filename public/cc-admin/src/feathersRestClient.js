@@ -44,6 +44,7 @@ export default client => {
           query[sortKey] = JSON.stringify(sortVal);
         }
         Object.assign(query, params.filter);
+
         return service.find({ query });
       case GET_ONE:
         return service.get(params.id);

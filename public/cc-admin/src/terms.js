@@ -35,6 +35,16 @@ export const TermList = props => (
   <List {...props} title="County Committee Terms">
     <Datagrid>
       <TextField source="id" />
+      <ReferenceField
+        label="Committee"
+        source="committee_id"
+        reference="county-committee"
+      >
+        <FunctionField
+          label="Name"
+          render={record => `${record.county} ${record.party}`}
+        />
+      </ReferenceField>
       <DateField source="start_date" />
       <DateField source="end_date" />
       <EditButton />
@@ -61,6 +71,7 @@ export const TermEdit = props => {
             }
           />
         </ReferenceInput>
+
         <DateInput source="start_date" />
         <DateInput source="end_date" />
       </SimpleForm>

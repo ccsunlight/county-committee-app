@@ -114,7 +114,7 @@ describe("Party Call Service", function() {
     });
   });
 
-  it("can extract alternate CSV Config", () => {
+  it("can extract an alternate CSV Config", () => {
     const headerRowMock = [
       "AD",
       "ED",
@@ -135,15 +135,14 @@ describe("Party Call Service", function() {
 
     PartyCallService.create({
       filepath: filepath,
-      committee_id: mock_county_committee._id,
       term_id: mock_term._id
     })
       .then(partyCall => {
         assert.ok(partyCall);
-        assert(mongoose.Types.ObjectId.isValid(partyCall.committee_id));
+        // assert(mongoose.Types.ObjectId.isValid(partyCall.committee_id));
         assert.equal(partyCall.source, "Bronx Party Call 2018 - Sheet1.csv");
         assert(Array.isArray(partyCall.positions));
-        assert.deepEqual(partyCall.committee_id, mock_county_committee._id);
+        // assert.deepEqual(partyCall.committee_id, mock_county_committee._id);
         assert.deepEqual(partyCall.term_id, mock_term._id);
         assert.equal(partyCall.positions.length, 2663);
         assert.equal(partyCall.positions[0].party, "Democratic");
@@ -151,10 +150,9 @@ describe("Party Call Service", function() {
         partyCall.remove();
         done();
       })
-      .catch(err => {
-        console.log(err);
-        assert(!err);
-        done();
+      .catch(e => {
+        console.log(e);
+        assert(!e);
       });
   });
 
@@ -164,14 +162,12 @@ describe("Party Call Service", function() {
 
     PartyCallService.create({
       filepath: filepath,
-      committee_id: mock_county_committee._id,
       term_id: mock_term._id
     })
       .then(partyCall => {
         assert.ok(partyCall);
         assert.equal(partyCall.source, "Kings County Party Call - Sheet1.csv");
         assert(Array.isArray(partyCall.positions));
-        assert(partyCall.committee_id, mock_county_committee._id);
         assert.equal(partyCall.positions.length, 5346);
         assert.equal(partyCall.positions[0].party, "Democratic");
         assert.equal(partyCall.positions[0].office, "Male County Committee");
