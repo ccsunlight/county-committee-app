@@ -64,46 +64,57 @@ describe("county-committee service", function() {
     done();
   });
 
+  /**
+   * Cleans up the DB after each test.
+   */
+  afterEach(function(done) {
+    mock_county_committee.remove();
+    mock_county_committee_member.remove();
+    mock_term.remove();
+
+    done();
+  });
+
   it("registered the county-committees service", () => {
     assert.ok(ccService);
   });
 
   it("can create a county-committee with a term", done => {
-    ccService
-      .create(ccMock)
-      .then(county_committee => {
-        let term = new Term({
-          start_date: moment(),
-          end_date: moment().add(2, "Years"),
-          committee_id: county_committee._id
-        });
-
-        term.save(function(err) {
-          assert.equal(county_committee.chairman, "Benjamin Franklin");
-          assert(county_committee.id);
-
-          termService
-            .find({
-              query: {
-                committee_id: county_committee.id
-              }
-            })
-            .then(response => {
-              assert(response);
-              assert(response.data);
-
-              assert(
-                response.data.length === 1,
-                "There are no duplicate associations."
-              );
-              assert.deepEqual(
-                response.data[0].committee_id,
-                county_committee._id
-              );
-              done();
-            });
-        });
+    ccService.create(ccMock).then(county_committee => {
+      let term = new Term({
+        start_date: moment(),
+        end_date: moment().add(2, "Years"),
+        committee_id: county_committee._id
       });
+
+      term.save(function(err) {
+        assert.equal(county_committee.chairman, "Benjamin Franklin");
+        assert(county_committee.id);
+
+        termService
+          .find({
+            query: {
+              committee_id: county_committee.id
+            }
+          })
+          .then(response => {
+            assert(response);
+            assert(response.data);
+
+            assert(
+              response.data.length === 1,
+              "There are no duplicate associations."
+            );
+            assert.deepEqual(
+              response.data[0].committee_id,
+              county_committee._id
+            );
+            term.remove();
+            county_committee.remove();
+            done();
+          });
+      });
+    });
   });
 
   // describe("archiving", function() {

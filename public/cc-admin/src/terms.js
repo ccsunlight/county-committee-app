@@ -61,6 +61,7 @@ export const TermEdit = props => {
           label="County Committee"
           source="committee_id"
           reference="county-committee"
+          perPage={200}
         >
           <SelectInput
             optionText={
@@ -111,6 +112,7 @@ export const TermCreate = props => {
           label="County Committee"
           source="committee_id"
           reference="county-committee"
+          perPage={200}
         >
           <SelectInput
             optionText={

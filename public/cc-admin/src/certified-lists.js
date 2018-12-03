@@ -91,6 +91,7 @@ export const CertifiedListEdit = props => {
           label="Committee Term"
           source="term_id"
           reference="term"
+          perPage={200}
         >
           <SelectInput
             optionText={

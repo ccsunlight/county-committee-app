@@ -14,7 +14,7 @@ module.exports = function() {
     Model: CountyCommittee,
     paginate: {
       default: 10,
-      max: 25
+      max: 200
     },
     lean: false
   };

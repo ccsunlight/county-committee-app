@@ -70,6 +70,18 @@ describe("Certified List service", function() {
         });
       });
   });
+
+  /**
+   * Cleans up the DB after each test.
+   */
+  afterEach(function(done) {
+    mock_county_committee.remove();
+    mock_county_committee_member.remove();
+    mock_term.remove();
+
+    done();
+  });
+
   it("registered the certified-list service", () => {
     assert.ok(app.service(app.get("apiPath") + "/certified-list"));
   });
@@ -98,11 +110,13 @@ describe("Certified List service", function() {
         assert.equal(certifiedList.source, "CertifiedList.mock.pdf");
         assert(Array.isArray(certifiedList.positions));
         assert.equal(certifiedList.positions.pop().party, "Democratic");
+        certifiedList.remove();
         done();
       })
       .catch(err => {
         console.log(err);
         assert(!err);
+
         done();
       });
   });
@@ -144,6 +158,7 @@ describe("Certified List service", function() {
     }).then(certified_list => {
       assert.ok(certified_list);
       assert.equal(certified_list.source, "CertifiedList.mock.pdf");
+      certified_list.remove();
       done();
     });
   });

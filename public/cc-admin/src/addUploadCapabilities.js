@@ -13,7 +13,7 @@ const convertFileToBase64 = file =>
     reader.readAsBinaryString(file.rawFile);
 
     reader.onload = () => {
-      resolve({ title: file.title, data:btoa(reader.result) });
+      resolve({ title: file.title, data: btoa(reader.result) });
     };
 
     reader.onerror = reject;
@@ -53,8 +53,6 @@ const addUploadCapabilities = requestHandler => (type, resource, params) => {
             }
           })
         );
-    } else {
-      requestHandler(type, resource, params);
     }
   }
 
