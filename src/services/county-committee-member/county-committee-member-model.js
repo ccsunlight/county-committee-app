@@ -126,6 +126,11 @@ const countyCommitteeMemberSchema = new Schema(
       type: Schema.Types.ObjectId,
       required: true,
       ref: "county-committee"
+    },
+    term_id: {
+      type: Schema.Types.ObjectId,
+      required: false,
+      ref: "term"
     }
   },
   {

@@ -47,11 +47,21 @@ termSchema.virtual("committee", {
   options: { sort: { _id: 1 } }
 });
 
+termSchema.virtual("certified_list", {
+  ref: "certified-list",
+  localField: "_id",
+  foreignField: "term_id",
+  justOne: true,
+  options: { sort: { _id: 1 } }
+});
+
 // Populate needs to be call in the pre hook
 // to work properly
 // @see https://stackoverflow.com/a/37536979
 termSchema.pre("findOne", function() {
   this.populate("committee");
+  this.populate("party_call");
+  this.populate("certified_list");
 });
 
 termSchema.pre("find", function() {
