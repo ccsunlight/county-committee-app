@@ -7,6 +7,7 @@ const CertifiedList = require("./certified-list-model");
 const hooks = require("./hooks");
 const CountyCommitteeMember = require("../county-committee-member/county-committee-member-model");
 const CountyCommittee = require("../county-committee/county-committee-model");
+const Term = require("../term/term-model");
 const FeathersMongoose = require("feathers-mongoose");
 const mongoose = require("mongoose");
 const moment = require("moment");
@@ -18,7 +19,7 @@ function ccExtractionException(message) {
 
 class Service extends FeathersMongoose.Service {
   extractCountyFromPage(page) {
-    var match = page.match(/IN THE CITY OF NEW YORK\s+(.+) County, .+Party/);
+    var match = page.match(/\b(.+?) County\b/);
 
     if (match) {
       return match[1];
@@ -60,6 +61,7 @@ class Service extends FeathersMongoose.Service {
       return match[1];
     }
   }
+
   /**
    * { function_description }
    *
@@ -194,7 +196,7 @@ class Service extends FeathersMongoose.Service {
     return cc_member;
   }
 
-  getCCMembersFromCertifiedListPDF(filepath) {
+  getCCMembersFromCertifiedListPDF(filepath, committee_id) {
     return new Promise((resolve, reject) => {
       extract(filepath, (err, pages) => {
         if (err) {
@@ -203,7 +205,7 @@ class Service extends FeathersMongoose.Service {
         }
         let electionDate = undefined;
         let members = [];
-        let county, party, committee_id;
+        let county, party;
 
         // Goes through each page and creates new members to import
         pages.forEach((page, index) => {
@@ -216,10 +218,14 @@ class Service extends FeathersMongoose.Service {
             county = this.extractCountyFromPage(page);
           }
 
-          // @todo remove this
           if (!committee_id) {
-            committee_id = "5ae69c059404c403ea06f8b1";
+            throw Error("Committee ID required");
           }
+
+          // @todo remove this
+          // if (!committee_id) {
+          //   committee_id = "5ae69c059404c403ea06f8b1";
+          // }
 
           if (!party) {
             party = this.extractPartyFromPage(page);
@@ -246,12 +252,7 @@ class Service extends FeathersMongoose.Service {
           }
         });
 
-        resolve({
-          party: party,
-          county: county,
-          members: members,
-          source: path.basename(filepath)
-        });
+        resolve(members);
       });
     });
   }
@@ -259,38 +260,35 @@ class Service extends FeathersMongoose.Service {
   create(params) {
     let certifiedList;
 
-    certifiedList = new CertifiedList(params);
-
     return new Promise((resolve, reject) => {
-      debugger;
-      certifiedList.save(err => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(certifiedList);
+      if (!fs.existsSync(params.filepath)) {
+        reject("File does not exist: " + params.filepath);
+        return;
+      }
+
+      Term.findOne({ _id: params.term_id }).then(term => {
+        if (!term) {
+          throw Error("Term not found. Term ID:", params.term_id);
         }
+        this.getCCMembersFromCertifiedListPDF(
+          params.filepath,
+          term.committee_id
+        ).then(members => {
+          let importedList = new CertifiedList({
+            term_id: params.term_id,
+            positions: members,
+            source: path.basename(params.filepath)
+          });
+          importedList.save(err => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(importedList);
+            }
+          });
+        });
       });
     });
-
-    // @todo PDF uploads not working.
-    // return new Promise((resolve, reject) => {
-    //   if (!fs.existsSync(params.filepath)) {
-    //     reject("File does not exist: " + params.filepath);
-    //     return;
-    //   }
-    //   this.getCCMembersFromCertifiedListPDF(params.filepath).then(
-    //     certifiedList => {
-    //       let importedList = new CertifiedList(certifiedList);
-    //       importedList.save(err => {
-    //         if (err) {
-    //           reject(err);
-    //         } else {
-    //           resolve(importedList);
-    //         }
-    //       });
-    //     }
-    //   );
-    // });
   }
 }
 

@@ -22,10 +22,8 @@ class Service {
 
     if (base64Data.indexOf("pdf;base64,") > -1) {
       encodedPDFData = base64Data.split(",")[1];
-      debugger;
     } else {
       encodedPDFData = base64Data;
-      debugger;
     }
 
     base64.base64Decode(base64Data, tempFileFullPath);

@@ -66,9 +66,11 @@ export const PartyPositionsList = ({ record, props }) => {
     return (
       <Datagrid ids={ids} data={data} currentSort={{ _id: "ASC" }}>
         <TextField source="_id" />
+        <TextField label="AD" source="assembly_district" />
+        <TextField label="ED" source="electoral_district" />
+
         <TextField source="office" />
-        <TextField source="assembly_district" />
-        <TextField source="electoral_district" />
+        <TextField source="office_holder" />
       </Datagrid>
     );
   } else {
@@ -105,7 +107,7 @@ export const CertifiedListEdit = props => {
             }
           />
         </ReferenceInput>
-        {/* <PartyPositionsList props={props} /> */}
+        <PartyPositionsList props={props} />
       </SimpleForm>
     </Edit>
   );

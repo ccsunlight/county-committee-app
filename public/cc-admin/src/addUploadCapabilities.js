@@ -10,10 +10,10 @@ const convertFileToBase64 = file =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
 
-    reader.readAsDataURL(file.rawFile);
+    reader.readAsBinaryString(file.rawFile);
 
     reader.onload = () => {
-      resolve({ title: file.title, data: reader.result });
+      resolve({ title: file.title, data:btoa(reader.result) });
     };
 
     reader.onerror = reject;

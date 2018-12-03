@@ -62,7 +62,6 @@ exports.after = {
 function saveCertifiedListJsonDataPDF(context) {
   if (context.data.hasOwnProperty("file_data")) {
     let csvBase64DataObject = context.data.file_data.pop();
-    debugger;
     if (csvBase64DataObject) {
       let csvFileTempFilePath = context.app
         .service("utils")

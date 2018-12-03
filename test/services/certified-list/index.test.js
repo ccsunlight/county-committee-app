@@ -4,6 +4,8 @@ const assert = require("assert");
 const app = require("../../../src/app");
 const cerfied_list_path = "/usr/src/app/test/mocks/CertifiedList.mock.pdf";
 const base64 = require("base64topdf");
+const TermModel = require("../../../src/services/term/term-model");
+const moment = require("moment");
 
 const FileAPI = require("file-api"),
   File = FileAPI.File,
@@ -12,6 +14,62 @@ const FileAPI = require("file-api"),
 
 describe("Certified List service", function() {
   this.timeout(10000);
+
+  let ccService, ccMemberService;
+  let mock_term, mock_county_committee, mock_county_committee_member;
+
+  /**
+   * Sets up the database
+   */
+  beforeEach(function(done) {
+    ccService = app.service(app.get("apiPath") + "/county-committee");
+    ccMemberService = app.service(
+      app.get("apiPath") + "/county-committee-member"
+    );
+    ccService
+      .create({
+        chairman: "George Washington",
+        county: "Test",
+        state: "NY",
+        address: "1 Test Street",
+        phone: "212-123-4567",
+        party: "Democratic"
+      })
+      .then(county_committee => {
+        let term = new TermModel({
+          start_date: moment(),
+          end_date: moment().add(2, "Years"),
+          committee_id: county_committee._id
+        });
+        mock_county_committee = county_committee;
+
+        term.save(function(err) {
+          mock_term = term;
+
+          ccMemberService
+            .create({
+              committee: mock_county_committee._id,
+              party: "Democratic",
+              petition_number: 1,
+              office: "County Committee",
+              office_holder: "Paul Revere",
+              address: "1 Colonial Way",
+              tally: 0,
+              ed_ad: "002/77",
+              entry_type: "Uncontested",
+              electoral_district: 1,
+              assembly_district: 1,
+              data_source: "Test.pdf",
+              county: "Test",
+              state: "NY"
+            })
+            .then(function(member) {
+              mock_county_committee_member = member;
+              done();
+            });
+        });
+      });
+  });
   it("registered the certified-list service", () => {
     assert.ok(app.service(app.get("apiPath") + "/certified-list"));
   });
@@ -33,14 +91,13 @@ describe("Certified List service", function() {
     const CertifiedListService = app.service(
       app.get("apiPath") + "/certified-list"
     );
-    CertifiedListService.create({ filepath: filepath })
+    CertifiedListService.create({ filepath: filepath, term_id: mock_term._id })
       .then(certifiedList => {
         assert.ok(certifiedList);
-        assert.equal(certifiedList.county, "Bronx");
-        assert.equal(certifiedList.party, "Democratic");
+        assert.equal(certifiedList.term_id, mock_term._id);
         assert.equal(certifiedList.source, "CertifiedList.mock.pdf");
-        assert(Array.isArray(certifiedList.members));
-        assert.equal(certifiedList.members.pop().party, "Democratic");
+        assert(Array.isArray(certifiedList.positions));
+        assert.equal(certifiedList.positions.pop().party, "Democratic");
         done();
       })
       .catch(err => {
@@ -82,7 +139,8 @@ describe("Certified List service", function() {
     ];
 
     CertifiedListService.create({
-      file_data: file_upload_base64
+      file_data: file_upload_base64,
+      term_id: mock_term._id
     }).then(certified_list => {
       assert.ok(certified_list);
       assert.equal(certified_list.source, "CertifiedList.mock.pdf");
