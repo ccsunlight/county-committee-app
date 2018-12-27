@@ -30,7 +30,7 @@ import {
 import { WithPermission, SwitchPermissions, Permission } from "aor-permissions";
 import authClient from "./feathersAuthClient";
 import { checkUserCanEdit } from "./feathersAuthClient";
-import { ApproveButton } from "./ApproveButton";
+import ApproveButton from "./ApproveButton";
 
 export const TermList = props => (
   <List {...props} title="Terms">

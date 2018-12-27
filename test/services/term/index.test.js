@@ -111,4 +111,34 @@ describe("term service", function() {
       });
     });
   });
+
+  it("should return an error message when converting a list to members fails", done => {
+    CertifiedListService.create({
+      filepath: cerfied_list_path,
+      term_id: mock_term._id
+    }).then(certified_list => {
+      assert(certified_list);
+      assert(certified_list.positions);
+
+      // Attempts to create members for the same certified list.
+      TermService.createMembersFromCertifiedList({
+        term_id: mock_term._id
+      }).then(members => {
+        assert(members.length, 2500);
+
+        TermService.createMembersFromCertifiedList({
+          term_id: mock_term._id
+        }).then(members => {
+          assert(members.length, 2500);
+          MemberModel.deleteMany({ term_id: mock_term._id }, function(err) {
+            done();
+          });
+        }).catch(e => {
+          debugger;
+          assert(e, 'Error is thrown');
+          done();
+        });
+      });
+    });
+  })
 });

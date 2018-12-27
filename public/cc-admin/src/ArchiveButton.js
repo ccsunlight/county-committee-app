@@ -28,7 +28,6 @@ class ArchiveButton extends Component {
         push(`/county-committee`);
       })
       .catch(e => {
-        console.error(e);
         showNotification("Error: comment not approved", "warning");
       });
   }

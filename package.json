@@ -24,7 +24,7 @@
     "build-admin": "cd public/cc-admin && npm run build",
     "cert": "node cert/gene rate-cert.js",
     "test:watch": "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/**/*.test.js'",
-    "test": "mocha  --inspect=0.0.0.0 --recursive --bail test/services/**/*.test.js",
+    "test": "mocha  --inspect=0.0.0.0 --recursive --bail test/services/term/*.test.js",
     "precommit": "lint-staged",
     "format": "prettier",
     "jshint": "jshint src/. test/. --config",

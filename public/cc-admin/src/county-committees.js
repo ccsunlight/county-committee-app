@@ -83,7 +83,7 @@ export const CountyCommitteeEdit = props => (
       <TextInput source="party_rules" type="url" />
       <TextInput source="email" type="email" />
 
-      <ArchiveButton />
+      {/* <ArchiveButton /> */}
       <h4>Sample of members. </h4>
 
       <ReferenceManyField

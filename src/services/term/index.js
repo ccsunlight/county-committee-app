@@ -23,6 +23,7 @@ class Service extends FeathersMongoose.Service {
             resolve(raw_result);
           })
           .catch(err => {
+            debugger;
             reject(err);
           });
       });
