@@ -7,6 +7,7 @@ const hooks = require("./hooks");
 
 class Service extends FeathersMongoose.Service {
   createMembersFromCertifiedList(params) {
+
     return new Promise((resolve, reject) => {
       TermModel.findOne(params.term_id).then(term => {
         let positions = term.certified_list.positions;
@@ -36,7 +37,7 @@ module.exports = function() {
     Model: TermModel,
     paginate: {
       default: 5,
-      max: 25
+      max: app.get('api').defaultItemLimit
     },
     lean: false
   };

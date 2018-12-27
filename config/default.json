@@ -4,7 +4,8 @@
     "public": "../public",
     "api": {
         "basePath": "api",
-        "version": "v1"
+        "version": "v1",
+        "defaultItemLimit": 200
     },
     "authentication": {
         "secret": "AUTHENTICATION_SECRET",

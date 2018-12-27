@@ -3,7 +3,7 @@
 const globalHooks = require("../../../hooks");
 const hooks = require("feathers-hooks");
 const auth = require("feathers-authentication").hooks;
-// const mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
 exports.before = {
   all: [
@@ -15,7 +15,12 @@ exports.before = {
   get: [],
   create: [],
   update: [],
-  patch: [],
+  patch: [function(context) {
+    debugger;
+    if (context.data.approved) {
+      context.service.createMembersFromCertifiedList({ term_id: mongoose.Types.ObjectId(context.id)})
+    }
+  }],
   remove: []
 };
 

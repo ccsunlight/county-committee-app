@@ -14,7 +14,7 @@ module.exports = function() {
     Model: CountyCommittee,
     paginate: {
       default: 10,
-      max: 200
+      max: app.get("api").defaultItemLimit
     },
     lean: false
   };

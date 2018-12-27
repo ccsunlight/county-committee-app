@@ -40,6 +40,7 @@ export const PartyCallList = props => (
         source="term_id"
         reference="term"
         allowEmpty={true}
+        perPage={200}
       >
         <FunctionField
           label="Name"

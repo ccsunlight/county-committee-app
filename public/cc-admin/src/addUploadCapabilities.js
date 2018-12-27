@@ -1,5 +1,3 @@
-import base64 from "base64topdf";
-
 /**
  * Convert a `File` object returned by the upload input into
  * a base 64 string. That's easier to use on FakeRest, used on

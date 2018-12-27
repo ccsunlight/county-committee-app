@@ -30,6 +30,7 @@ import {
 import { WithPermission, SwitchPermissions, Permission } from "aor-permissions";
 import authClient from "./feathersAuthClient";
 import { checkUserCanEdit } from "./feathersAuthClient";
+import { ApproveButton } from "./ApproveButton";
 
 export const TermList = props => (
   <List {...props} title="Terms">
@@ -85,6 +86,8 @@ export const TermEdit = props => {
           </Datagrid>
         </ReferenceManyField>
 
+        <ApproveButton/>
+
         <ReferenceManyField
           label="Party Call"
           target="term_id"
@@ -93,6 +96,22 @@ export const TermEdit = props => {
           <Datagrid>
             <TextField source="_id" />
             <TextField source="source" />
+            <EditButton />
+          </Datagrid>
+        </ReferenceManyField>
+
+
+        <ReferenceManyField
+          label="CC Members"
+          target="term_id"
+          reference="county-committee-member"
+          perPage={200}
+        >
+          <Datagrid>
+            <TextField source="_id" />
+            <TextField source="electoral_district" />
+            <TextField source="assembly_district" />
+            <TextField source="office_holder" />
             <EditButton />
           </Datagrid>
         </ReferenceManyField>

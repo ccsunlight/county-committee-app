@@ -149,14 +149,38 @@ countyCommitteeSchema.virtual("terms", {
   localField: "_id",
   foreignField: "committee_id",
   justOne: false,
-  options: { sort: { _id: 1 } } // Query options, see http://bit.ly/mongoose-query-options
+  options: { sort: { _id: -1 } } // Query options, see http://bit.ly/mongoose-query-options
 });
 
 countyCommitteeSchema.pre("findOne", function() {
-  this.populate("members");
   this.populate("party_call"); // @deprecated
   this.populate("terms");
-});
+
+  this.populate({
+    path: 'members',
+    match: { term_id: {  $ne: null }}, // Get the latest term's members only
+    options: { limit: 100 }
+  })
+})
+
+// @todo
+// Pre and post hooks don't work together. 
+// Need to get the post hook to pull the latest term 
+// so that the county committee will automatically display 
+// the latest members. 
+//
+
+// countyCommitteeSchema.post("findOne", async function(doc) {
+
+//   doc.populate({
+//     path: 'members',
+//     match: { term_id: {  $in: doc.terms.slice(0, 1) }}, // Get the latest term's members only
+//     options: { limit: 100 }
+//   })
+
+//   debugger;
+
+// });
 
 const countyCommitteeModel = mongoose.model(
   "county-committee",

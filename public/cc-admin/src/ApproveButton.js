@@ -7,8 +7,8 @@ import { showNotification as showNotificationAction } from "admin-on-rest";
 
 const certifiedListApprove = (id, data, basePath) => ({
   type: "APPROVE",
-  payload: { id, data: { ...data, is_approved: true } },
-  meta: { resource: "certified-list", fetch: UPDATE, cancelPrevious: false }
+  payload: { id, data: { ...data, approved: true } },
+  meta: { resource: "term", fetch: UPDATE, cancelPrevious: false }
 });
 
 export class ApproveButton extends Component {
@@ -19,17 +19,17 @@ export class ApproveButton extends Component {
 
   handleClick() {
     const { record } = this.props;
-    feathersRestClient(feathersClient)(PATCH, "certified-list", {
+    feathersRestClient(feathersClient)(PATCH, "term", {
       id: record.id,
-      data: { isApproved: true },
-      previousData: { isApproved: false }
+      data: { approved: true },
+      previousData: { approved: false }
     });
   }
 
   render() {
     return (
       <FlatButton
-        label="Approve to Import"
+        label="Convert to Members"
         disabled={this.props.record.isApproved}
         secondary={true}
         onClick={this.handleClick}
