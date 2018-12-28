@@ -399,7 +399,6 @@ router.get("/counties/:alias", function(req, res, next) {
     .then(function(county_committee) {
       if (county_committee) {
         res.render("county-committee-page", {
-          foo: "bah",
           county: county_committee.county,
           party: county_committee.party,
           chairman: county_committee.chairman,

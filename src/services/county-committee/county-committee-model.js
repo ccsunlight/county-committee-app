@@ -7,6 +7,7 @@
 
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const TermModel = require("../term/term-model");
 
 // var termSchema = new Schema({
 //   start_date: { type: Date, required: true },
@@ -34,6 +35,10 @@ const countyCommitteeSchema = new Schema(
       type: String,
       enum: ["Democratic", "Republican"],
       default: "Democratic"
+    },
+    current_term_id: {
+      type: "ObjectId",
+      ref: "term"
     },
     url: {
       type: String
@@ -128,8 +133,8 @@ const countyCommitteeSchema = new Schema(
 
 countyCommitteeSchema.virtual("members", {
   ref: "county-committee-member", // The model to use
-  localField: "_id", // Find people where `localField`
-  foreignField: "committee", // is equal to `foreignField`
+  localField: "current_term_id", // Find people where `localField`
+  foreignField: "term_id", // is equal to `foreignField`
   justOne: false,
   options: { sort: { _id: 1 } } // Query options, see http://bit.ly/mongoose-query-options
 });
@@ -150,21 +155,29 @@ countyCommitteeSchema.virtual("terms", {
   options: { sort: { _id: -1 } } // Query options, see http://bit.ly/mongoose-query-options
 });
 
+countyCommitteeSchema.virtual("current_term", {
+  ref: "term",
+  localField: "current_term_id",
+  foreignField: "_id",
+  justOne: true
+});
+
 countyCommitteeSchema.pre("findOne", function() {
   this.populate("party_call"); // @deprecated
   this.populate("terms");
   this.populate("members");
-})
+  this.populate("current_term");
+});
 
 // @todo
-// Pre and post hooks don't work together. 
-// Need to get the post hook to pull the latest term 
-// so that the county committee will automatically display 
-// the latest members. 
+// Pre and post hooks don't work together.
+// Need to get the post hook to pull the latest term
+// so that the county committee will automatically display
+// the latest members.
 //
 
 // countyCommitteeSchema.post("findOne", async function(doc) {
-  
+
 //   doc.populate({
 //     path: 'members',
 //     match: { term_id: {  $in: doc.terms.slice(0,1) }}, // Get the latest term's members only

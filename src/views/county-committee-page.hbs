@@ -6,6 +6,7 @@
   </div>
   <div class="mdl-card mdl-cell mdl-cell--6-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
     <div class="mdl-card__supporting-text">
+
       {{#if county_committee.address}}
       
       <p>
@@ -39,6 +40,11 @@
       <i class="material-icons">account_circle</i> Chairman
       {{county_committee.chairman}}
     </div>
+    {{/if}}
+  </div>
+   <div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
+    {{#if county_committee.members}}
+     {{> table members=(map_members county_committee.members) }}
     {{/if}}
   </div>
 </section>
