@@ -132,7 +132,7 @@ export const CertifiedListCreate = props => {
                   `${record.committee.county} + ${
                     record.committee.party
                   } ${moment(record.start_date).format("ll")} to ${moment(
-                    record.start_date
+                    record.end_date
                   ).format("ll")}`
                 }
               />

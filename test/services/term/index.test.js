@@ -7,10 +7,12 @@ const moment = require("moment");
 //const CertifiedListService = require("../../../src/services/certified-list");
 const TermModel = require("../../../src/services/term/term-model");
 const MemberModel = require("../../../src/services/county-committee-member/county-committee-member-model");
+const CertifiedListModel = require("../../../src/services/certified-list/certified-list-model");
 
 const cerfied_list_path = "/usr/src/app/test/mocks/CertifiedList.mock.pdf";
 const termMock = require("../../mocks/term.mock.json");
 const ccMock = require("../../mocks/county-committee.mock.json");
+const mongoose = require("mongoose");
 
 describe("term service", function() {
   let TermService, CertifiedListService;
@@ -74,6 +76,14 @@ describe("term service", function() {
       });
   });
 
+  afterEach(async function(done) {
+    await ccService.remove({ _id: mock_county_committee._id });
+    await TermService.remove({ _id: mock_term._id });
+    MemberModel.deleteMany({ term_id: mock_term._id }).then(success => {
+      done();
+    });
+  });
+
   it("registered the terms service", () => {
     assert.ok(app.service(app.get("apiPath") + "/term"));
   });
@@ -88,7 +98,6 @@ describe("term service", function() {
       assert(term.end_date);
       assert(term.committee_id);
       assert(term.committee, "It has an aliased county committee");
-      terms.push(term);
       done();
     });
   });
@@ -104,9 +113,11 @@ describe("term service", function() {
         term_id: mock_term._id
       }).then(members => {
         assert(members.length, 2500);
-        MemberModel.deleteMany({ term_id: mock_term._id }, function(err) {
-          done();
-        });
+        CertifiedListService.remove({ term_id: mock_term._id }).then(
+          success => {
+            done();
+          }
+        );
       });
     });
   });
@@ -118,7 +129,6 @@ describe("term service", function() {
     }).then(certified_list => {
       assert(certified_list);
       assert(certified_list.positions);
-
       // Attempts to create members for the same certified list.
       TermService.createMembersFromCertifiedList({
         term_id: mock_term._id
@@ -130,12 +140,8 @@ describe("term service", function() {
         })
           .then(members => {})
           .catch(e => {
-            debugger;
             assert(e, "Error is thrown");
-
-            MemberModel.deleteMany({ term_id: mock_term._id }, function(err) {
-              done();
-            });
+            done();
           });
       });
     });

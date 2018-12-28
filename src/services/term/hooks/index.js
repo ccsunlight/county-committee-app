@@ -16,7 +16,6 @@ exports.before = {
   create: [],
   update: [],
   patch: [async function(context) {
-    
     if (context.data.approved) {
       await context.service.createMembersFromCertifiedList({ term_id: mongoose.Types.ObjectId(context.id)});
     }
