@@ -4,10 +4,13 @@
       <h1 class="mdl-typography--display-1">{{county_committee.county}} {{county_committee.party}} County Committee</h1>
     </div>
   </div>
+     {{#if county_committee.address}}
   <div class="mdl-card mdl-cell mdl-cell--6-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
     <div class="mdl-card__supporting-text">
 
-      {{#if county_committee.address}}
+      
+
+   
       
       <p>
         <i class="material-icons">location_on</i>
@@ -31,16 +34,34 @@
         <i class="material-icons">&#xE0BE;</i>
         {{county_committee.email}}
       </p>
-      {{/if}}
+     
     </div>
   </div>
+   {{/if}}
+  {{#if county_committee.chairman}}
   <div class="mdl-card mdl-cell mdl-cell--6-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
-    {{#if county_committee.chairman}}
+    
     <div class="mdl-card__supporting-text">
       <i class="material-icons">account_circle</i> Chairman
       {{county_committee.chairman}}
     </div>
-    {{/if}}
+   
+  </div>
+   {{/if}}
+  <div class="mdl-card mdl-cell mdl-cell--6-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
+
+    <div class="mdl-card__supporting-text">
+      <span class="mdl-typography--headline">
+      Current Term: <br/><br/>
+      {{dateFormat county_committee.current_term.start_date "MMM DD, YYYY"}} — {{dateFormat county_committee.current_term.end_date "MMM DD, YYYY"}}
+      </span>
+    </div>
+  </div>
+  <div class="mdl-card mdl-cell mdl-cell--6-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
+   
+    <div class="mdl-card__supporting-text">
+
+    </div>
   </div>
    <div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
     {{#if county_committee.members}}

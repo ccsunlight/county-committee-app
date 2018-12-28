@@ -15,7 +15,6 @@ const ccMock = require("../../mocks/county-committee.mock.json");
 describe("term service", function() {
   let TermService, CertifiedListService;
   let county_committee;
-  let terms = [];
 
   let ccService, ccMemberService;
   let mock_term, mock_county_committee, mock_county_committee_member;
@@ -128,17 +127,17 @@ describe("term service", function() {
 
         TermService.createMembersFromCertifiedList({
           term_id: mock_term._id
-        }).then(members => {
-          assert(members.length, 2500);
-          MemberModel.deleteMany({ term_id: mock_term._id }, function(err) {
-            done();
+        })
+          .then(members => {})
+          .catch(e => {
+            debugger;
+            assert(e, "Error is thrown");
+
+            MemberModel.deleteMany({ term_id: mock_term._id }, function(err) {
+              done();
+            });
           });
-        }).catch(e => {
-          debugger;
-          assert(e, 'Error is thrown');
-          done();
-        });
       });
     });
-  })
+  });
 });
