@@ -1,18 +1,17 @@
 <div class="mdl-grid">
 <div class="mdl-card mdl-cell mdl-cell--8-col">
 	<div class="mdl-card__supporting-text" id="get_address_results">
-		<h3>Your local {{party}} Party seats</h3>
+		<h3>Your local {{party}} Party seats for AD: {{ad}} / ED: {{ed}}</h3>
 
 		{{> disclaimer }}
-		<h4>Assembly District: {{ad}}</h4>
-		<h4>Election District: {{ed}}</h4>
+		
 
 		<p class="disclaimer">
-		Manhattan, Bronx & Richmond currently do not show appointed members. Vacancies could have members appointed to them. Appointments (along with all county committee seats) expire at the end of every term.
+			Appointed members not yet available for this district. Members showing as vacancy may have appointments.
 		</p>
 
 
-		{{#if partyPositionsToBeFilled}}
+		{{!-- #if partyPositionsToBeFilled}}
 			<h5>Petitioning season for this County Committee starts <strong>June 5th</strong>. Below are the petitionable seats for the upcoming election:</h5>
 			
 			{{> table members=partyPositionsToBeFilled}}
@@ -21,7 +20,7 @@
 			  Learn how to petition!
 			</a>
 			</div>
-		{{/if}}
+		{{/if --}}
 		
 
 		{{#if error}}
@@ -29,7 +28,7 @@
 		<h4><i class="material-icons">error_outline</i>  Sorry we do not have seat information for this district yet. Consider <a href="https://goo.gl/forms/BpeKaPz7rSa4hXdU2" target="_blank">volunteering</a> to help get this info!</h4>
 		{{else}}
 
-		<h5>Your current county committee reps</h5>
+			<h6>County: {{county}} | Party: {{party}} | AD: {{ad}} | ED: {{ed}} | Term: {{dateFormat term.start_date "MM/DD/YYYY"}} — {{dateFormat term.end_date "MM/DD/YYYY"}}</h6>
 			{{> table }}
 
 		{{/if}}
