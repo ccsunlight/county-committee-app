@@ -12,7 +12,7 @@ import compose from "recompose/compose";
 
 // import { WithPermission, SwitchPermissions, Permission } from "aor-permissions";
 import authClient from "./feathersAuthClient";
-//import { checkUserCanEdit, checkUserHasAccess } from "./feathersAuthClient";
+import { checkUserCanEdit, checkUserHasAccess } from "./feathersAuthClient";
 
 /* <MenuItem
                         key={resource.name}
@@ -27,21 +27,25 @@ function MenuItemWithAccess(props) {
   const resource = props.resource;
   const onMenuTap = props.onMenuTap;
 
-  return (
-    <MenuItem
-      key={resource.name}
-      value={resource.name}
-      containerElement={<Link to={`/${resource.name}`} />}
-      primaryText={
-        resource.options.label
-          ? resource.options.label
-          : inflection.titleize(
-              inflection.humanize(inflection.pluralize(resource.name))
-            )
-      }
-      leftIcon={<resource.icon />}
-    />
-  );
+  if (!checkUserHasAccess(resource)) {
+    return null;
+  } else {
+    return (
+      <MenuItem
+        key={resource.name}
+        value={resource.name}
+        containerElement={<Link to={`/${resource.name}`} />}
+        primaryText={
+          resource.options.label
+            ? resource.options.label
+            : inflection.titleize(
+                inflection.humanize(inflection.pluralize(resource.name))
+              )
+        }
+        leftIcon={<resource.icon />}
+      />
+    );
+  }
 }
 
 const Menu = ({ resources, onMenuTap, logout }) => {
@@ -65,6 +69,3 @@ const mapStateToProps = state => ({
   resources: getResources(state)
 });
 export default connect(mapStateToProps)(Menu);
-/*
-export default 
-*/

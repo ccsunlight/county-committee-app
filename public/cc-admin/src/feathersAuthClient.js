@@ -5,13 +5,12 @@ import {
   AUTH_ERROR,
   AUTH_GET_PERMISSIONS
 } from "admin-on-rest";
-import decode from "jwt-decode";
+// import decode from "jwt-decode";
 
 export const checkUserCanEdit = params => {
-  return true;
+
   const role = params.permissions("AUTH_GET_PERMISSIONS"); // This is the result of the `authClient` call with type `AUTH_GET_PERMISSIONS`
 
-  // Only with admin role can edit the posts of the 'announcements' category
   if (role === "admin") {
     return true;
   } else {
