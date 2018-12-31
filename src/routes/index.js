@@ -387,13 +387,13 @@ router.get("/get_address", function(req, res, next) {
             data.cleanedAllGeomDocsInAd = JSON.stringify(
               cleanedAllGeomDocsInAd
             );
-
             res.render("get_address", data);
           } else {
             const locals = {
               address: req.query.address,
               error: "No data for this district."
             };
+            
             res.render("get_address", locals);
           }
         })
