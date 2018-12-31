@@ -130,7 +130,7 @@ app
   .use(
     bodyParser.urlencoded({
       extended: true,
-      limit: "50mb" // Needed for large embedded arrays. @todo optimize requests such that this isn't necessary.
+      limit: "150mb" // Needed for large embedded arrays. @todo optimize requests such that this isn't necessary.
     })
   )
   //.use(forceSSL)
