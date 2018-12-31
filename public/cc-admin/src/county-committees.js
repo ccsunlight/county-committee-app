@@ -71,15 +71,15 @@ const CountyCommitteeTitle = ({ record }) => {
 
 const FullNameField = ({ record = {} }) => <span>
     <SelectInput
-              source="current_term_id"
-              choices={[]}
-              optionText={
-                <FunctionField
-                  label="Name"
-                  render={record => `${formatDate(new Date(record.start_date))} — ${formatDate(new Date(record.end_date))}`}
-                />
-              }
-            />
+      source="current_term_id"
+      choices={[]}
+      optionText={
+        <FunctionField
+          label="Name"
+          render={record => `${formatDate(new Date(record.start_date))} — ${formatDate(new Date(record.end_date))}`}
+        />
+      }
+    />
 </span>;
 
 export const CountyCommitteeEdit = props => (
