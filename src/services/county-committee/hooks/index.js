@@ -13,7 +13,7 @@ exports.before = {
   create: [generateAlias],
   update: [generateAlias],
   patch: [generateAlias],
-  remove: [archive]
+  remove: []
 };
 
 /**

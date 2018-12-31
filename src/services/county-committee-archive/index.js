@@ -1,5 +1,7 @@
 "use strict";
-
+/**
+ * @deprecated
+ */
 const service = require("feathers-mongoose");
 const CountyCommittee = require("../county-committee/county-committee-model");
 const CountyCommitteeMember = require("../county-committee-member/county-committee-member-model");
