@@ -1,7 +1,7 @@
 {
   "name": "county-committee",
   "description": "App for county committee information",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "homepage": "https://ccsunlight.org",
   "main": "src/",
   "keywords": [
@@ -31,7 +31,9 @@
     "import-certified-list": "node scripts/import-certified-list",
     "prettier-watch": "onchange '**/*.{js,json,css,md}' -- prettier --write {{changed}}",
     "sync-db": "bash scripts/sync-db-from-prod.sh",
-    "migrate": "bash ./init-migration.sh"
+    "migrate": "bash ./init-migration.sh",
+    "build-admin": "cd public/cc-admin && npm run build"
+
   },
   "nodemonConfig": {
     "ext": "js",

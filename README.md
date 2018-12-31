@@ -49,11 +49,11 @@ The app will automatically install these itself if you have docker installed.
 
 Getting up and running is as easy as 1, 2, 3...10
 
-1.  git clone [repo link] /your/app/path
+1. git clone [repo link] /your/app/path
 
-2.  cd /your/app/path
+2. cd /your/app/path
 
-3.  Spin up docker containers:
+3. Spin up docker containers:
 
 Run:
 
@@ -63,13 +63,13 @@ bash spinup-local-and-ssh.sh
 
 This will create three docker containers, one with mongo, the other with node and a persistent storage docker container.
 
-4.  You should see a prompt that looks like this:
+4. You should see a prompt that looks like this:
 
 ```
 root@121fsfsw:/usr/src/app
 ```
 
-5.  Run
+5. Run
 
 ```
 npm install
@@ -77,13 +77,13 @@ npm install
 
 This will install the node dependancies. It's important the this is done inside the running app container otherwise there may be errors with bcrypt. (see troubleshooting below)
 
-6.  Copy the ".env_example" to a new file named ".env" in the root of your app dir (/usr/src/app). This will be where your keys and pws will go for the app.
+6. Copy the ".env_example" to a new file named ".env" in the root of your app dir (/usr/src/app). This will be where your keys and pws will go for the app.
 
 ```
 cp .env_example .env
 ```
 
-7.  If you have proprietary DB setup info update the ".env" file to your settings. Otherwise the DB vars can be left as is for dev, however, **it is strongly discouraged to leave for production use as this DB would have no PW.** You'll need a GMAIL account, and is suggested you get a new one for this project.
+7. If you have proprietary DB setup info update the ".env" file to your settings. Otherwise the DB vars can be left as is for dev, however, **it is strongly discouraged to leave for production use as this DB would have no PW.** You'll need a GMAIL account, and is suggested you get a new one for this project.
 
 ```
 sed -i.bak s/AUTHENTICATION_SECRET\"\"/AUTHENTICATION_SECRET=\"SOMEKEY\"/g .env
@@ -93,7 +93,7 @@ sed -i.bak s/GMAIL_PW=\"\"/GMAIL_PW=\"<SomePassord>\"/g .env
 
 Enter a alphanumeric key for AUTHENTICATION_SECRET. (512 chars recommended for production).
 
-8.  run
+8. run
 
     ```
     bash ./init-migration.sh
@@ -106,7 +106,7 @@ a un and pw.
 
 You will not be able to see this again once your terminal session closes.
 
-9.  Start your app
+9. Start your app
 
     ```
     npm start
@@ -128,15 +128,15 @@ When the app starts for the first time it will run additional imports for the ma
 
 Deploying can be done by running the "deploy-prod.sh" script in the scripts folder.
 
-1.  Merge and push changes to the master branch.
-2.  From your local terminal in the root run:
+1. Merge and push changes to the master branch.
+2. From your local terminal in the root run:
 
 ```
 bash scripts/deploy-prod.sh
 ```
 
-3.  It will prompt you for a password. Enter password and hit enter.
-4.  The script will ssh into the droplet, pull down the latest changes from master and destroy and recreate and spinup the docker nodes.
+3. It will prompt you for a password. Enter password and hit enter.
+4. The script will ssh into the droplet, pull down the latest changes from master and destroy and recreate and spinup the docker nodes.
 
 note: There will be approximately 1 to 3 minutes of downtime while this happens.
 
