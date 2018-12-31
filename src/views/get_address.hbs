@@ -4,12 +4,10 @@
 		<h3>Your local {{party}} Party seats for AD: {{ad}} / ED: {{ed}}</h3>
 
 		{{> disclaimer }}
-		
 
 		<p class="disclaimer">
-			Appointed members not yet available for this district. Members showing as vacancy may have appointments.
+			<strong>* Appointed members not yet available for this district. Members showing as "vacancy" may have members appointmented.</strong>
 		</p>
-
 
 		{{!-- #if partyPositionsToBeFilled}}
 			<h5>Petitioning season for this County Committee starts <strong>June 5th</strong>. Below are the petitionable seats for the upcoming election:</h5>
@@ -28,15 +26,15 @@
 		<h4><i class="material-icons">error_outline</i>  Sorry we do not have seat information for this district yet. Consider <a href="https://goo.gl/forms/BpeKaPz7rSa4hXdU2" target="_blank">volunteering</a> to help get this info!</h4>
 		{{else}}
 
-			<h6>County: {{county}} | Party: {{party}} | AD: {{ad}} | ED: {{ed}} | Term: {{dateFormat term.start_date "MM/DD/YYYY"}} — {{dateFormat term.end_date "MM/DD/YYYY"}}</h6>
+			<h6>County: {{county}} | Party: {{party}} | AD: {{ad}} | ED: {{ed}} | Term: {{dateFormat term.start_date "MM/YYYY"}} — {{dateFormat term.end_date "MM/YYYY"}}</h6>
 			{{> table }}
 
 		{{/if}}
 
 	</div>
 	<div class="mdl-card__supporting-text">
-			{{> gmap}}
-			{{> include_gmap_and_autocomplete}}
+		{{> gmap}}
+		{{> include_gmap_and_autocomplete}}
 	</div>
 </div>
 {{> sidebar}}

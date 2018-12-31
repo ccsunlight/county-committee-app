@@ -19,10 +19,12 @@ function ccExtractionException(message) {
 
 class Service extends FeathersMongoose.Service {
   extractCountyFromPage(page) {
-    var match = page.match(/\b(.+?) County\b/);
+    // Matches "Bronx" from "Bronx County"
+    // Matches "New York" from "New York County"
+    var match = page.match(/\b(\w+?\s?\w*)(?= County)\b/i);
 
     if (match) {
-      return match[1];
+      return match[0];
     }
   }
 

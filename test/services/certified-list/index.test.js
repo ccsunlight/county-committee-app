@@ -2,7 +2,9 @@
 
 const assert = require("assert");
 const app = require("../../../src/app");
-const cerfied_list_path = "/usr/src/app/test/mocks/CertifiedList.mock.pdf";
+const certified_list_path = "/usr/src/app/test/mocks/CertifiedList.mock.pdf";
+const kings_certified_list_path = "/usr/src/app/test/mocks/KG_CCDEMLIST_100918.pdf";
+
 const base64 = require("base64topdf");
 const TermModel = require("../../../src/services/term/term-model");
 const moment = require("moment");
@@ -91,15 +93,16 @@ describe("Certified List service", function() {
     const CertifiedListService = app.service(
       app.get("apiPath") + "/certified-list"
     );
-    let filepath = cerfied_list_path;
+    let filepath = certified_list_path;
     extract(filepath, (err, pages) => {
       let party = CertifiedListService.extractPartyFromPage(pages[0]);
       assert.equal(party, "Democratic");
     });
   });
 
-  it("can import a certified list PDF", done => {
-    let filepath = cerfied_list_path;
+
+  it("can import a certified list PDF from Kings County", done => {
+    let filepath = kings_certified_list_path;
     const CertifiedListService = app.service(
       app.get("apiPath") + "/certified-list"
     );
@@ -107,9 +110,35 @@ describe("Certified List service", function() {
       .then(certifiedList => {
         assert.ok(certifiedList);
         assert.equal(certifiedList.term_id, mock_term._id);
+        assert.equal(certifiedList.source, "KG_CCDEMLIST_100918.pdf");
+        assert(Array.isArray(certifiedList.positions));
+        debugger;
+        assert.equal(certifiedList.positions.pop().party, "Democratic");
+        assert.equal(certifiedList.positions.pop().county, "Kings");
+        certifiedList.remove();
+        done();
+      })
+      .catch(err => {
+        console.log(err);
+        assert(!err);
+        done();
+      });
+  });
+  
+
+  it("can import a certified list PDF", done => {
+    let filepath = certified_list_path;
+    const CertifiedListService = app.service(
+      app.get("apiPath") + "/certified-list"
+    );
+    CertifiedListService.create({ filepath: filepath, term_id: mock_term._id })
+      .then(certifiedList => {
+        assert.ok(certifiedList);
         assert.equal(certifiedList.source, "CertifiedList.mock.pdf");
+        assert.equal(certifiedList.term_id, mock_term._id);
         assert(Array.isArray(certifiedList.positions));
         assert.equal(certifiedList.positions.pop().party, "Democratic");
+        assert.equal(certifiedList.positions.pop().county, "Bronx");
         certifiedList.remove();
         done();
       })
@@ -146,7 +175,7 @@ describe("Certified List service", function() {
     const CertifiedListService = app.service(
       app.get("apiPath") + "/certified-list"
     );
-    let encodedPdf = base64.base64Encode(cerfied_list_path);
+    let encodedPdf = base64.base64Encode(certified_list_path);
 
     let file_upload_base64 = [
       { title: "CertifiedList.mock.pdf", src: encodedPdf }
