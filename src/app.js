@@ -19,7 +19,7 @@ const jwt = require("feathers-authentication-jwt");
 const auth = require("feathers-authentication");
 const errors = require("feathers-errors");
 const swagger = require("feathers-swagger");
-
+const slugify = require("slugify");
 // const forceSSL = require('express-force-ssl');
 const errorHandler = require("feathers-errors/handler");
 // const acl = require('feathers-acl');
@@ -41,6 +41,18 @@ hbs.registerHelper("if_eq", function(a, b, opts) {
   } else {
     return opts.inverse(this);
   }
+});
+
+hbs.registerHelper("toLowerCase", function(str) {
+  return str.toLowerCase();
+});
+
+hbs.registerHelper("slugify", function(str) {
+  return slugify(str).toLowerCase();
+});
+
+hbs.registerHelper("decountySlug", function(str) {
+  return slugify(str.replace("County", "")).toLowerCase();
 });
 
 hbs.registerHelper("dateFormat", require("handlebars-dateformat"));

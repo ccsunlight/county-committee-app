@@ -12,6 +12,7 @@ const download = require("download");
 const serveStatic = require("feathers").static;
 const auth = require("feathers-authentication");
 const countyCommittee = require("../services/county-committee/county-committee-model");
+const partyCall = require("../services/party-call/party-call-model");
 
 const countyCommitteeMember = require("../services/county-committee-member/county-committee-member-model");
 const edGeometry = require("../services/edGeometry/edGeometry-model");
@@ -253,6 +254,84 @@ const intersectQuery = (coordinates) => {
     };
 };
 */
+
+router.get("/:county-:party-county-committee/ad/:ad", function(req, res, next) {
+  // For map seats.
+  countyCommitteeMember
+    .find({
+      assembly_district: req.params.ad,
+      county: { $regex: new RegExp("^" + req.params.county + " County$", "i") },
+      party: { $regex: new RegExp("^" + req.params.party + "$", "i") }
+    })
+    .then(function(data) {
+      const members = data.map(member => {
+        return {
+          ED: member.electoral_district,
+          office: member.office,
+          entry_type: member.entry_type,
+          office_holder: member.office_holder,
+          petition_number: member.petition_number,
+          term_begins: member.term_begins.toLocaleString("en-US", {
+            year: "2-digit",
+            month: "numeric",
+            day: "numeric"
+          }),
+          term_ends: member.term_ends.toLocaleString("en-US", {
+            year: "2-digit",
+            month: "numeric",
+            day: "numeric"
+          }),
+          entry_type: member.entry_type
+        };
+      });
+      let partyPositionsToBeFilled;
+      const partyCallForEd = partyCall
+        .findOne({
+          positions: {
+            $elemMatch: {
+              assembly_district: req.params.ad,
+              party: { $regex: new RegExp(req.params.party, "i") }
+            }
+          },
+          isApproved: true
+        })
+        .then(partyCallForAd => {
+          if (partyCallForAd) {
+            let partyPositions = partyCallForAd.positions.filter(position => {
+              return position.assembly_district === parseInt(req.params.ad, 10);
+            });
+
+            if (partyPositions) {
+              partyPositionsToBeFilled = partyPositions.map(function(position) {
+                return {
+                  ED: position.electoral_district,
+                  office: position.office,
+                  term_begins: position.term_begins.toLocaleString("en-US", {
+                    year: "2-digit",
+                    month: "numeric",
+                    day: "numeric"
+                  }),
+                  entry_type: "Petitionable Position"
+                };
+              });
+            }
+          }
+
+          if (members.length) {
+            res.render("seats", {
+              ad: req.params.ad,
+              party: members[0].party,
+              members: members,
+              partyPositionsToBeFilled: partyPositionsToBeFilled || []
+            });
+          } else {
+            res.render("seats", {
+              error: "No data for this district."
+            });
+          }
+        });
+    });
+});
 
 router.get("/get_address", function(req, res, next) {
   try {

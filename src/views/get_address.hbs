@@ -4,6 +4,12 @@
 		<h3>Your local {{party}} Party seats for AD: {{ad}} / ED: {{ed}}</h3>
 
 		{{> disclaimer }}
+<<<<<<< HEAD
+=======
+		<h4>Assembly District: {{ad}}</h4>
+
+		<h4>Election District: {{ed}}</h4>
+>>>>>>> master
 
 		<p class="disclaimer">
 			<strong>* Appointed members not yet available for this district. Members showing as "vacancy" may have members appointmented.</strong>
@@ -18,7 +24,18 @@
 			  Learn how to petition!
 			</a>
 			</div>
+<<<<<<< HEAD
 		{{/if --}}
+=======
+			<div class="petition-cta">
+				<a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank" href="/{{decountySlug county}}-{{slugify party}}-county-committee/ad/{{ad}}">
+				See all CC seats you can petition for in your AD
+				</a>
+			</div>
+
+
+		{{/if}}
+>>>>>>> master
 		
 
 		{{#if error}}
@@ -30,6 +47,8 @@
 			{{> table }}
 
 		{{/if}}
+
+
 
 	</div>
 	<div class="mdl-card__supporting-text">

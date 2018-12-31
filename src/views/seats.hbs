@@ -1,0 +1,74 @@
+<div class="mdl-grid">
+<div class="mdl-card mdl-cell mdl-cell--8-col">
+	<div class="mdl-card__supporting-text" id="get_address_results">
+		<h3>Your local {{party}} Party seats</h3>
+
+		{{> disclaimer }}
+		<h4>Assembly District: {{ad}}</h4>
+
+		<p>
+			Any eligible member of a party can run for any CC seat within their Assembly District. Below is the list of all ED sets and current status as well as the Party Call for the upcoming election. 
+		</p>
+
+		<p class="disclaimer">
+		Manhattan, Bronx & Richmond currently do not show appointed members. Vacancies could have members appointed to them. Appointments (along with all county committee seats) expire at the end of every term.
+		</p>
+
+
+		{{#if error}}
+
+			<h4><i class="material-icons">error_outline</i>  Sorry we do not have seat information for this district yet. Consider <a href="https://goo.gl/forms/BpeKaPz7rSa4hXdU2" target="_blank">volunteering</a> to help get this info!</h4>
+		{{else}}
+
+			<div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+			  	<div class="mdl-tabs__tab-bar">
+			      <button data-tab="cc-members" class="mdl-tabs__tab is-active" >County Committee Members</button>
+			      <button data-tab="party-call" class="mdl-tabs__tab">Party Call</button>
+			  	</div>
+			  	<div class="mdl-tabs__panel is-active" id="cc-members">
+					<h5>Your current county committee reps</h5>
+					{{> table}}
+			  	</div>
+			  	{{#if partyPositionsToBeFilled}}
+				<div class="mdl-tabs__panel" style="display:none" id="party-call">
+					<h5>Party call for upcoming election</h5>
+					{{> table members=partyPositionsToBeFilled}}
+				</div>
+				{{/if}}
+			</div>
+
+			<script>
+
+			let tabButtons = document.querySelectorAll('.mdl-tabs__tab')
+
+			for (let z = 0; z< tabButtons.length; z++) {
+				tabButtons[z].addEventListener('click', openTab)
+			}
+
+			function openTab() {
+				
+			    var i;
+			    const x = document.getElementsByClassName("mdl-tabs__panel");
+			    for (i = 0; i < x.length; i++) {
+			        x[i].style.display = "none"; 
+			    }
+
+			    let elems = document.querySelectorAll('.mdl-tabs__tab');
+		    	for (let q = 0; q < elems.length; q++) {
+			        elems[q].classList.remove('is-active');
+			    }
+			    debugger;
+			    this.classList.add('is-active');
+			    document.getElementById(this.dataset.tab).style.display = "block"; 
+			}
+			</script>
+    
+
+	
+			
+	{{/if}}
+	</div>
+
+</div>
+{{> sidebar}}
+</div>
