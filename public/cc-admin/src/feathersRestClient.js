@@ -13,14 +13,23 @@ export default client => {
   const mapRequest = (type, resource, params) => {
     const service = client.service(resource);
     let query = {};
-    debugger;
     switch (type) {
       case GET_MANY:
         let ids = params.ids || [];
-        query = { id: { $in: ids } };
+        query = {
+          _id: { ["$in"]: ids }
+        };
         query["$limit"] = ids.length;
+
         return service.find({ query });
       case GET_MANY_REFERENCE:
+        query = {
+          [params.target]: params.id,
+          ["$limit"]: params.pagination.perPage,
+          ["$skip"]: params.pagination.skip
+        };
+
+        return service.find({ query });
       case GET_LIST:
         const { page, perPage } = params.pagination || {};
         const { field, order } = params.sort || {};
@@ -35,6 +44,7 @@ export default client => {
           query[sortKey] = JSON.stringify(sortVal);
         }
         Object.assign(query, params.filter);
+
         return service.find({ query });
       case GET_ONE:
         return service.get(params.id);
@@ -65,7 +75,6 @@ export default client => {
         return response;
     }
   };
-  debugger;
   return (type, resource, params) =>
     mapRequest(type, resource, params).then(response =>
       mapResponse(response, type, resource, params)

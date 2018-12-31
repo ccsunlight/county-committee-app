@@ -3,17 +3,20 @@
 const certifiedList = require("./certified-list");
 const partyCall = require("./party-call");
 
+const utils = require("./utils");
 const invite = require("./invite");
 const edGeometry = require("./edGeometry");
 const countyCommitteeMember = require("./county-committee-member");
 const countyCommittee = require("./county-committee");
+const countyCommitteeArchive = require("./county-committee-archive");
 const actionLog = require("./action-log");
 const glossaryTerm = require("./glossary-term");
 const newsLink = require("./news-link");
-//const authentication = require('./authentication');
+const authentication = require('./authentication');
 const user = require("./user");
 const page = require("./page");
 const address = require("./address");
+const term = require("./term");
 const mongoose = require("mongoose");
 
 // Mongoose promise lib is deprecated.
@@ -35,6 +38,7 @@ module.exports = function() {
   app.configure(page);
   app.configure(countyCommitteeMember);
   app.configure(countyCommittee);
+  // app.configure(countyCommitteeArchive);
   app.configure(edGeometry);
   app.configure(invite);
   app.configure(actionLog);
@@ -43,6 +47,8 @@ module.exports = function() {
   app.configure(address);
   app.configure(certifiedList);
   app.configure(partyCall);
+  app.configure(term);
+  app.configure(utils);
 
   address.docs = {
     description: "A service to send and receive messages",
@@ -81,4 +87,6 @@ module.exports = function() {
   delete app.docs.paths[apiPath + "/certified-list/{_id}"];
   delete app.docs.paths[apiPath + "/party-call"];
   delete app.docs.paths[apiPath + "/party-call/{_id}"];
+  delete app.docs.paths[apiPath + "/term"];
+  delete app.docs.paths[apiPath + "/term/{_id}"];
 };

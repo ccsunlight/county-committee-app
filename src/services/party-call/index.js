@@ -7,6 +7,8 @@ const extract = require("pdf-text-extract");
 const PartyCall = require("./party-call-model");
 const hooks = require("./hooks");
 const CountyCommitteeMember = require("../county-committee-member/county-committee-member-model");
+const CountyCommittee = require("../county-committee/county-committee-model");
+const Term = require("../term/term-model");
 const FeathersMongoose = require("feathers-mongoose");
 const moment = require("moment");
 
@@ -26,8 +28,6 @@ const moment = require("moment");
  * district_key,County Committee
  * 02044,2
  * 02045,4
- *
- *
  *
  * @type       {Function}
  */
@@ -75,8 +75,16 @@ class Service extends FeathersMongoose.Service {
       return false;
     }
   }
+
+  /**
+   * Takes a Party Call CSV filepath and converts it to an array of
+   * CountyCommittee model objects
+   * @todo break out the extraction and the model creation to two different
+   * functions
+   * @param {Object} params The params object passed to the service
+   */
   getPartyCallPositionsFromCSV(params) {
-    const { filepath, electionDate, party, county, state } = params;
+    const { filepath, party, county, state, committee_id } = params;
     // Data object for CC Member
     let position = {
       petition_number: undefined,
@@ -91,10 +99,9 @@ class Service extends FeathersMongoose.Service {
       data_source: undefined,
       county: county,
       state: state,
+      committee: committee_id,
       party: party,
-      data_source: path.basename(filepath),
-      term_begins: new Date(electionDate),
-      term_ends: moment(new Date(electionDate)).add(2, "years")
+      data_source: path.basename(filepath)
     };
     var parse = require("csv-parse");
 
@@ -173,20 +180,35 @@ class Service extends FeathersMongoose.Service {
         reject("File does not exist: " + params.filepath);
         return;
       }
-      this.getPartyCallPositionsFromCSV(params).then(partyCallPositions => {
-        let importedList = new PartyCall({
-          county: params.county,
-          party: params.party,
-          source: path.basename(params.filepath),
-          positions: partyCallPositions
-        });
-        importedList.save(err => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(importedList);
-          }
-        });
+
+      Term.findOne({ _id: params.term_id }).then(term => {
+        term.populate();
+        if (!term) {
+          reject("Term does not exist");
+          return;
+        } else {
+          let countyCommittee = term.committee;
+          this.getPartyCallPositionsFromCSV({
+            county: countyCommittee.county,
+            party: countyCommittee.party,
+            committee_id: countyCommittee._id,
+            ...params
+          }).then(partyCallPositions => {
+            let importedList = new PartyCall({
+              source: path.basename(params.filepath),
+              positions: partyCallPositions,
+              committee_id: countyCommittee._id,
+              term_id: params.term_id
+            });
+            importedList.save(err => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(importedList);
+              }
+            });
+          });
+        }
       });
     });
   }
@@ -199,8 +221,9 @@ module.exports = function() {
     Model: PartyCall,
     paginate: {
       default: 10,
-      max: 25
-    }
+      max: 10
+    },
+    lean: false
   };
 
   // Initialize our service with any options it requires

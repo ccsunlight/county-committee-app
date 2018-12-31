@@ -155,7 +155,7 @@ updateEdDb();
 
 const getCountyCommitteeBreakdown = co(function*(county, party) {
   // "Counties in db include 'county' in the name
-  const countySearchString = county + " County";
+  const countySearchString = county;
   let numOfElected = yield countyCommitteeMember
     .find({
       county: countySearchString,

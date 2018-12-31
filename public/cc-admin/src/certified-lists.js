@@ -6,8 +6,6 @@ import {
   Edit,
   Filter,
   Create,
-  SimpleList,
-  Responsive,
   Datagrid,
   ReferenceField,
   TextField,
@@ -15,63 +13,140 @@ import {
   DisabledInput,
   LongTextInput,
   ReferenceInput,
-  ReferenceManyField,
   SelectInput,
   SimpleForm,
   TextInput,
-  BooleanField
+  BooleanField,
+  SingleFieldList,
+  ReferenceManyField,
+  ReferenceArrayField,
+  FunctionField,
+  FileInput,
+  FileField,
+  SelectField
 } from "admin-on-rest";
 import { WithPermission, SwitchPermissions, Permission } from "aor-permissions";
 import authClient from "./feathersAuthClient";
 import { checkUserCanEdit } from "./feathersAuthClient";
-import { ApproveButton } from "./ApproveButton";
+import moment from "moment";
 
 export const CertifiedListList = props => (
-  <List {...props} title="Imported Certified Lists">
+  <List {...props} title="Certified Lists">
     <Datagrid>
-      <TextField source="county" />
-      <TextField source="party" />
-      <BooleanField label="Approved" source="isApproved" />
-      <BooleanField label="Imported" source="isImported" />
+      <TextField source="id" />
+      <TextField source="source" />
+      <ReferenceField
+        label="County Committee"
+        source="term_id"
+        reference="term"
+        allowEmpty={true}
+      >
+        <FunctionField
+          label="Name"
+          render={record =>
+            `${record.committee.county} ${record.committee.party}`
+          }
+        />
+      </ReferenceField>
       <EditButton />
     </Datagrid>
   </List>
 );
 
-export const CertifiedMemberList = ({ record, props }) => {
+export const PartyPositionsList = ({ record, props }) => {
   let data = {};
 
-  const ids = record.members.slice(0, 100).map(member => {
-    data[member._id] = member;
-    return member._id;
-  });
+  const ids = record.positions
+    ? record.positions.slice(0, 50).map(position => {
+        data[position._id] = position;
+        return position._id;
+      })
+    : [];
+  if (ids.length > 0) {
+    return (
+      <Datagrid ids={ids} data={data} currentSort={{ _id: "ASC" }}>
+        <TextField source="_id" />
+        <TextField label="AD" source="assembly_district" />
+        <TextField label="ED" source="electoral_district" />
 
-  return (
-    <Datagrid ids={ids} data={data} currentSort={{ _id: "ASC" }}>
-      <TextField source="_id" />
-      <TextField source="office_holder" />
-      <TextField source="assembly_district" />
-      <TextField source="electoral_district" />
-      <TextField source="county" />
-      <TextField source="party" />
-      <TextField source="tally" />
-    </Datagrid>
-  );
+        <TextField source="office" />
+        <TextField source="office_holder" />
+      </Datagrid>
+    );
+  } else {
+    return (
+      <div>
+        Loading preview of positions. If it takes a while try hitting refresh.
+      </div>
+    );
+  }
 };
 
 export const CertifiedListEdit = props => {
   return (
-    <Edit title={"Import list members"} {...props}>
+    <Edit title={"Certified List"} {...props}>
       <SimpleForm>
         <DisabledInput label="Id" source="id" />
-        <BooleanField label="Approved" source="isApproved" />
-        <BooleanField label="Imported" source="isImported" />
-        <ApproveButton {...props} />
-        <TextField source="county" />
-        <h4>Sample of imported members</h4>
-        <TextField source="members.length" label="Total Members imported" />
-        <CertifiedMemberList title="Only first 100 rows shown" props={props} />
+        <ReferenceInput
+          label="Committee Term"
+          source="term_id"
+          reference="term"
+          perPage={200}
+        >
+          <SelectInput
+            optionText={
+              <FunctionField
+                label="Dates"
+                render={record =>
+                  `${record.committee.county} ${
+                    record.committee.party
+                  } ${moment(record.start_date).format("ll")} to ${moment(
+                    record.end_date
+                  ).format("ll")}`
+                }
+              />
+            }
+          />
+        </ReferenceInput>
+        <PartyPositionsList props={props} />
       </SimpleForm>
     </Edit>
+  );
+};
+
+export const CertifiedListCreate = props => {
+  return (
+    <Create title={"Create Certified List"} {...props}>
+      <SimpleForm>
+        <ReferenceInput
+          label="Committee Term"
+          source="term_id"
+          reference="term"
+          perPage={200}
+        >
+          <SelectInput
+            optionText={
+              <FunctionField
+                label="Dates"
+                render={record =>
+                  `${record.committee.county} + ${
+                    record.committee.party
+                  } ${moment(record.start_date).format("ll")} to ${moment(
+                    record.end_date
+                  ).format("ll")}`
+                }
+              />
+            }
+          />
+        </ReferenceInput>
+        <FileInput
+          source="files_to_upload"
+          label="Certified List"
+          accept=".pdf"
+        >
+          <FileField source="src" title="title" />
+        </FileInput>
+      </SimpleForm>
+    </Create>
   );
 };

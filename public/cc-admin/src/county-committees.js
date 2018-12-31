@@ -12,13 +12,25 @@ import {
   ReferenceField,
   TextField,
   EditButton,
+  CreateButton,
   DisabledInput,
   LongTextInput,
   ReferenceInput,
   SelectInput,
   SimpleForm,
-  TextInput
+  TextInput,
+  ReferenceManyField,
+  SingleFieldList,
+  ChipField,
+  DateInput,
+  FileInput,
+  FileField,
+  ImageInput,
+  ImageField,
+  DateField,
+  FunctionField
 } from "admin-on-rest";
+import ArchiveButton from "./ArchiveButton";
 
 export const CountyCommitteeList = props => (
   <List {...props} title="County Committees">
@@ -30,6 +42,22 @@ export const CountyCommitteeList = props => (
   </List>
 );
 
+function formatDate(date) {
+  var monthNames = [
+    "Jan", "Feb", "Mar",
+    "Apr", "May", "Jun", "Jul",
+    "Aug", "Sep", "Oct",
+    "Nov", "Dec"
+  ];
+
+  var day = date.getDate();
+  var monthIndex = date.getMonth();
+  var year = date.getFullYear();
+
+  return day + ' ' + monthNames[monthIndex] + ' ' + year;
+}
+
+
 const CountyCommitteeTitle = ({ record }) => {
   return (
     <span>
@@ -39,6 +67,20 @@ const CountyCommitteeTitle = ({ record }) => {
     </span>
   );
 };
+
+
+const FullNameField = ({ record = {} }) => <span>
+    <SelectInput
+      source="current_term_id"
+      choices={[]}
+      optionText={
+        <FunctionField
+          label="Name"
+          render={record => `${formatDate(new Date(record.start_date))} — ${formatDate(new Date(record.end_date))}`}
+        />
+      }
+    />
+</span>;
 
 export const CountyCommitteeEdit = props => (
   <Edit title={<CountyCommitteeTitle />} {...props}>
@@ -52,12 +94,54 @@ export const CountyCommitteeEdit = props => (
           { id: "Republican", name: "Republican" }
         ]}
       />
+      <ReferenceInput label="Current Term"  source="current_term_id" reference="term" filter={{ committee_id: props.match.params.id }} >
+        <SelectInput
+              optionText={
+                <FunctionField
+                  label="Name"
+                  render={record => `${formatDate(new Date(record.start_date))} — ${formatDate(new Date(record.end_date))} (${record.id})`}
+                />
+              }
+            />
+      </ReferenceInput>
+      <ReferenceManyField
+        perPage={5}
+        label="Terms"
+        reference="term"
+        target="committee_id"
+      >
+        <Datagrid>
+          <TextField source="id" />
+          <DateField source="start_date" />
+          <DateField source="end_date" />
+          <EditButton />
+        </Datagrid>
+      </ReferenceManyField>
       <TextInput source="chairman" />
       <TextInput source="address" />
       <TextInput source="phone" />
       <TextInput source="url" type="url" />
       <TextInput source="party_rules" type="url" />
       <TextInput source="email" type="email" />
+
+      {/* <ArchiveButton /> */}
+      <h4>Sample of members. </h4>
+
+      <ReferenceManyField
+        perPage={5}
+        label="Members"
+        reference="county-committee-member"
+        target="committee"
+      >
+        <Datagrid>
+          <TextField source="id" />
+          <TextField source="office" />
+          <TextField source="office_holder" />
+          <TextField source="assembly_district" />
+          <TextField source="electoral_district" />
+          <EditButton />
+        </Datagrid>
+      </ReferenceManyField>
     </SimpleForm>
   </Edit>
 );
@@ -73,7 +157,6 @@ export const CountyCommitteeCreate = props => (
           { id: "Republican", name: "Republican" }
         ]}
       />
-      <TextInput source="party" />
       <TextInput source="chairman" />
       <TextInput source="address" />
       <TextInput source="phone" />

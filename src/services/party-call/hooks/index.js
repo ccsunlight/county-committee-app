@@ -7,35 +7,27 @@ const PartyCallModel = require("../party-call-model");
 
 exports.before = {
   all: [],
-  find: [],
+  find: [
+    // Excludes the "positions" property from finds
+    // to avoid memory overload of returning
+    // 1000+ array.
+    // @todo move positions to their own collection
+    function(context) {
+      context.params.query.$select = { positions: 0 };
+
+      return context;
+    }
+  ],
   get: [],
-  create: [],
-  update: [],
-  patch: [],
+  create: [savePartyCallJsonDataCSV],
+  update: [savePartyCallJsonDataCSV],
+  patch: [savePartyCallJsonDataCSV],
   remove: []
 };
 
 exports.after = {
-  all: [
-    function(hook) {
-      if (hook.result.data) {
-        hook.result.data.map(function(record) {
-          record.id = record._id;
-          return record;
-        });
-      }
-    }
-  ],
-  find: [
-    function(hook) {
-      if (hook.result.data) {
-        hook.result.data.map(function(record) {
-          record.id = record._id;
-          return record;
-        });
-      }
-    }
-  ],
+  all: [],
+  find: [],
   get: [],
   create: [globalHooks.logAction],
   update: [globalHooks.logAction],
@@ -69,3 +61,28 @@ exports.after = {
   ],
   remove: [globalHooks.logAction]
 };
+
+/**
+ * Checks for a data json string for party call and if present uses that
+ * to create the party call. For use with JSON rest POST requests.
+ *
+ * @param {Object} context The hook context
+ * @return {Object} The modified hook context
+ */
+function savePartyCallJsonDataCSV(context) {
+  if (context.data.hasOwnProperty("file_data")) {
+    let csvBase64DataObject = context.data.file_data.pop();
+    if (csvBase64DataObject) {
+      let csvFileTempFilePath = context.app
+        .service("utils")
+        .saveBase64CSVDataToTempFile(
+          csvBase64DataObject.src,
+          csvBase64DataObject.title
+        );
+
+      context.data.filepath = csvFileTempFilePath;
+    }
+  }
+
+  return context;
+}

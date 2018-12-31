@@ -122,8 +122,16 @@ const countyCommitteeMemberSchema = new Schema(
       type: String,
       required: true
     },
-    term_begins: { type: Date, required: true },
-    term_ends: { type: Date, required: true }
+    committee: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "county-committee"
+    },
+    term_id: {
+      type: Schema.Types.ObjectId,
+      required: false,
+      ref: "term"
+    }
   },
   {
     toObject: {
@@ -135,10 +143,6 @@ const countyCommitteeMemberSchema = new Schema(
     timestamps: true
   }
 );
-
-countyCommitteeMemberSchema.virtual("id").get(function() {
-  return this._id;
-});
 
 const countyCommitteeMemberModel = mongoose.model(
   "county-committee-member",

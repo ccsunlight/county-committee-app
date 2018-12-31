@@ -14,6 +14,7 @@ import AccountIcon from "material-ui/svg-icons/action/account-box";
 import feathersRestClient from "./feathersRestClient";
 import feathersAuthClient from "./feathersAuthClient";
 import feathersClient from "./feathersClient";
+import addUploadCapabilities from "./addUploadCapabilities";
 
 import { MemberList, MemberEdit, MemberCreate } from "./members";
 import {
@@ -22,7 +23,21 @@ import {
   CountyCommitteeCreate
 } from "./county-committees";
 
-import { CertifiedListList, CertifiedListEdit } from "./certified-lists";
+import {
+  CountyCommitteeArchiveList,
+  CountyCommitteeArchiveEdit,
+  CountyCommitteeArchiveCreate
+} from "./county-committee-archives";
+
+import { PartyCallList, PartyCallEdit, PartyCallCreate } from "./party-calls";
+
+import { TermList, TermEdit, TermCreate } from "./terms";
+
+import {
+  CertifiedListList,
+  CertifiedListEdit,
+  CertifiedListCreate
+} from "./certified-lists";
 
 import { PageList, PageEdit, PageCreate } from "./pages";
 import { UserList, UserEdit } from "./users";
@@ -50,8 +65,47 @@ const App = () => (
     title="CC Admin"
     menu={Menu}
     authClient={feathersAuthClient(feathersClient, authClientOptions)}
-    restClient={feathersRestClient(feathersClient)}
+    restClient={addUploadCapabilities(feathersRestClient(feathersClient))}
   >
+    <Resource
+      name="county-committee"
+      options={{ label: "County Committees" }}
+      list={CountyCommitteeList}
+      edit={CountyCommitteeEdit}
+      create={CountyCommitteeCreate}
+      remove={Delete}
+    />
+
+    <Resource
+      name="term"
+      options={{ label: "Terms" }}
+      icon={ActionLogIcon}
+      list={TermList}
+      edit={TermEdit}
+      create={TermCreate}
+      remove={Delete}
+    />
+
+    <Resource
+      name="certified-list"
+      options={{ label: "Certified Lists" }}
+      icon={ActionLogIcon}
+      list={CertifiedListList}
+      edit={CertifiedListEdit}
+      create={CertifiedListCreate}
+      remove={Delete}
+    />
+
+    <Resource
+      name="party-call"
+      options={{ label: "Party Calls" }}
+      icon={ActionLogIcon}
+      list={PartyCallList}
+      edit={PartyCallEdit}
+      create={PartyCallCreate}
+      remove={Delete}
+    />
+
     <Resource
       name="county-committee-member"
       options={{ label: "CC Members" }}
@@ -61,14 +115,13 @@ const App = () => (
       remove={Delete}
     />
 
-    <Resource
-      name="county-committee"
-      options={{ label: "County Committees" }}
-      list={CountyCommitteeList}
-      edit={CountyCommitteeEdit}
-      create={CountyCommitteeCreate}
+    {/* <Resource
+      name="county-committee-archive"
+      options={{ label: "Archive" }}
+      list={CountyCommitteeArchiveList}
+      edit={CountyCommitteeArchiveEdit}
       remove={Delete}
-    />
+    /> */}
 
     <Resource
       name="profile"
@@ -128,14 +181,6 @@ const App = () => (
       create={NewsLinkCreate}
       edit={NewsLinkEdit}
       remove={Delete}
-    />
-
-    <Resource
-      name="certified-list"
-      options={{ label: "Imports" }}
-      icon={ActionLogIcon}
-      list={CertifiedListList}
-      edit={CertifiedListEdit}
     />
   </Admin>
 );

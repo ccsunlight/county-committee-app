@@ -1,30 +1,25 @@
 // in src/posts.js
 import React from "react";
-import { Link } from "react-router-dom";
 import {
   List,
   Edit,
   Filter,
   Create,
-  SimpleList,
-  Responsive,
   Datagrid,
-  ReferenceField,
   TextField,
   EditButton,
   DisabledInput,
-  LongTextInput,
   ReferenceInput,
   SelectInput,
   SimpleForm,
-  TextInput
+  TextInput,
+  FunctionField
 } from "admin-on-rest";
-import { WithPermission, SwitchPermissions, Permission } from "aor-permissions";
-import authClient from "./feathersAuthClient";
-import { checkUserCanEdit } from "./feathersAuthClient";
+
+import moment from "moment";
 
 export const MemberList = props => (
-  <List {...props} title="County Committee Members" filters={<MemberFilter />}>
+  <List {...props} title={"CC Members"} filters={<MemberFilter />}>
     <Datagrid>
       <TextField source="office_holder" />
       <TextField source="entry_type" />
@@ -44,16 +39,25 @@ const MemberFilter = props => (
   <Filter {...props}>
     <TextInput label="ED" source="electoral_district" />
     <TextInput label="AD" source="assembly_district" />
-    <SelectInput
-      source="county"
-      choices={[
-        { id: "Queens County", name: "Queens" },
-        { id: "Kings County", name: "Brooklyn" },
-        { id: "New York County", name: "Manhattan" },
-        { id: "Bronx County", name: "Bronx" },
-        { id: "Richmond County", name: "Staten Island" }
-      ]}
-    />
+    <ReferenceInput
+      label="County Committee"
+      source="term_id"
+      reference="term"
+    >
+      <SelectInput
+        optionText={
+        <FunctionField
+          label="Terms"
+          render={record =>
+            `${record.committee.county} + ${
+              record.committee.party
+            } ${moment(record.start_date).format("ll")} to ${moment(
+              record.start_date
+            ).format("ll")}`
+          }
+        />}
+      />
+    </ReferenceInput>
   </Filter>
 );
 

@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
 // county-committee-model.js - A mongoose model
 //
 // See http://mongoosejs.com/docs/models.html
 // for more of what you can do here.
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const actionLogSchema = new Schema(
@@ -32,14 +32,11 @@ const actionLogSchema = new Schema(
     },
     toJSON: {
       virtuals: true
-    }
+    },
+    timestamps: true
   }
 );
 
-actionLogSchema.virtual('id').get(function() {
-  return this._id;
-});
-
-const actionLog = mongoose.model('action-log', actionLogSchema);
+const actionLog = mongoose.model("action-log", actionLogSchema);
 
 module.exports = actionLog;

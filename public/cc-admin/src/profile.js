@@ -1,5 +1,5 @@
 // in src/users.js
-import React from 'react';
+import React from "react";
 import {
   Restricted,
   List,
@@ -20,16 +20,16 @@ import {
   SimpleForm,
   TextInput,
   DeleteButton
-} from 'admin-on-rest';
-import { SwitchPermissions, Permission } from 'aor-permissions';
-import authClient from './feathersAuthClient';
-import { checkUserCanEdit } from './feathersAuthClient';
+} from "admin-on-rest";
+import { SwitchPermissions, Permission } from "aor-permissions";
+import authClient from "./feathersAuthClient";
+import { checkUserCanEdit } from "./feathersAuthClient";
 
 export const ProfileList = props => (
   <List
     title="Profile"
     {...props}
-    filter={{ _id: localStorage.getItem('userId') }}
+    filter={{ _id: localStorage.getItem("userId") }}
   >
     <Datagrid>
       <TextField source="id" />

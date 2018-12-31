@@ -15,6 +15,7 @@ The data is stored in a local dockerized mongo and the entire image is backed up
 ### Docker
 
 The app runs via docker but you'll have to install those two applications manually before starting.
+
 * Mongo DB 3.4.4
 * Node 6.10 with NPM
 
@@ -94,9 +95,9 @@ Enter a alphanumeric key for AUTHENTICATION_SECRET. (512 chars recommended for p
 
 8. run
 
-   ```
-   bash ./init-migration.sh
-   ```
+    ```
+    bash ./init-migration.sh
+    ```
 
 This will create a super admin user with
 a un and pw.
@@ -107,16 +108,16 @@ You will not be able to see this again once your terminal session closes.
 
 9. Start your app
 
-   ```
-   npm start
-   ```
+    ```
+    npm start
+    ```
 
 alternatively you could run through PM2 with `./node_modules/.bin/pm2 start`, which is a process manager. For dev you may not want this.
 
 When the app starts for the first time it will run additional imports for the map geometry which will take a little while.
 
 10. Go to your homepage
-   http://localhost
+    http://localhost
 
 11. Try logging into the admin with the sadmin creds you saved before.
     http://localhost/cc-admin/
@@ -175,6 +176,41 @@ https://cloud.digitalocean.com/droplets/45901904/backups?i=af9b24
 
 The SSL cert was generated following this tutorial
 https://code.lengstorf.com/deploy-nodejs-ssl-digitalocean/
+
+## Managing Committee Data
+
+This is still a WIP. There are some things that are automated and some that need manual scripting. It is the aim of this project to automate the flow of data.
+
+### Importing Certified List
+
+From the command line you need to run the following:
+
+```
+ node path/to/your/certified-list.pdf"
+```
+
+If successful, this will import into the "imports" section in the admin. You will be able to approve the list and then it will become.
+
+### Importing Party Call
+
+The party call determines what EDs and positions in those EDs are open for an upcoming election.
+
+```
+node scripts/import-party-call -f "path/to/your/party-call.csv" -c "Kings" -p "Democratic" -e "September 13, 2018" -s "NY"
+```
+
+The CSV format is as follows:
+
+```
+district_key,County Committee
+77001,2
+77002,2
+77003,2
+```
+
+### Creating County Committee
+
+@todo
 
 ## Testing
 

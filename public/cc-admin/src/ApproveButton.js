@@ -1,36 +1,43 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 import { UPDATE, PATCH } from "admin-on-rest";
 import feathersRestClient from "./feathersRestClient";
 import feathersClient from "./feathersClient";
 import FlatButton from "material-ui/FlatButton";
+import { push as pushAction } from "react-router-redux";
 import { showNotification as showNotificationAction } from "admin-on-rest";
 
 const certifiedListApprove = (id, data, basePath) => ({
   type: "APPROVE",
-  payload: { id, data: { ...data, is_approved: true } },
-  meta: { resource: "certified-list", fetch: UPDATE, cancelPrevious: false }
+  payload: { id, data: { ...data, approved: true } },
+  meta: { resource: "term", fetch: UPDATE, cancelPrevious: false }
 });
 
-export class ApproveButton extends Component {
+class ApproveButton extends Component {
   constructor() {
     super();
     this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick() {
-    const { record } = this.props;
-    debugger;
-    feathersRestClient(feathersClient)(PATCH, "certified-list", {
+    const { push, record, showNotification } = this.props;
+    
+    feathersRestClient(feathersClient)(PATCH, "term", {
       id: record.id,
-      data: { isApproved: true },
-      previousData: { isApproved: false }
+      data: { approved: true },
+      previousData: { approved: false }
+    }).then(result=> {
+      showNotification("Members created");
+    }).catch(error => {
+      showNotification(error.message)
     });
   }
 
   render() {
     return (
       <FlatButton
-        label="Approve to Import"
+        label="Convert to Members"
         disabled={this.props.record.isApproved}
         secondary={true}
         onClick={this.handleClick}
@@ -39,4 +46,14 @@ export class ApproveButton extends Component {
   }
 }
 
-export default ApproveButton;
+
+ApproveButton.propTypes = {
+  push: PropTypes.func,
+  record: PropTypes.object,
+  showNotification: PropTypes.func
+};
+
+export default connect(null, {
+  showNotification: showNotificationAction,
+  push: pushAction
+})(ApproveButton);

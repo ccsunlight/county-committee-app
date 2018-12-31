@@ -59,6 +59,25 @@ hbs.registerHelper("dateFormat", require("handlebars-dateformat"));
 
 hbs.registerHelper("paginate", paginate);
 
+/**
+ * Takes a array of Member model objects and maps
+ * them to an array that can be consumed by the table
+ * partial
+ */
+hbs.registerHelper("map_members", function(members) {
+  return members.map(function(member) {
+    return {
+      ad: member.assembly_district,
+      ed: member.electoral_district,
+      office: member.office,
+      entry_type: member.entry_type,
+      office_holder: member.office_holder,
+      petition_number: member.petition_number,
+      entry_type: member.entry_type
+    };
+  });
+});
+
 app.configure(configuration(path.join(__dirname, "..")));
 
 // Load DB settings
@@ -107,10 +126,11 @@ app
          }
        })) */
   .configure(hooks())
-  .use(bodyParser.json())
+  .use(bodyParser.json({ limit: "50mb" })) // Needed for large embedded arrays. @todo optimize requests such that this isn't necessary.
   .use(
     bodyParser.urlencoded({
-      extended: true
+      extended: true,
+      limit: "50mb" // Needed for large embedded arrays. @todo optimize requests such that this isn't necessary.
     })
   )
   //.use(forceSSL)
@@ -186,6 +206,12 @@ app.service(apiPath + "/county-committee-member").hooks({
 });
 
 app.service(apiPath + "/certified-list").hooks({
+  before: {
+    // all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
+  }
+});
+
+app.service(apiPath + "/term").hooks({
   before: {
     // all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
   }

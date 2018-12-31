@@ -6,7 +6,10 @@ const extract = require("pdf-text-extract");
 const CertifiedList = require("./certified-list-model");
 const hooks = require("./hooks");
 const CountyCommitteeMember = require("../county-committee-member/county-committee-member-model");
+const CountyCommittee = require("../county-committee/county-committee-model");
+const Term = require("../term/term-model");
 const FeathersMongoose = require("feathers-mongoose");
+const mongoose = require("mongoose");
 const moment = require("moment");
 
 function ccExtractionException(message) {
@@ -16,10 +19,12 @@ function ccExtractionException(message) {
 
 class Service extends FeathersMongoose.Service {
   extractCountyFromPage(page) {
-    var match = page.match(/IN THE CITY OF NEW YORK\s+(.+), .+Party/);
+    // Matches "Bronx" from "Bronx County"
+    // Matches "New York" from "New York County"
+    var match = page.match(/\b(\w+?\s?\w*)(?= County)\b/i);
 
     if (match) {
-      return match[1];
+      return match[0];
     }
   }
 
@@ -58,6 +63,7 @@ class Service extends FeathersMongoose.Service {
       return match[1];
     }
   }
+
   /**
    * { function_description }
    *
@@ -67,7 +73,7 @@ class Service extends FeathersMongoose.Service {
     var re = /(?=Primary Election held).+?,\s(.+)\b/i;
     var matches = firstPage.match(re);
 
-    if (matches.length === 2) {
+    if (matches && matches.length === 2) {
       return matches[1];
     } else {
       return false;
@@ -192,7 +198,7 @@ class Service extends FeathersMongoose.Service {
     return cc_member;
   }
 
-  getCCMembersFromCertifiedListPDF(filepath) {
+  getCCMembersFromCertifiedListPDF(filepath, committee_id) {
     return new Promise((resolve, reject) => {
       extract(filepath, (err, pages) => {
         if (err) {
@@ -202,6 +208,8 @@ class Service extends FeathersMongoose.Service {
         let electionDate = undefined;
         let members = [];
         let county, party;
+
+        // Goes through each page and creates new members to import
         pages.forEach((page, index) => {
           if (index === 0) {
             electionDate = this.extractElectionDate(page);
@@ -212,6 +220,15 @@ class Service extends FeathersMongoose.Service {
             county = this.extractCountyFromPage(page);
           }
 
+          if (!committee_id) {
+            throw Error("Committee ID required");
+          }
+
+          // @todo remove this
+          // if (!committee_id) {
+          //   committee_id = "5ae69c059404c403ea06f8b1";
+          // }
+
           if (!party) {
             party = this.extractPartyFromPage(page);
           }
@@ -220,7 +237,8 @@ class Service extends FeathersMongoose.Service {
 
           if (extractedMembers) {
             members = members.concat(
-              extractedMembers.map(member => {
+              extractedMembers.map(function(member) {
+                member.committee = committee_id;
                 const ccMember = new CountyCommitteeMember(member);
                 ccMember.party = party;
                 ccMember.data_source = path.basename(filepath);
@@ -236,12 +254,7 @@ class Service extends FeathersMongoose.Service {
           }
         });
 
-        resolve({
-          party: party,
-          county: county,
-          members: members,
-          source: path.basename(filepath)
-        });
+        resolve(members);
       });
     });
   }
@@ -254,9 +267,20 @@ class Service extends FeathersMongoose.Service {
         reject("File does not exist: " + params.filepath);
         return;
       }
-      this.getCCMembersFromCertifiedListPDF(params.filepath).then(
-        certifiedList => {
-          let importedList = new CertifiedList(certifiedList);
+
+      Term.findOne({ _id: params.term_id }).then(term => {
+        if (!term) {
+          throw Error("Term not found. Term ID:", params.term_id);
+        }
+        this.getCCMembersFromCertifiedListPDF(
+          params.filepath,
+          term.committee_id
+        ).then(members => {
+          let importedList = new CertifiedList({
+            term_id: params.term_id,
+            positions: members,
+            source: path.basename(params.filepath)
+          });
           importedList.save(err => {
             if (err) {
               reject(err);
@@ -264,8 +288,8 @@ class Service extends FeathersMongoose.Service {
               resolve(importedList);
             }
           });
-        }
-      );
+        });
+      });
     });
   }
 }
@@ -278,7 +302,8 @@ module.exports = function() {
     paginate: {
       default: 10,
       max: 25
-    }
+    },
+    lean: false
   };
 
   // Initialize our service with any options it requires

@@ -9,6 +9,7 @@ const rp = require("request-promise");
 const countyCommittee = require("../county-committee/county-committee-model");
 const countyCommitteeMember = require("../county-committee-member/county-committee-member-model");
 const partyCall = require("../party-call/party-call-model");
+const Term = require("../term/term-model");
 const edGeometry = require("../edGeometry/edGeometry-model");
 
 const hooks = require("./hooks");
@@ -56,20 +57,52 @@ class Service {
 
   get(address, params = {}) {
     const party = params.party || "Democratic";
+
     const get_address = co(function*(address) {
       const data = yield googleGeocoder.geocode(address);
-      if (!data[0]) throw new Error("Bad address");
+
+      if (data.length === 0) {
+        throw new Error(
+          "Invalid or out of bounds address provided. Non NYC addresses are not yet available."
+        );
+      }
+
       const [lat, long] = [data[0].latitude, data[0].longitude];
       const yourGeomDoc = yield edGeometry.findOne(intersectQuery([lat, long]));
-      if (!yourGeomDoc) throw new Error("Not in NYC");
+
+      if (!yourGeomDoc) {
+        throw new Error(
+          "Invalid or out of bounds address provided. Non NYC addresses are not yet available."
+        );
+      }
 
       const [ad, ed] = [yourGeomDoc.ad, yourGeomDoc.ed];
+
+      // Gets the party committees
+      const partyCommittees = yield countyCommittee.find({ party: party });
+      const partyCommitteeIds = partyCommittees.map(function(committee) {
+        return committee._id;
+      });
+
+      // Gets the current active terms for the user's party
+      const currentTerms = yield Term.find({
+        end_date: { $gt: new Date() },
+        committee_id: { $in: partyCommitteeIds }
+      });
+
+      const currentTermIds = currentTerms.map(function(term) {
+        return term._id;
+      });
+
+      // Gets members who match the ed and ad and are in an active term
       const yourMembers = yield countyCommitteeMember.find({
         assembly_district: ad,
         electoral_district: ed,
-        party: party
+        term_id: { $in: currentTermIds }
       });
+
       let county = "",
+        term,
         partyPositionsToBeFilled;
 
       const memberData = yield bb.map(
@@ -78,21 +111,16 @@ class Service {
           if (!county) {
             county = member.county;
           }
+          if (!term) {
+            term = yield Term.findOne({
+              _id: member.term_id
+            });
+          }
           return {
             office: member.office,
             entry_type: member.entry_type,
             office_holder: member.office_holder,
             petition_number: member.petition_number,
-            term_begins: member.term_begins.toLocaleString("en-US", {
-              year: "2-digit",
-              month: "numeric",
-              day: "numeric"
-            }),
-            term_ends: member.term_ends.toLocaleString("en-US", {
-              year: "2-digit",
-              month: "numeric",
-              day: "numeric"
-            }),
             entry_type: member.entry_type
           };
         })
@@ -123,11 +151,11 @@ class Service {
           partyPositionsToBeFilled = partyPositions.map(function(position) {
             return {
               office: position.office,
-              term_begins: position.term_begins.toLocaleString("en-US", {
-                year: "2-digit",
-                month: "numeric",
-                day: "numeric"
-              }),
+              //   term_begins: position.term_begins.toLocaleString("en-US", {
+              //     year: "2-digit",
+              //     month: "numeric",
+              //     day: "numeric"
+              //   }),
               entry_type: "Petitionable Position"
             };
           });
@@ -143,7 +171,8 @@ class Service {
         county: county,
         members: memberData,
         partyPositionsToBeFilled: partyPositionsToBeFilled || [],
-        party: party
+        party: party,
+        term: term
       };
 
       return result;
