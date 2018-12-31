@@ -1,1 +1,1 @@
-docker run --rm -v "$PWD":/usr/src/app -w /usr/src/app --link=cc-mongo:mongodb -e MONGODB_PORT_27017_TCP_ADDR="172.17.0.2" -p 25:25 -p 587:587 -p 4000:80 -p 465:465 -e "NODE_ENV=production" --name cc-app -it node:6.10.0 bash
+docker run --rm -v "$PWD":/usr/src/app -w /usr/src/app --link=cc-mongo:mongodb -e MONGODB_PORT_27017_TCP_ADDR="172.17.0.2" -p 25:25 -p 587:587 -p 4000:80 -p 465:465 -e "NODE_ENV=production" --name cc-app -it node:8.11.3 bash
