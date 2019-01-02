@@ -11,7 +11,7 @@ const download = require("download");
 //const NodeGeocoder = require('node-geocoder');
 const serveStatic = require("feathers").static;
 const auth = require("feathers-authentication");
-const countyCommittee = require("../services/county-committee/county-committee-model");
+const CountyCommittee = require("../services/county-committee/county-committee-model");
 const partyCall = require("../services/party-call/party-call-model");
 
 const countyCommitteeMember = require("../services/county-committee-member/county-committee-member-model");
@@ -154,12 +154,19 @@ const updateEdDb = co(function*() {
 updateEdDb();
 
 const getCountyCommitteeBreakdown = co(function*(county, party) {
-  // "Counties in db include 'county' in the name
-  const countySearchString = county;
+
+  // Lean not working with "findOne" due to custom hooks
+  // so need to use "find" instead.
+  let countyCommitteeResult = yield CountyCommittee
+    .find({
+      county: county,
+      party: party
+    }, 'current_term_id _id').lean().exec();
+  const countyCommittee = countyCommitteeResult.pop();
+
   let numOfElected = yield countyCommitteeMember
     .find({
-      county: countySearchString,
-      party: party,
+      term_id: countyCommittee.current_term_id,
       entry_type: {
         $in: ["Elected", "Uncontested"]
       }
@@ -169,16 +176,14 @@ const getCountyCommitteeBreakdown = co(function*(county, party) {
   let numOfVacancies = yield countyCommitteeMember
     .find({
       office_holder: "Vacancy",
-      county: countySearchString,
-      party: party
+      term_id: countyCommittee.current_term_id
     })
     .count();
 
   let numOfAppointed = yield countyCommitteeMember
     .find({
       entry_type: "Appointed",
-      county: countySearchString,
-      party: party
+      term_id: countyCommittee.current_term_id
     })
     .count();
 
@@ -471,7 +476,7 @@ router.get(["/news", "/news/:pageNum"], function(req, res, next) {
 });
 
 router.get("/counties/:alias", function(req, res, next) {
-  countyCommittee
+  CountyCommittee
     .findOne({
       alias: new RegExp(req.params.alias, "i")
     })
