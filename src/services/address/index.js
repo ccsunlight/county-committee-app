@@ -125,42 +125,37 @@ class Service {
           };
         })
       );
+      
+      // const partyCallForEd = yield partyCall
+      //   .findOne({
+      //     positions: {
+      //       $elemMatch: {
+      //         assembly_district: ad,
+      //         electoral_district: ed,
+      //         party: party
+      //       }
+      //     },
+      //     isApproved: true
+      //   })
+      //   .exec();
 
-      const partyCallForEd = yield partyCall
-        .findOne({
-          positions: {
-            $elemMatch: {
-              assembly_district: ad,
-              electoral_district: ed,
-              party: party
-            }
-          },
-          isApproved: true
-        })
-        .exec();
+      // if (partyCallForEd) {
+      //   let partyPositions = partyCallForEd.positions.filter(position => {
+      //     return (
+      //       position.assembly_district === ad &&
+      //       position.electoral_district === ed
+      //     );
+      //   });
 
-      if (partyCallForEd) {
-        let partyPositions = partyCallForEd.positions.filter(position => {
-          return (
-            position.assembly_district === ad &&
-            position.electoral_district === ed
-          );
-        });
-
-        if (partyPositions) {
-          partyPositionsToBeFilled = partyPositions.map(function(position) {
-            return {
-              office: position.office,
-              //   term_begins: position.term_begins.toLocaleString("en-US", {
-              //     year: "2-digit",
-              //     month: "numeric",
-              //     day: "numeric"
-              //   }),
-              entry_type: "Petitionable Position"
-            };
-          });
-        }
-      }
+      //   if (partyPositions) {
+      //     partyPositionsToBeFilled = partyPositions.map(function(position) {
+      //       return {
+      //         office: position.office,
+      //         entry_type: "Petitionable Position"
+      //       };
+      //     });
+      //   }
+      // }
 
       let result = {
         address: address,
