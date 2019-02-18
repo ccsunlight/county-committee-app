@@ -1,7 +1,12 @@
 <div class="mdl-card__supporting-text">
-<h3>Join our Hackathon February 25th</h3>
-<p>No coding experience necessary. Coders and non coders are all welcome and needed!</p>
-<div id="eventbrite-widget-container-42642764657"></div>
+<h2 class="splash-text"><a href="https://www.eventbrite.com/e/county-committee-sunlight-project-2nd-annual-hackathon-and-summit-tickets-56085976666" target="_blank">Join our Hackathon/Summit!</a></h2>
+<h4><a href="https://goo.gl/maps/zFq2bQhi1o42" target="_blank">Manny Cantor Center</a>, 11am to 3pm Sunday February 24th, 2019</h4>
+<p>You don't need to know how code to participate. Hacking for all skillsets!</p>
+<!-- Noscript content for added SEO -->
+<noscript><a href="https://www.eventbrite.com/e/county-committee-sunlight-project-2nd-annual-hackathon-and-summit-tickets-56085976666" rel="noopener noreferrer" target="_blank"></noscript>
+<!-- You can customize this button any way you like -->
+<button id="eventbrite-widget-modal-trigger-56085976666" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-button--right">Register for free Now!</button>
+<noscript></a>Register for free Now!</noscript>
 
 <script src="https://www.eventbrite.com/static/widgets/eb_widgets.js"></script>
 
@@ -11,14 +16,11 @@
     };
 
     window.EBWidgets.createWidget({
-        // Required
         widgetType: 'checkout',
-        eventId: '42642764657',
-        iframeContainerId: 'eventbrite-widget-container-42642764657',
-
-        // Optional
-        iframeContainerHeight: 425,  // Widget height in pixels. Defaults to a minimum of 425px if not provided
-        onOrderComplete: exampleCallback  // Method called when an order has successfully completed
+        eventId: '56085976666',
+        modal: true,
+        modalTriggerElementId: 'eventbrite-widget-modal-trigger-56085976666',
+        onOrderComplete: exampleCallback
     });
 </script>
 </div>
