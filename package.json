@@ -31,9 +31,7 @@
     "import-certified-list": "node scripts/import-certified-list",
     "prettier-watch": "onchange '**/*.{js,json,css,md}' -- prettier --write {{changed}}",
     "sync-db": "bash scripts/sync-db-from-prod.sh",
-    "migrate": "bash ./init-migration.sh",
-    "build-admin": "cd public/cc-admin && npm run build"
-
+    "migrate": "bash ./init-migration.sh"
   },
   "nodemonConfig": {
     "ext": "js",

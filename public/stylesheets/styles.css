@@ -288,6 +288,7 @@ h4 {
   display: inline-block;
   text-align: center;
   line-height: 40px;
+  text-transform: uppercase;
 }
 
 .announcement_bar a {
