@@ -16,6 +16,7 @@ const socketio = require("feathers-socketio");
 const memory = require("feathers-memory");
 const local = require("feathers-authentication-local");
 const jwt = require("feathers-authentication-jwt");
+const GitHubStrategy = require("passport-github").Strategy;
 const auth = require("feathers-authentication");
 const errors = require("feathers-errors");
 const swagger = require("feathers-swagger");
@@ -27,6 +28,7 @@ const middleware = require("./middleware");
 const services = require("./services");
 const routes = require("./routes");
 const hbs = require("hbs");
+// const apiKey = require("./services/authentication/api-strategy");
 
 const paginate = require("handlebars-paginate");
 const app = feathers();
@@ -112,10 +114,22 @@ const localConfig = {
 
 //console.log('https://' + app.get('host'));
 //
-
 app
   .use(compress())
   .configure(rest())
+  .configure(
+    swagger({
+      idType: "string",
+      docsPath: apiPath + "/docs",
+      uiIndex: true,
+      schemes: ["https"],
+      info: {
+        title: "CC Sunlight API",
+        description:
+          "Endpoints for main entities. Some endpoints require auth. Most non write operations do not. These endpoints are not yet stable. Please use for dev purposes only."
+      }
+    })
+  )
   /* .configure(acl(aclConfig, {
          denyNotAllowed: false,             // deny all routes without "allow" rules 
          adminRoles: ['admin'],  // need for owner rule 
@@ -143,6 +157,15 @@ app
   )
   .configure(local(localConfig))
   .configure(jwt(localConfig))
+  // .configure(
+  //   apiKey({
+  //     // which header to look at
+  //     header: "x-api-key",
+  //     paramName: "apiKey",
+  //     // which keys are allowed
+  //     allowedKeys: ["opensesame"]
+  //   })
+  // )
   .options("*", cors())
   .use(cors())
   // Maps react diretory to be served from app.
@@ -151,27 +174,12 @@ app
     serveStatic(app.get("public") + "/cc-admin/build/static")
   )
   .use("/cc-admin", serveStatic(app.get("public") + "/cc-admin/build"))
-  .configure(
-    swagger({
-      docsPath: apiPath + "/docs",
-      uiIndex: true,
-      info: {
-        title: "CC Sunlight API",
-        description:
-          "Endpoints for main entities. Some endpoints require auth. Most non write operations do not. These endpoints are not yet stable. Please use for dev purposes only."
-      }
-    })
-  )
   .configure(services)
+
   .use(routes)
   .use("/", serveStatic(app.get("public")))
   .configure(middleware)
   .configure(local(localConfig));
-
-//.configure(jwt());
-//.configure(auth({ secret: 'super secret'}));
-//.configure(auth());
-//.configure(auth());
 
 app.service(apiPath + "/authentication").hooks({
   before: {
@@ -185,10 +193,7 @@ app.service(apiPath + "/authentication").hooks({
 
 app.service(apiPath + "/authentication").hooks({
   after: {
-    create: [
-      // You can chain multiple strategies
-      globalHooks.logAction
-    ],
+    create: [globalHooks.logAction],
     remove: [globalHooks.logAction]
   }
 });
@@ -207,6 +212,7 @@ app.service(apiPath + "/county-committee-member").hooks({
 
 app.service(apiPath + "/certified-list").hooks({
   before: {
+    all: []
     // all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
   }
 });
