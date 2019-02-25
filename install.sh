@@ -1,5 +1,7 @@
 
 # Installs pdf util dependancy
+cp .env_example .env
+
 npm run install-pdf-lib;
 
 npm install;
@@ -10,4 +12,6 @@ npm run migrate;
 # Creates the admin react scripts
 npm run build-admin;
 
-echo "App installed"
+echo "CC App installed."
+
+echo "Run 'npm start' to spinup dev server."
