@@ -80,24 +80,9 @@ npm run install-app
 
 This will install the node dependancies. It's important the this is done inside the running app container otherwise there may be errors with bcrypt. (see troubleshooting below)
 
-6. If you have proprietary DB setup info update the ".env" file to your settings. Otherwise the DB vars can be left as is for dev, however, **it is strongly discouraged to leave for production use as this DB would have no PW.** You'll need a GMAIL account, and is suggested you get a new one for this project.
+You will be prompted to record the superadmin login and pw. *You will not be given another opportunity to see this so make sure you write it down.*
 
-```
-sed -i.bak s/AUTHENTICATION_SECRET\"\"/AUTHENTICATION_SECRET=\"SOMEKEY\"/g .env
-sed -i.bak s/GMAIL_UN=\"\"/GMAIL_UN=\"<SomeUsername>@gmail\.com\"/g .env
-sed -i.bak s/GMAIL_PW=\"\"/GMAIL_PW=\"<SomePassord>\"/g .env
-```
-
-Enter a alphanumeric key for AUTHENTICATION_SECRET. (512 chars recommended for production).
-
-This will create a super admin user with
-a un and pw.
-
-**It will output this in the console. Make sure you copy and save this to a secure location.**
-
-You will not be able to see this again once your terminal session closes.
-
-7. Start your app
+6. Start your app
 
    ```
    npm start
@@ -107,13 +92,24 @@ alternatively you could run through PM2 with `./node_modules/.bin/pm2 start`, wh
 
 When the app starts for the first time it will run additional imports for the map geometry which will take a little while.
 
-8. Go to your homepage
+7. Go to your homepage
     http://localhost
 
-9. Try logging into the admin with the sadmin creds you saved before.
+8. Try logging into the admin with the sadmin creds you saved before.
     http://localhost/cc-admin/
 
-10. Report any bugs in the issues section of the repo.
+9. Report any bugs in the issues section of the repo.
+
+
+
+### Further notes
+
+If you have proprietary DB setup info update the ".env" file to your settings. Otherwise the DB vars can be left as is for dev, however, **it is strongly discouraged to leave for production use as this DB would have no PW!** 
+
+For email sending (reset pw account activation) you'll need a GMAIL account, and is suggested you get a new one for this project.
+
+Enter a alphanumeric key for AUTHENTICATION_SECRET. (512 chars recommended for production).
+
 
 ## Deploying
 
