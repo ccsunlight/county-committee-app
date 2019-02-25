@@ -49,9 +49,12 @@ The app will automatically install these itself if you have docker installed.
 
 Getting up and running is as easy as 1, 2, 3...10
 
-1. git clone [repo link] /your/app/path
+1. ``` git clone [repo link] /your/app/path ```
 
-2. cd /your/app/path
+1. You'll need to make a data directory if you don't already have one on your host machine
+``` sudo mkdir -p /data/db ```
+
+2. ``` cd /your/app/path ```
 
 3. Spin up docker containers:
 
@@ -69,13 +72,7 @@ This will create three docker containers, one with mongo, the other with node an
 root@121fsfsw:/usr/src/app
 ```
 
-5. Copy the ".env_example" to a new file named ".env" in the root of your app dir (/usr/src/app). This will be where your keys and pws will go for the app.
-
-```
-cp .env_example .env
-```
-
-6. Run
+5. Run
 
 ```
 npm run install-app
@@ -83,7 +80,7 @@ npm run install-app
 
 This will install the node dependancies. It's important the this is done inside the running app container otherwise there may be errors with bcrypt. (see troubleshooting below)
 
-7. If you have proprietary DB setup info update the ".env" file to your settings. Otherwise the DB vars can be left as is for dev, however, **it is strongly discouraged to leave for production use as this DB would have no PW.** You'll need a GMAIL account, and is suggested you get a new one for this project.
+6. If you have proprietary DB setup info update the ".env" file to your settings. Otherwise the DB vars can be left as is for dev, however, **it is strongly discouraged to leave for production use as this DB would have no PW.** You'll need a GMAIL account, and is suggested you get a new one for this project.
 
 ```
 sed -i.bak s/AUTHENTICATION_SECRET\"\"/AUTHENTICATION_SECRET=\"SOMEKEY\"/g .env
@@ -100,7 +97,7 @@ a un and pw.
 
 You will not be able to see this again once your terminal session closes.
 
-9. Start your app
+7. Start your app
 
    ```
    npm start
@@ -110,13 +107,13 @@ alternatively you could run through PM2 with `./node_modules/.bin/pm2 start`, wh
 
 When the app starts for the first time it will run additional imports for the map geometry which will take a little while.
 
-10. Go to your homepage
+8. Go to your homepage
     http://localhost
 
-11. Try logging into the admin with the sadmin creds you saved before.
+9. Try logging into the admin with the sadmin creds you saved before.
     http://localhost/cc-admin/
 
-12. Report any bugs in the issues section of the repo.
+10. Report any bugs in the issues section of the repo.
 
 ## Deploying
 
