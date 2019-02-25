@@ -24,8 +24,11 @@ const Address = require("../services/address");
 const NodeCache = require("node-cache");
 
 const cache = new NodeCache({ stdTTL: 604800 });
-// Prevents crawlers from cralwer not on production
 
+const turf = require("turf");
+const unkinkPolygon = require("@turf/unkink-polygon");
+
+// Prevents crawlers from cralwer not on production
 router.use("/robots.txt", function(req, res) {
   res.type("text/plain");
 
@@ -129,17 +132,35 @@ const updateEdDb = co(function*() {
 
     const data = yield fs.readFileAsync(saveTo);
     const parsed = yield bb.map(JSON.parse(data).features, x => {
-      return {
-        ad: Number(x.properties.elect_dist.slice(0, 2)),
-        ed: Number(x.properties.elect_dist.slice(2)),
-        geometry: {
-          type: "MultiPolygon",
-          coordinates: x.geometry.coordinates
-        }
-      };
-    });
+      try {
+        var poly = turf.multiPolygon(x.geometry.coordinates);
+        var unkinkedPolygon = unkinkPolygon(poly);
 
-    yield edGeometry.insertMany(parsed);
+        return {
+          ad: Number(x.properties.elect_dist.slice(0, 2)),
+          ed: Number(x.properties.elect_dist.slice(2)),
+          geometry: {
+            type: "MultiPolygon",
+            coordinates: x.geometry.coordinates
+          }
+        };
+      } catch (e) {
+        console.log(e);
+
+        return {
+          ad: Number(x.properties.elect_dist.slice(0, 2)),
+          ed: Number(x.properties.elect_dist.slice(2)),
+          geometry: {
+            type: "MultiPolygon",
+            coordinates: x.geometry.coordinates
+          },
+          kinked: true
+        };
+      }
+    });
+    const parsedRemovedKinked = parsed.filter(poly => !poly.kinked);
+
+    yield edGeometry.insertMany(parsedRemovedKinked);
     yield edGeometry.deleteMany({
       createdAt: {
         $lt: expireTime
@@ -154,14 +175,17 @@ const updateEdDb = co(function*() {
 updateEdDb();
 
 const getCountyCommitteeBreakdown = co(function*(county, party) {
-
   // Lean not working with "findOne" due to custom hooks
   // so need to use "find" instead.
-  let countyCommitteeResult = yield CountyCommittee
-    .find({
+  let countyCommitteeResult = yield CountyCommittee.find(
+    {
       county: county,
       party: party
-    }, 'current_term_id _id').lean().exec();
+    },
+    "current_term_id _id"
+  )
+    .lean()
+    .exec();
   const countyCommittee = countyCommitteeResult.pop();
 
   let numOfElected = yield countyCommitteeMember
@@ -398,7 +422,7 @@ router.get("/get_address", function(req, res, next) {
               address: req.query.address,
               error: "No data for this district."
             };
-            
+
             res.render("get_address", locals);
           }
         })
@@ -476,22 +500,20 @@ router.get(["/news", "/news/:pageNum"], function(req, res, next) {
 });
 
 router.get("/counties/:alias", function(req, res, next) {
-  CountyCommittee
-    .findOne({
-      alias: new RegExp(req.params.alias, "i")
-    })
-    .then(function(county_committee) {
-      if (county_committee) {
-        res.render("county-committee-page", {
-          county: county_committee.county,
-          party: county_committee.party,
-          chairman: county_committee.chairman,
-          county_committee: county_committee
-        });
-      } else {
-        next();
-      }
-    });
+  CountyCommittee.findOne({
+    alias: new RegExp(req.params.alias, "i")
+  }).then(function(county_committee) {
+    if (county_committee) {
+      res.render("county-committee-page", {
+        county: county_committee.county,
+        party: county_committee.party,
+        chairman: county_committee.chairman,
+        county_committee: county_committee
+      });
+    } else {
+      next();
+    }
+  });
 });
 
 /* GET home page. */
