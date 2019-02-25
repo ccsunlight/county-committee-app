@@ -3,8 +3,6 @@
 cp .env_example .env
 
 # Installs pdf util dependancy
-cp .env_example .env
-
 npm run install-pdf-lib;
 
 npm install;
