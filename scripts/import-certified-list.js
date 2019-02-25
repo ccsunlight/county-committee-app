@@ -2,10 +2,9 @@ const app = require("../src/app");
 
 let filepath = process.argv[2];
 
-
 const CertifiedList = app.service(app.get("apiPath") + "/certified-list");
 
-console.log('filepath', filepath);
+console.log("filepath", filepath);
 
 CertifiedList.create({ filepath: filepath })
   .then(certifiedList => {
