@@ -1,4 +1,7 @@
 
+# Creating env file
+cp .env_example .env
+
 # Installs pdf util dependancy
 cp .env_example .env
 

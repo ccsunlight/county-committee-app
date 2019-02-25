@@ -19,19 +19,18 @@
   },
   "scripts": {
     "install-app": "bash ./install.sh",
-    "install-pdf-lib": "apt-get -y update && apt-get -y install poppler-utils",
     "dev": "nodemon  --inspect=0.0.0.0 -e js,json,hbs src/",
     "start": "node --inspect=0.0.0.0 src/",
     "build-admin": "cd public/cc-admin && npm install --no-bin-links && npm install -g -Y react-scripts  && npm run build",
+    "migrate": "bash ./init-migration.sh",
+    "install-pdf-lib": "apt-get -y update && apt-get -y install poppler-utils",
     "cert": "node cert/gene rate-cert.js",
     "test:watch": "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/**/*.test.js'",
     "test": "mocha  --inspect=0.0.0.0 --recursive --exit --bail test/services/**/*.test.js",
     "precommit": "lint-staged",
     "format": "prettier",
     "jshint": "jshint src/. test/. --config",
-    "prettier-watch": "onchange '**/*.{js,json,css,md}' -- prettier --write {{changed}}",
-    "sync-db": "bash scripts/sync-db-from-prod.sh",
-    "migrate": "bash ./init-migration.sh"
+    "prettier-watch": "onchange '**/*.{js,json,css,md}' -- prettier --write {{changed}}"
   },
   "nodemonConfig": {
     "ext": "js",
