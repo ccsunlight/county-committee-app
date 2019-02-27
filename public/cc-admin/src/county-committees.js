@@ -104,6 +104,16 @@ export const CountyCommitteeEdit = props => (
               }
             />
       </ReferenceInput>
+      <ReferenceInput label="Upcoming Term"  source="upcoming_term_id" reference="term" filter={{ committee_id: props.match.params.id }} >
+        <SelectInput
+              optionText={
+                <FunctionField
+                  label="Name"
+                  render={record => `${formatDate(new Date(record.start_date))} — ${formatDate(new Date(record.end_date))} (${record.id})`}
+                />
+              }
+            />
+      </ReferenceInput>
       <ReferenceManyField
         perPage={5}
         label="Terms"
