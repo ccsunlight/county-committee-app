@@ -416,6 +416,8 @@ router.get("/get_address", function(req, res, next) {
             data.cleanedAllGeomDocsInAd = JSON.stringify(
               cleanedAllGeomDocsInAd
             );
+              
+
             res.render("get_address", data);
           } else {
             const locals = {
