@@ -18,20 +18,19 @@
     "node": ">= 6.10.2"
   },
   "scripts": {
-    "install-deps": "apt-get -y update && apt-get -y install poppler-utils",
+    "install-app": "bash ./install.sh",
     "dev": "nodemon  --inspect=0.0.0.0 -e js,json,hbs src/",
     "start": "node --inspect=0.0.0.0 src/",
-    "build-admin": "cd public/cc-admin && npm run build",
+    "build-admin": "cd public/cc-admin && npm install --no-bin-links && npm install -g -Y react-scripts  && npm run build",
+    "migrate": "bash ./init-migration.sh",
+    "install-pdf-lib": "apt-get -y update && apt-get -y install poppler-utils",
     "cert": "node cert/gene rate-cert.js",
     "test:watch": "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/**/*.test.js'",
     "test": "mocha  --inspect=0.0.0.0 --recursive --exit --bail test/services/**/*.test.js",
     "precommit": "lint-staged",
     "format": "prettier",
     "jshint": "jshint src/. test/. --config",
-    "import-certified-list": "node scripts/import-certified-list",
-    "prettier-watch": "onchange '**/*.{js,json,css,md}' -- prettier --write {{changed}}",
-    "sync-db": "bash scripts/sync-db-from-prod.sh",
-    "migrate": "bash ./init-migration.sh"
+    "prettier-watch": "onchange '**/*.{js,json,css,md}' -- prettier --write {{changed}}"
   },
   "nodemonConfig": {
     "ext": "js",
@@ -46,9 +45,16 @@
       "git add"
     ]
   },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
   "dependencies": {
     "@feathers-plus/cache": "^1.4.0",
     "@feathersjs/authentication-oauth2": "^1.0.3",
+    "@turf/unkink-polygon": "^5.1.5",
     "admin-lte-express": "^1.4.2",
     "aor-permissions": "^1.0.2",
     "async": "^2.6.1",
@@ -120,6 +126,7 @@
     "serve-favicon": "^2.4.2",
     "slugify": "^1.2.6",
     "smtp-server": "^3.0.1",
+    "turf": "^3.0.14",
     "underscore": "^1.9.0",
     "winston": "^2.4.0",
     "winston-mongodb": "^3.0.1",

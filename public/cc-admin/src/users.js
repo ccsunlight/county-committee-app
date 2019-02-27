@@ -1,5 +1,5 @@
 // in src/users.js
-import React from 'react';
+import React from "react";
 import {
   Restricted,
   List,
@@ -20,10 +20,10 @@ import {
   SimpleForm,
   TextInput,
   DeleteButton
-} from 'admin-on-rest';
-import { SwitchPermissions, Permission } from 'aor-permissions';
-import authClient from './feathersAuthClient';
-import { checkUserCanEdit } from './feathersAuthClient';
+} from "admin-on-rest";
+import { SwitchPermissions, Permission } from "aor-permissions";
+import authClient from "./feathersAuthClient";
+import { checkUserCanEdit } from "./feathersAuthClient";
 
 export const UserList = props => (
   <SwitchPermissions authClient={authClient} {...props}>
@@ -53,9 +53,9 @@ export const UserEdit = props => (
       <SelectInput
         source="role"
         choices={[
-          { id: 'admin', name: 'Admin' },
-          { id: 'user', name: 'User' },
-          { id: 'visitor', name: 'Visitor' }
+          { id: "admin", name: "Admin" },
+          { id: "user", name: "User" },
+          { id: "visitor", name: "Visitor" }
         ]}
       />
       <TextInput

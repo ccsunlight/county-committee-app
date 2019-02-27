@@ -16,23 +16,27 @@ const apiPath = app.get("apiPath");
 exports.up = function up(done) {
   console.log("Removing word 'County' from cc member county field");
   const members = CountyCommitteeMemberModel.find({}).then(members => {
-    members.forEach(async function(member, index) {
-      if (member.county) {
-        member.county = member.county.replace(" County", "");
+    if (!members || members.length === 0) {
+      done();
+    } else {
+      members.forEach(async function(member, index) {
+        if (member.county) {
+          member.county = member.county.replace(" County", "");
 
-        const err = await member.save();
+          const err = await member.save();
 
-        if (err) {
-          console.error(err);
-        } else {
-          console.log("Updated: ", member.id, member.county);
+          if (err) {
+            console.error(err);
+          } else {
+            console.log("Updated: ", member.id, member.county);
+          }
+
+          if (index === members.length - 1) {
+            done();
+          }
         }
-
-        if (index === members.length - 1) {
-          done();
-        }
-      }
-    });
+      });
+    }
   });
 };
 

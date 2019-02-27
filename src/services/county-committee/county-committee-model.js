@@ -40,6 +40,10 @@ const countyCommitteeSchema = new Schema(
       type: "ObjectId",
       ref: "term"
     },
+    upcoming_term_id: {
+      type: "ObjectId",
+      ref: "term"
+    },
     url: {
       type: String
     },
@@ -162,11 +166,20 @@ countyCommitteeSchema.virtual("current_term", {
   justOne: true
 });
 
+
+countyCommitteeSchema.virtual("upcoming_term", {
+  ref: "term",
+  localField: "upcoming_term_id",
+  foreignField: "_id",
+  justOne: true
+});
+
 countyCommitteeSchema.pre("findOne", function() {
   this.populate("party_call"); // @deprecated
   this.populate("terms");
   this.populate("members");
   this.populate("current_term");
+  this.populate("upcoming_term");
 });
 
 // @todo

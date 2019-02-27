@@ -74,6 +74,7 @@ const termMigrationMap = [
  * Make any changes you need to make to the database here
  */
 exports.up = function up(done) {
+  console.log("Migration: Updating committees with terms...");
   termMigrationMap.forEach(function(termMigration, index) {
     CountyCommitteeModel.findOne(
       { county: termMigration.county, party: termMigration.party },
@@ -96,20 +97,24 @@ exports.up = function up(done) {
         const members = await CountyCommitteeMemberModel.find({
           committee: committee._id
         });
+        if (!members || members.length === 0) {
+          console.log("No members to migrate found.");
+          done();
+        } else {
+          // Assigns members to term
+          members.forEach(async function(member, x) {
+            member.term_id = term._id;
+            await member.save();
 
-        // Assigns members to term
-        members.forEach(async function(member, x) {
-          member.term_id = term._id;
-          await member.save();
-
-          if (
-            x === members.length - 1 &&
-            index === termMigrationMap.length - 1
-          ) {
-            console.log("Migration complete");
-            done();
-          }
-        });
+            if (
+              x === members.length - 1 &&
+              index === termMigrationMap.length - 1
+            ) {
+              console.log("Migration complete");
+              done();
+            }
+          });
+        }
       }
     );
   });
