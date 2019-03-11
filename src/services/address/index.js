@@ -78,20 +78,18 @@ class Service {
 
       const [ad, ed] = [yourGeomDoc.ad, yourGeomDoc.ed];
 
-      // Gets the party committees
+      // Get the party committees for the specfied party
       const partyCommittees = yield countyCommittee.find({ party: party });
       const partyCommitteeIds = partyCommittees.map(function(committee) {
         return committee._id;
       });
 
 
-      // Gets the current active terms for the user's party
+      // Get the current active terms for the user's party
       const currentTerms = yield Term.find({
         end_date: { $gt: new Date() },
         committee_id: { $in: partyCommitteeIds }
       });
-
-      
 
       const currentTermIds = currentTerms.map(function(term) {
         return term._id;
@@ -129,12 +127,9 @@ class Service {
         })
       );
 
-      
-
       const upcomingTermIds = partyCommittees.map(partyCommittee=> {
         return partyCommittee.upcoming_term_id;
-      })
-
+      });
       
       if (upcomingTermIds.length) {
       const partyCallForEd = yield partyCall
