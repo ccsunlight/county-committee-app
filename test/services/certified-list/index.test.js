@@ -3,7 +3,8 @@
 const assert = require("assert");
 const app = require("../../../src/app");
 const certified_list_path = "/usr/src/app/test/mocks/CertifiedList.mock.pdf";
-const kings_certified_list_path = "/usr/src/app/test/mocks/KG_CCDEMLIST_100918.pdf";
+const kings_certified_list_path =
+  "/usr/src/app/test/mocks/KG_CCDEMLIST_100918.pdf";
 
 const base64 = require("base64topdf");
 const TermModel = require("../../../src/services/term/term-model");
@@ -100,7 +101,6 @@ describe("Certified List service", function() {
     });
   });
 
-
   it("can import a certified list PDF from Kings County", done => {
     let filepath = kings_certified_list_path;
     const CertifiedListService = app.service(
@@ -112,7 +112,6 @@ describe("Certified List service", function() {
         assert.equal(certifiedList.term_id, mock_term._id);
         assert.equal(certifiedList.source, "KG_CCDEMLIST_100918.pdf");
         assert(Array.isArray(certifiedList.positions));
-        debugger;
         assert.equal(certifiedList.positions.pop().party, "Democratic");
         assert.equal(certifiedList.positions.pop().county, "Kings");
         certifiedList.remove();
@@ -124,7 +123,6 @@ describe("Certified List service", function() {
         done();
       });
   });
-  
 
   it("can import a certified list PDF", done => {
     let filepath = certified_list_path;
