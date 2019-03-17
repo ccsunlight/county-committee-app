@@ -12,11 +12,13 @@ const countyCommitteeArchive = require("./county-committee-archive");
 const actionLog = require("./action-log");
 const glossaryTerm = require("./glossary-term");
 const newsLink = require("./news-link");
-const authentication = require('./authentication');
+const authentication = require("./authentication");
 const user = require("./user");
 const page = require("./page");
 const address = require("./address");
 const term = require("./term");
+const enrollment = require("./enrollment");
+
 const mongoose = require("mongoose");
 
 // Mongoose promise lib is deprecated.

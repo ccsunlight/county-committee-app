@@ -86,7 +86,7 @@ export const TermEdit = props => {
           </Datagrid>
         </ReferenceManyField>
 
-        <ApproveButton/>
+        <ApproveButton />
 
         <ReferenceManyField
           label="Party Call"
@@ -99,7 +99,6 @@ export const TermEdit = props => {
             <EditButton />
           </Datagrid>
         </ReferenceManyField>
-
 
         <ReferenceManyField
           label="CC Members"
