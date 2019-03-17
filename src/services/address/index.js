@@ -86,10 +86,13 @@ class Service {
 
 
       // Get the current active terms for the user's party
+
       const currentTerms = yield Term.find({
         end_date: { $gt: new Date() },
         committee_id: { $in: partyCommitteeIds }
       });
+
+      
 
       const currentTermIds = currentTerms.map(function(term) {
         return term._id;
@@ -127,9 +130,12 @@ class Service {
         })
       );
 
+
+
       const upcomingTermIds = partyCommittees.map(partyCommittee=> {
         return partyCommittee.upcoming_term_id;
-      });
+      })
+
       
       if (upcomingTermIds.length) {
       const partyCallForEd = yield partyCall
