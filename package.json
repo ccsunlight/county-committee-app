@@ -4,9 +4,7 @@
   "version": "2.0.0",
   "homepage": "https://ccsunlight.org",
   "main": "src/",
-  "keywords": [
-    "feathers"
-  ],
+  "keywords": ["feathers"],
   "license": "MIT",
   "repository": {},
   "author": {
@@ -21,16 +19,20 @@
     "install-app": "bash ./install.sh",
     "dev": "nodemon  --inspect=0.0.0.0 -e js,json,hbs src/",
     "start": "node --inspect=0.0.0.0 src/",
-    "build-admin": "cd public/cc-admin && npm install --no-bin-links && npm install -g -Y react-scripts  && npm run build",
+    "build-admin":
+      "cd public/cc-admin && npm install --no-bin-links && npm install -g -Y react-scripts  && npm run build",
     "migrate": "bash ./init-migration.sh",
     "install-pdf-lib": "apt-get -y update && apt-get -y install poppler-utils",
     "cert": "node cert/gene rate-cert.js",
-    "test:watch": "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/**/*.test.js'",
-    "test": "mocha  --inspect=0.0.0.0 --recursive --exit --bail test/services/**/*.test.js",
+    "test:watch":
+      "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/**/*.test.js'",
+    "test":
+      "mocha  --inspect=0.0.0.0 --recursive --exit --bail test/services/**/*.test.js",
     "precommit": "lint-staged",
     "format": "prettier",
     "jshint": "jshint src/. test/. --config",
-    "prettier-watch": "onchange '**/*.{js,json,css,md}' -- prettier --write {{changed}}"
+    "prettier-watch":
+      "onchange '**/*.{js,json,css,md}' -- prettier --write {{changed}}"
   },
   "nodemonConfig": {
     "ext": "js",
@@ -40,17 +42,9 @@
     }
   },
   "lint-staged": {
-    "*.{js,json,css,md}": [
-      "prettier --write",
-      "git add"
-    ]
+    "*.{js,json,css,md}": ["prettier --write", "git add"]
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
+  "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"],
   "dependencies": {
     "@feathers-plus/cache": "^1.4.0",
     "@feathersjs/authentication-oauth2": "^1.0.3",
