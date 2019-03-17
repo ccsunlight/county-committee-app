@@ -93,7 +93,7 @@
     "js-beautify": "^1.7.5",
     "json2csv": "^3.11.0",
     "lint-staged": "^7.0.1",
-    "metascraper": "^1.0.7",
+    "metascraper": "^4.10.1",
     "migrate-mongoose": "^3.2.2",
     "moment": "^2.22.2",
     "mongoose": "^4.9.1",
