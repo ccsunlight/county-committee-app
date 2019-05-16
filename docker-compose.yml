@@ -2,25 +2,35 @@ version: '3' # version of docker-compose to use
 
 services: # configuring each container
   cc-app:
-    build: .
+    image: node:8.11.3
+    #docker run --rm -v "$PWD":/usr/src/app -w /usr/src/app --link=cc-mongo:mongodb -e MONGODB_PORT_27017_TCP_ADDR="172.17.0.2" -p 25:25 -p 587:587 -p 4000:80 -p 465:465 -e "NODE_ENV=production" -d --name cc-app node:8.11.3 sh -c "cd public/cc-admin ; npm install ; npm run build ; cd ../.. ; npm install ; npm run install-deps; npm run migrate; ./node_modules/.bin/pm2 start src --name=app --no-daemon" 
     #command: /usr/src/app/node_modules/.bin/pm2 start src --name=app --no-daemon
-    command: npm run dev
+    command: 
+      - sh 
+      - ./spinup.sh
+    working_dir: /usr/src/app
+    volumes: 
+      - "./:/usr/src/app"
     links:
-      - mongo
+      - cc-mongo:mongodb
     ports:
-      - "8000:80"
-      - "8587:587"
-      - "8465:465" 
+      - "25:25"
+      - "587:587"
+      - "80:80"
+      - "465:465"
     environment:
-      NODE_ENV: 'local'
+      NODE_ENV: "local"
+      MONGODB_PORT_27017_TCP_ADDR: "172.17.0.2"
       MONGODB_URL: "mongodb://mongo:27017/ccsunlight"
 
     depends_on:
-      - mongo
-  mongo: # name of our mysql container
-    image: mongo:latest # which image to pull, in this case latest
+      - cc-mongo
+  cc-mongo: 
+    image: mongo:3.6 # which image to pull, in this case latest
     ports:
       - "27017:27017"
-    command: "mongod --port 27017 --smallfiles --bind_ip_all"
     volumes: # data to map to the container
-      - './data:/data/db'
+      - "cc-db-test-data:/data/db"
+
+volumes:
+  cc-db-test-data:
