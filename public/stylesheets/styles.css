@@ -499,9 +499,15 @@ img {
   display: none;
 }
 
-.petition-cta {
-  text-align: right;
-  margin: 20px;
+.detail-buttons {
+  display: inline-block;
+  width: 100%;
+  text-align: left;
+  margin: 20px 0;
+}
+.detail-buttons .mdl-button {
+  margin: 10px 20px;
+  display: inline-block;
 }
 
 /* Smartphones (landscape) ----------- */
