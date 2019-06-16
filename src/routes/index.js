@@ -122,8 +122,14 @@ const updateEdDb = co(function*() {
 
     // If there is no expired documents, don't update.
     if (!firstExpriedEdGeometryDoc) { 
-      console.log('No expired edgeometries found, exiting.')
-      return;
+
+      const anyEdGeomtryDoc = yield edGeometry.findOne({});
+
+      // If there are no ed geometry docs in the DB, proceed.
+      if (anyEdGeomtryDoc) {
+        console.log('No expired edgeometries found, exiting.')
+        return;
+      }
     }
 
     const saveTo = "downloads/Election_Districts.geojson";
