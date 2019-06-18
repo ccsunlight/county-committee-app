@@ -6,7 +6,7 @@ services: # configuring each container
     #docker run --rm -v "$PWD":/usr/src/app -w /usr/src/app --link=cc-mongo:mongodb -e MONGODB_PORT_27017_TCP_ADDR="172.17.0.2" -p 25:25 -p 587:587 -p 4000:80 -p 465:465 -e "NODE_ENV=production" -d --name cc-app node:8.11.3 sh -c "cd public/cc-admin ; npm install ; npm run build ; cd ../.. ; npm install ; npm run install-deps; npm run migrate; ./node_modules/.bin/pm2 start src --name=app --no-daemon" 
     #command: /usr/src/app/node_modules/.bin/pm2 start src --name=app --no-daemon
     command: 
-      - sh 
+      - bash 
       - ./spinup.sh
     working_dir: /usr/src/app
     volumes: 
@@ -18,11 +18,6 @@ services: # configuring each container
       - "587:587"
       - "80:80"
       - "465:465"
-    environment:
-      NODE_ENV: "local"
-      MONGODB_PORT_27017_TCP_ADDR: "172.17.0.2"
-      MONGODB_URL: "mongodb://mongo:27017/ccsunlight"
-
     depends_on:
       - cc-mongo
   cc-mongo: 
