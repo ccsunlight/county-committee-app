@@ -1,1 +1,1 @@
-docker exec -it cc-app bash
+docker-compose run --service-ports cc-app bash

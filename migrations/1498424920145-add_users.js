@@ -53,18 +53,19 @@ exports.up = function up(done) {
 
               console.log("\n\n#########################");
 
-              rl.question(
-                "Please write this down somewhere and hit enter to contiune. ",
-                answer => {
-                  // TODO: Log the answer in a database
-                  console.log(
-                    `Thank you for your valuable feedback: ${answer}`
-                  );
+              // rl.question(
+              //   "Please write this down somewhere and hit enter to contiune. ",
+              //   answer => {
+              //     // TODO: Log the answer in a database
+              //     console.log(
+              //       `Thank you for your valuable feedback: ${answer}`
+              //     );
 
-                  rl.close();
-                  done();
-                }
-              );
+              //     rl.close();
+              //     done();
+              //   }
+              // );
+              done();
             })
             .catch(console.error);
         } else {
