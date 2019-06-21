@@ -18,6 +18,7 @@ const page = require("./page");
 const address = require("./address");
 const term = require("./term");
 const enrollment = require("./enrollment");
+const appointedList = require("./appointed-list");
 
 const mongoose = require("mongoose");
 
@@ -51,6 +52,7 @@ module.exports = function() {
   app.configure(partyCall);
   app.configure(term);
   app.configure(utils);
+  app.configure(appointedList);
 
   address.docs = {
     description: "A service to send and receive messages",
