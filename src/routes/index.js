@@ -109,14 +109,29 @@ router.get('/invite/confirm/:confirm_code',auth.express.authenticate('local', { 
 // we need to update the db if there's nothing in it or if it's been more than a week
 const updateEdDb = co(function*() {
   try {
-    const oneDay = 1000 * 60 * 60 * 24;
-    const oneWeek = oneDay * 7;
-    setTimeout(updateEdDb, oneDay);
+    const oneDayMS = 1000 * 60 * 60 * 24;
+    const oneWeekMS = oneDayMS * 7;
+
+    const expireTimeMS = Date.now() - oneWeekMS;
+
+    // Runs this job every day
+    setTimeout(updateEdDb, oneDayMS);
 
     // get the first doc to check the date
-    const topDoc = yield edGeometry.findOne({});
-    const expireTime = topDoc !== null ? topDoc.createdAt + oneWeek : 0;
-    if (expireTime > Date.now()) return;
+    const firstExpriedEdGeometryDoc = yield edGeometry.findOne({
+      createdAt: { $lt: expireTimeMS }
+    });
+
+    // If there is no expired documents, don't update.
+    if (!firstExpriedEdGeometryDoc) {
+      const anyEdGeomtryDoc = yield edGeometry.findOne({});
+
+      // If there are no ed geometry docs in the DB, proceed.
+      if (anyEdGeomtryDoc) {
+        console.log("No expired edgeometries found, exiting.");
+        return;
+      }
+    }
 
     const saveTo = "downloads/Election_Districts.geojson";
 
@@ -131,6 +146,7 @@ const updateEdDb = co(function*() {
     }
 
     const data = yield fs.readFileAsync(saveTo);
+
     const parsed = yield bb.map(JSON.parse(data).features, x => {
       try {
         var poly = turf.multiPolygon(x.geometry.coordinates);
@@ -160,12 +176,16 @@ const updateEdDb = co(function*() {
     });
     const parsedRemovedKinked = parsed.filter(poly => !poly.kinked);
 
-    yield edGeometry.insertMany(parsedRemovedKinked);
+    // Removes expired documents first
+    // @todo Refactor this to be more redundant
     yield edGeometry.deleteMany({
       createdAt: {
-        $lt: expireTime
+        $lt: expireTimeMS
       }
     });
+
+    // inserts new documents.
+    yield edGeometry.insertMany(parsedRemovedKinked);
 
     console.log("Updated ED geometry DB");
   } catch (err) {
