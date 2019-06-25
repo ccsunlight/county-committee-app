@@ -43,94 +43,65 @@ class Service extends FeathersMongoose.Service {
    * Need to figure out a way to import so that the secondone doesn't
    * overwrite the first.
    */
-  importMembersToTerm(members, term, options = {}) {
+  importMembersToTerm(
+    members,
+    term,
+    options = {
+      conditionals: {},
+      upsert: false,
+      bulkFields: {},
+      timestamps: true
+    }
+  ) {
     const importedMembers = [];
     const importErrors = [];
 
-    return new Promise((resolve, reject) => {
-      //var bulkWriteOp = MemberModel.collection.initializeUnorderedBulkOp();
+    return new Promise(async (resolve, reject) => {
+      const membersImported = [];
 
-      console.log("MEMBER LENGTH", members.length);
+      for (let x = 0; x < members.length; x++) {
+        const updatedMember = await MemberModel.updateOne(
+          {
+            electoral_district: members[x].electoral_district,
+            assembly_district: members[x].assembly_district,
+            office: members[x].office,
+            term_id: term._id,
+            data_source: { $ne: members[x].data_source },
+            ...options.conditionals
+          },
+          {
+            office_holder: members[x].office_holder,
+            sex: members[x].sex,
+            part: members[x].part,
+            address: members[x].address,
+            county: members[x].county,
+            data_source: members[x].data_source,
+            state: members[x].state,
+            committee: term.committee_id,
+            term_id: term._id,
+            ...options.bulkFields
+          },
+          {
+            timestamps: options.timestamps,
+            upsert: options.upsert
+          }
+        );
 
-      const totalExistingSeatsForED = [];
-      let membersSearched = 0;
-      const allPromises = [];
-
-      members.forEach(async function(member, index) {
-        const existingSeatsForED = await MemberModel.find({
-          electoral_district: member.electoral_district,
-          assembly_district: member.assembly_district,
-          office: member.office,
-          term_id: term._id
-        });
-
-        for (var x = 0; x < existingSeatsForED.length; x++) {
-          totalExistingSeatsForED.push(existingSeatsForED[x]);
+        if (updatedMember.ok) {
+          membersImported.push(updatedMember);
         }
-
-        membersSearched++;
-        //console.log(foundMembers);
-
-        if (membersSearched === members.length) {
-          console.log("UNIQUE ITEMS: ", totalExistingSeatsForED.length);
-
-          totalExistingSeatsForED.forEach(function(existingSeat, index) {
-            existingSeat.office_holder = members[index].office_holder;
-            existingSeat.sex = members[index].sex;
-            existingSeat.part = members[index].part;
-            existingSeat.address = members[index].address;
-            existingSeat.county = members[index].county;
-            existingSeat.data_source = members[index].data_source;
-            existingSeat.state = members[index].state;
-            existingSeat.committee = term.committee_id;
-            existingSeat.term_id = term._id;
-            existingSeat.entry_type = "Appointed";
-            allPromises.push(existingSeat.save());
-          });
-
-          Promise.all(allPromises)
-            .then(function(membersImported) {
-              console.log(membersImported.length);
-              resolve(membersImported);
-            })
-            .catch(function(err) {
-              reject(err);
-            });
-        }
-        //   })
-        // bulkWriteOp
-        //   .find({
-        //     electoral_district: member.electoral_district,
-        //     assembly_district: member.assembly_district,
-        //     office: member.office,
-        //     party: member.party,
-        //     term_id: term._id
-        //     //  office_holder: { $ne: member.office_holder }
-        //   })
-        //   .update({
-        //     $set: {
-        //       office_holder: member.office_holder,
-        //       sex: member.sex,
-        //       part: member.part,
-        //       address: member.address,
-        //       county: member.county,
-        //       data_source: member.data_source,
-        //       state: member.state,
-        //       committee: term.committee_id,
-        //       term_id: term._id,
-        //       entry_type: "Appointed"
-        //     }
-        //   });
-      });
-
-      // bulkWriteOp.execute(function(err, bulkWriteResult) {
-      //   if (err) {
-      //     reject(err);
-      //   } else {
-      //     console.log(JSON.stringify(bulkWriteResult));
-      //     resolve(bulkWriteResult);
-      //   }
-      // });
+      }
+      if (membersImported.length === members.length) {
+        resolve(membersImported);
+      } else {
+        reject(
+          "Error during import",
+          membersImported.length,
+          "of",
+          members.length,
+          "imported"
+        );
+      }
     });
   }
 }
