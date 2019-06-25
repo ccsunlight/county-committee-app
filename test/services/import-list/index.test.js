@@ -24,6 +24,7 @@ const MOCK_CERTIFIED_LIST_FILE_PATH = path.resolve(
 describe("Import List Service", function() {
   this.timeout(10000);
 
+  const cleanupDBDocs = [];
   let ccService, ccMemberService;
   let mock_term, mock_county_committee, mock_county_committee_member;
 
@@ -52,9 +53,10 @@ describe("Import List Service", function() {
         });
 
         mock_county_committee = county_committee;
-
+        cleanupDBDocs.push(county_committee);
         term.save(function(err) {
           mock_term = term;
+          cleanupDBDocs.push(term);
           done();
         });
       });
@@ -64,8 +66,9 @@ describe("Import List Service", function() {
    * Cleans up the DB after each test.
    */
   afterEach(function(done) {
-    mock_county_committee.remove();
-    //mock_term.remove();
+    for (let x = 0; x < cleanupDBDocs.length; x++) {
+      cleanupDBDocs[x].remove();
+    }
     done();
   });
 
@@ -93,7 +96,8 @@ describe("Import List Service", function() {
         assert.equal(importedList.members.length, 834);
         assert.equal(importedList.members[0].party, "Democratic");
         assert.equal(importedList.members[0].office, "Female County Committee");
-        importedList.remove();
+
+        cleanupDBDocs.push(importedList);
         done();
       })
       .catch(e => {
@@ -130,6 +134,8 @@ describe("Import List Service", function() {
       filepath: MOCK_CERTIFIED_LIST_FILE_PATH,
       term_id: mock_term._id
     }).then(certified_list => {
+      cleanupDBDocs.push(certified_list);
+
       // Then generates members from certified list
       TermService.createMembersFromCertifiedList({
         term_id: mock_term._id
@@ -139,6 +145,8 @@ describe("Import List Service", function() {
           filepath: MOCK_CSV_FILE_PATH,
           term_id: mock_term._id
         }).then(importedList => {
+          cleanupDBDocs.push(importedList);
+
           TermService.importMembersToTerm(importedList.members, mock_term, {
             bulkFields: { entry_type: "Appointed" },
             upsert: true,
@@ -146,6 +154,7 @@ describe("Import List Service", function() {
               entry_type: { $ne: "Appointed" }
             }
           }).then(membersImported => {
+            cleanupDBDocs.concat(membersImported);
             assert.equal(membersImported.length, importedList.members.length);
 
             CountyCommitteeMemberModel.find({
