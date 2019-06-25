@@ -15,11 +15,15 @@ exports.before = {
   get: [],
   create: [],
   update: [],
-  patch: [async function(context) {
-    if (context.data.approved) {
-      await context.service.createMembersFromCertifiedList({ term_id: mongoose.Types.ObjectId(context.id)});
+  patch: [
+    async function(context) {
+      if (context.data.approved) {
+        await context.service.createMembersFromCertifiedList({
+          term_id: mongoose.Types.ObjectId(context.id)
+        });
+      }
     }
-  }],
+  ],
   remove: []
 };
 

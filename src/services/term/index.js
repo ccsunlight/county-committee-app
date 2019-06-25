@@ -38,46 +38,70 @@ class Service extends FeathersMongoose.Service {
    * @param {Object} bulkFields Fields that will apply to allrecords
    *
    * @todo Handle asyncronous save better
+   * @todo Bug for when two records in the import
+   * are saving to same ED_AD and office.
+   * Need to figure out a way to import so that the secondone doesn't
+   * overwrite the first.
    */
-  importMembersToTerm(members, term, options = {}) {
+  importMembersToTerm(
+    members,
+    term,
+    options = {
+      conditionals: {},
+      upsert: false,
+      bulkFields: {},
+      timestamps: true
+    }
+  ) {
     const importedMembers = [];
     const importErrors = [];
 
-    return new Promise((resolve, reject) => {
-      var bulkWriteOp = MemberModel.collection.initializeOrderedBulkOp();
-      const bulkFields = { ...options.bulkFields };
-      members.forEach((member, index) => {
-        bulkWriteOp
-          .find({
-            electoral_district: member.electoral_district,
-            assembly_district: member.assembly_district,
-            office: member.office,
-            party: member.party,
-            term_id: term._id
-          })
-          .upsert()
-          .updateOne({
-            $set: {
-              office_holder: member.office_holder,
-              sex: member.sex,
-              part: member.type,
-              address: member.address,
-              county: member.county,
-              data_source: member.data_source,
-              state: member.state,
-              committee: term.committee._id,
-              petition_number: member.petition_number,
-              ...bulkFields
-            }
-          });
-      });
-      bulkWriteOp.execute(function(err, bulkWriteResult) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(bulkWriteResult);
+    return new Promise(async (resolve, reject) => {
+      const membersImported = [];
+
+      for (let x = 0; x < members.length; x++) {
+        const updatedMember = await MemberModel.updateOne(
+          {
+            electoral_district: members[x].electoral_district,
+            assembly_district: members[x].assembly_district,
+            office: members[x].office,
+            term_id: term._id,
+            data_source: { $ne: members[x].data_source },
+            ...options.conditionals
+          },
+          {
+            office_holder: members[x].office_holder,
+            sex: members[x].sex,
+            part: members[x].part,
+            address: members[x].address,
+            county: members[x].county,
+            data_source: members[x].data_source,
+            state: members[x].state,
+            committee: term.committee_id,
+            term_id: term._id,
+            ...options.bulkFields
+          },
+          {
+            timestamps: options.timestamps,
+            upsert: options.upsert
+          }
+        );
+
+        if (updatedMember.ok) {
+          membersImported.push(updatedMember);
         }
-      });
+      }
+      if (membersImported.length === members.length) {
+        resolve(membersImported);
+      } else {
+        reject(
+          "Error during import",
+          membersImported.length,
+          "of",
+          members.length,
+          "imported"
+        );
+      }
     });
   }
 }
