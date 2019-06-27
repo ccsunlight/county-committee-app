@@ -42,6 +42,8 @@ export default (client, options = {}) => (type, params) => {
     options
   );
 
+  console.log('AUTH CHECK', type,params)
+
   switch (type) {
     case AUTH_GET_PERMISSIONS:
       const role = localStorage.getItem("role");
@@ -95,6 +97,6 @@ export default (client, options = {}) => (type, params) => {
         : Promise.reject();
       break;
     default:
-      throw new Error(`Unsupported FeathersJS authClient action type ${type}`);
+     throw new Error(`Unsupported FeathersJS authClient action type ${type}`);
   }
 };

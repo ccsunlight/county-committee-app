@@ -46,6 +46,13 @@ import {
   GlossaryTermCreate,
   GlossaryTermEdit
 } from "./glossary-term";
+
+import {
+  ImportListList,
+  ImportListCreate,
+  ImportListEdit
+} from "./import-lists";
+
 import { NewsLinkList, NewsLinkCreate, NewsLinkEdit } from "./news-links";
 import { ActionLogList } from "./actionLog";
 import { ProfileList, ProfileEdit } from "./profile";
@@ -112,6 +119,16 @@ const App = () => (
       list={MemberList}
       edit={MemberEdit}
       create={MemberCreate}
+      remove={Delete}
+    />
+
+
+    <Resource
+      name="import-list"
+      icon={UserIcon}
+      list={ImportListList}
+      edit={ImportListEdit}
+      create={ImportListCreate}
       remove={Delete}
     />
 
