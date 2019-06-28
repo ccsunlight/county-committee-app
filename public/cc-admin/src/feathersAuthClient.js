@@ -8,7 +8,6 @@ import {
 // import decode from "jwt-decode";
 
 export const checkUserCanEdit = params => {
-
   const role = params.permissions("AUTH_GET_PERMISSIONS"); // This is the result of the `authClient` call with type `AUTH_GET_PERMISSIONS`
 
   if (role === "admin") {
@@ -42,7 +41,7 @@ export default (client, options = {}) => (type, params) => {
     options
   );
 
-  console.log('AUTH CHECK', type,params)
+  console.log("AUTH CHECK", type, params);
 
   switch (type) {
     case AUTH_GET_PERMISSIONS:
@@ -81,9 +80,13 @@ export default (client, options = {}) => (type, params) => {
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
         return Promise.reject();
+      } else if (params.errors) {
+        // For submission errors
+        // @todo use CRUD_CREATE_FAILURE saga hook
+        return Promise.resolve(params);
+      } else {
+        return Promise.reject();
       }
-      return Promise.reject();
-    //}
     case AUTH_LOGOUT:
       // @todo send logout request to server as well.
       localStorage.removeItem(storageKey);
@@ -97,6 +100,6 @@ export default (client, options = {}) => (type, params) => {
         : Promise.reject();
       break;
     default:
-     throw new Error(`Unsupported FeathersJS authClient action type ${type}`);
+      throw new Error(`Unsupported FeathersJS authClient action type ${type}`);
   }
 };

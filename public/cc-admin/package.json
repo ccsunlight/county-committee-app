@@ -27,7 +27,12 @@
     "start": "^5.1.0",
     "yarnpkg": "^0.15.1"
   },
-  "proxy": "http://localhost",
+  "proxy": {
+    "/api/*":
+      {
+        "target": "http://localhost"
+      }
+  },
   "devDependencies": {
     "react-scripts": "^1.0.7"
   },

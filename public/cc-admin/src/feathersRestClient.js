@@ -10,7 +10,7 @@ import {
 } from "admin-on-rest/lib/rest/types";
 
 import { showNotification } from "admin-on-rest";
-
+import { SubmissionError } from "redux-form";
 
 export default client => {
   const mapRequest = (type, resource, params) => {
@@ -67,7 +67,7 @@ export default client => {
   };
 
   const mapResponse = (response, type, resource, params) => {
-    console.log("TYPE", type, type, resource, params);
+    console.log("TYPE", response, type, resource, params);
     switch (type) {
       case GET_ONE:
       case UPDATE:
@@ -80,14 +80,9 @@ export default client => {
     }
   };
   return (type, resource, params) =>
-    mapRequest(type, resource, params).then(response =>
-      mapResponse(response, type, resource, params)
-    ).catch(error=> {
-      console.log(error, type, resource, params);
-      console.log(error, type, resource, { ...params,redirectTo: 'create'})
-     // throw new Error(`Unsupported fetch action type ${type}`);
-
-     mapResponse({ status: 200, data: {}}, type, resource, { data: {} });
-      //mapResponse(error, type, resource, { redirectTo: 'create'})
-    });
+    mapRequest(type, resource, params)
+      .then(response => mapResponse(response, type, resource, params))
+      .catch(error => {
+        throw new SubmissionError(error.errors);
+      });
 };
