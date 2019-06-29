@@ -4,6 +4,7 @@ const globalHooks = require("../../../hooks");
 const hooks = require("feathers-hooks");
 const CountyCommitteeMemberModel = require("../../county-committee-member/county-committee-member-model");
 const AppointedListModel = require("../import-list-model");
+const TermService = require("../../term");
 
 exports.before = {
   all: [],
@@ -30,35 +31,43 @@ exports.after = {
   find: [],
   get: [],
   create: [globalHooks.logAction],
-  update: [globalHooks.logAction],
-  patch: [
-    function(hook) {
-      // Only import list if members have not been imported.
-      if (hook.result.isApproved && !hook.result.isImported) {
-        const membersToImport = hook.result.members;
+  update: [
+    globalHooks.logAction,
+    function(context) {
+      return new Promise(function(resolve, reject) {
+        if (context.data.approved && context.data.status !== "Completed") {
+          const TermService = context.app.service(
+            context.app.get("apiPath") + "/term"
+          );
 
-        membersToImport.forEach((ccMember, index) => {
-          CountyCommitteeMemberModel.create(ccMember, function(
-            err,
-            addedMember
-          ) {
-            if (err) console.error(err);
+          TermService.get(context.data.term_id).then(function(term) {
+            TermService.importMembersToTerm(context.data.members, term, {
+              bulkFields: { ...context.data.bulkFields },
+              upsert: context.data.upsert,
+              conditionals: {
+                ...context.data.conditionals
+              }
+            })
+              .then(async membersImported => {
+                const result = await context.service.patch(
+                  { _id: context.data._id },
+                  { status: "Completed" }
+                );
 
-            // If all members are imported, set the flag to true.
-            if (index === membersToImport.length - 1) {
-              AppointedListModel.findByIdAndUpdate(
-                hook.result._id,
-                { isImported: true },
-                {},
-                success => {}
-              );
-            }
+                resolve(context);
+              })
+              .catch(err => {
+                console.log(err);
+                reject(err);
+              });
           });
-        });
-      }
-    },
-    globalHooks.logAction
+        } else {
+          return context;
+        }
+      });
+    }
   ],
+  patch: [globalHooks.logAction],
   remove: [globalHooks.logAction]
 };
 

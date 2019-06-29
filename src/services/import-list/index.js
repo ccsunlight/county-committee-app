@@ -106,7 +106,10 @@ class Service extends FeathersMongoose.Service {
               source: path.basename(params.filepath),
               members: members,
               committee_id: countyCommittee._id,
-              term_id: params.term_id
+              term_id: params.term_id,
+              conditionals: params.conditionals,
+              upsert: params.upsert,
+              bulkFields: params.bulkFields
             });
             importedList.save(err => {
               if (err) {

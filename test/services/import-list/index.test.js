@@ -77,11 +77,10 @@ describe("Import List Service", function() {
   });
 
   it("can read a import list formatted csv", done => {
-    let filepath = MOCK_CSV_FILE_PATH;
     const ImportListService = app.service(app.get("apiPath") + "/import-list");
 
     ImportListService.create({
-      filepath: filepath,
+      filepath: MOCK_CSV_FILE_PATH,
       term_id: mock_term._id
     })
       .then(importedList => {
@@ -101,7 +100,6 @@ describe("Import List Service", function() {
         done();
       })
       .catch(e => {
-        console.log(e);
         assert(!e);
       });
   });

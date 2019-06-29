@@ -6,11 +6,28 @@ const ccMemberModelSchema = require("../county-committee-member/county-committee
   .schema;
 const importListSchema = new Schema(
   {
-    source: { type: String, required: true },
+    source: { type: String, required: true, unique: true },
     // committee_id: { type: "ObjectId", ref: "CountyCommittee", required: true },
     term_id: {
       type: "ObjectId",
       ref: "term"
+    },
+    bulkFields: {
+      type: Object
+    },
+    conditionals: {
+      type: Object
+    },
+    upsert: {
+      type: Boolean
+    },
+    approved: {
+      type: Boolean
+    },
+    status: {
+      type: String,
+      enum: ["Draft", "Completed", "Failed"],
+      default: "Draft"
     },
     members: [ccMemberModelSchema],
     createdAt: { type: Date, default: Date.now },
