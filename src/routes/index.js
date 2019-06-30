@@ -123,6 +123,7 @@ const updateEdDb = co(function*() {
     });
 
     // If there is no expired documents, don't update.
+
     if (!firstExpriedEdGeometryDoc) {
       const anyEdGeomtryDoc = yield edGeometry.findOne({});
 
