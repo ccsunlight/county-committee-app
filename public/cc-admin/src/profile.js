@@ -1,29 +1,15 @@
 // in src/users.js
 import React from "react";
 import {
-  Restricted,
   List,
   Edit,
-  Filter,
-  RichTextField,
-  Create,
-  SimpleList,
-  Responsive,
   Datagrid,
-  ReferenceField,
   TextField,
   EditButton,
   DisabledInput,
-  LongTextInput,
-  ReferenceInput,
-  SelectInput,
   SimpleForm,
-  TextInput,
-  DeleteButton
+  TextInput
 } from "admin-on-rest";
-import { SwitchPermissions, Permission } from "aor-permissions";
-import authClient from "./feathersAuthClient";
-import { checkUserCanEdit } from "./feathersAuthClient";
 
 export const ProfileList = props => (
   <List

@@ -6,8 +6,6 @@ import Quill from 'quill';
 
 import './RichTextInput.css';
 
-console.log(createRef);
-
 class RichTextInput extends React.Component {
   constructor(props) {
     super(props);
@@ -17,8 +15,6 @@ class RichTextInput extends React.Component {
   componentDidMount() {
     const { input: { value }, options } = this.props;
 
-    console.log(createRef);
-    console.log('toptions', options);
     this.quill = new Quill(
       this.divRef.current,
       Object.assign(options, { theme: 'snow' })
@@ -36,7 +32,6 @@ class RichTextInput extends React.Component {
   }
 
   updateDivRef(ref) {
-    console.log('update div ref');
     this.divRef = ref;
   }
 

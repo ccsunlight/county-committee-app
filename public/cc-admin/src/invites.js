@@ -1,31 +1,19 @@
 // in src/users.js
-import React from 'react';
+import React from "react";
 import {
-  Restricted,
-  ToolbarGroup,
-  SaveButton,
   List,
   Edit,
-  Filter,
-  RichTextField,
   Create,
-  SimpleList,
-  Responsive,
   Datagrid,
-  ReferenceField,
-  TextField,
-  EditButton,
-  DisabledInput,
-  LongTextInput,
-  ReferenceInput,
-  SelectInput,
   SimpleForm,
+  TextField,
+  SelectInput,
   TextInput,
   DeleteButton
-} from 'admin-on-rest';
-import { SwitchPermissions, Permission } from 'aor-permissions';
-import authClient from './feathersAuthClient';
-import { checkUserCanEdit } from './feathersAuthClient';
+} from "admin-on-rest";
+import { SwitchPermissions, Permission } from "aor-permissions";
+import authClient from "./feathersAuthClient";
+import { checkUserCanEdit } from "./feathersAuthClient";
 
 export const InviteList = props => (
   <SwitchPermissions authClient={authClient} {...props}>
@@ -49,9 +37,9 @@ export const InviteCreate = props => (
         source="role"
         defaultValue="user"
         choices={[
-          { id: 'admin', name: 'Admin' },
-          { id: 'user', name: 'User' },
-          { id: 'visitor', name: 'Visitor' }
+          { id: "admin", name: "Admin" },
+          { id: "user", name: "User" },
+          { id: "visitor", name: "Visitor" }
         ]}
       />
     </SimpleForm>
@@ -66,9 +54,9 @@ export const InviteEdit = props => (
         source="role"
         defaultValue="user"
         choices={[
-          { id: 'admin', name: 'Admin' },
-          { id: 'user', name: 'User' },
-          { id: 'visitor', name: 'Visitor' }
+          { id: "admin", name: "Admin" },
+          { id: "user", name: "User" },
+          { id: "visitor", name: "Visitor" }
         ]}
       />
     </SimpleForm>

@@ -23,7 +23,7 @@ const User = require("../services/user/user-model");
 const Address = require("../services/address");
 const NodeCache = require("node-cache");
 
-const cache = new NodeCache({ stdTTL: 604800 });
+const cache = new NodeCache({ stdTTL: 600 });
 
 const turf = require("turf");
 const unkinkPolygon = require("@turf/unkink-polygon");
@@ -111,23 +111,25 @@ const updateEdDb = co(function*() {
   try {
     const oneDayMS = 1000 * 60 * 60 * 24;
     const oneWeekMS = oneDayMS * 7;
-    
+
     const expireTimeMS = Date.now() - oneWeekMS;
 
     // Runs this job every day
     setTimeout(updateEdDb, oneDayMS);
 
     // get the first doc to check the date
-    const firstExpriedEdGeometryDoc = yield edGeometry.findOne({ createdAt: { '$lt': expireTimeMS }});
+    const firstExpriedEdGeometryDoc = yield edGeometry.findOne({
+      createdAt: { $lt: expireTimeMS }
+    });
 
     // If there is no expired documents, don't update.
-    if (!firstExpriedEdGeometryDoc) { 
 
+    if (!firstExpriedEdGeometryDoc) {
       const anyEdGeomtryDoc = yield edGeometry.findOne({});
 
       // If there are no ed geometry docs in the DB, proceed.
       if (anyEdGeomtryDoc) {
-        console.log('No expired edgeometries found, exiting.')
+        console.log("No expired edgeometries found, exiting.");
         return;
       }
     }
@@ -185,7 +187,6 @@ const updateEdDb = co(function*() {
 
     // inserts new documents.
     yield edGeometry.insertMany(parsedRemovedKinked);
-  
 
     console.log("Updated ED geometry DB");
   } catch (err) {

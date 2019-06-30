@@ -40,7 +40,7 @@ const countyCommitteeMemberSchema = new Schema(
     },
     ed_ad: {
       type: String,
-      required: true
+      required: false
     },
     sex: {
       type: String,

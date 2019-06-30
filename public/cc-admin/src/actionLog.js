@@ -1,36 +1,6 @@
 // in src/posts.js
-import React from 'react';
-import { Link } from 'react-router-dom';
-import {
-  List,
-  Edit,
-  Filter,
-  Create,
-  SimpleList,
-  Responsive,
-  Datagrid,
-  ReferenceField,
-  TextField,
-  EditButton,
-  DisabledInput,
-  LongTextInput,
-  ReferenceInput,
-  SelectInput,
-  SimpleForm,
-  TextInput
-} from 'admin-on-rest';
-import { WithPermission, SwitchPermissions, Permission } from 'aor-permissions';
-import authClient from './feathersAuthClient';
-import { checkUserCanEdit } from './feathersAuthClient';
-
-function extractResourceIdFromJSON(description) {
-  console.log('extractResourceIdFromJSON');
-  // console.log('extractResourceIdFromJSON', description);
-  // return JSON.parse(description)._id;
-  //
-  return 'foo';
-}
-
+import React from "react";
+import { List, Datagrid, TextField } from "admin-on-rest";
 /*
 const MemberTitle = ({ record }) => {
     return <span>Post {record ? `"${record.office_holder}"` : ''}</span>;
@@ -78,7 +48,7 @@ export const ActionLogList = props => (
   <List
     {...props}
     title="Action Log"
-    sort={{ field: 'createdAt', order: 'DESC' }}
+    sort={{ field: "createdAt", order: "DESC" }}
   >
     <Datagrid>
       <TextField label="User" source="meta.user" />
