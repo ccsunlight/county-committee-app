@@ -48,10 +48,10 @@ exports.after = {
                 ...context.data.conditionals
               }
             })
-              .then(async membersImported => {
+              .then(async importResults => {
                 const result = await context.service.patch(
                   { _id: context.data._id },
-                  { status: "Completed" }
+                  { status: "Completed", importResults: importResults }
                 );
 
                 resolve(context);

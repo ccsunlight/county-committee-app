@@ -57,57 +57,54 @@ class Service extends FeathersMongoose.Service {
     const importErrors = [];
 
     return new Promise(async (resolve, reject) => {
-      const membersImported = [];
+      const memberImportResults = { n: 0, nModified: 0, unImportedRecords: [] };
 
       for (let x = 0; x < members.length; x++) {
-        const updatedMember = await MemberModel.updateOne(
-          {
-            // Matches ED, AD, and term for each for each import
-            // @todo figure out county/party matching. Term will ensure right party            electoral_district: members[x].electoral_district,
-            assembly_district: members[x].assembly_district,
-            office: members[x].office,
-            term_id: term._id
-          },
-          {
-            office_holder: members[x].office_holder,
-            sex: members[x].sex,
-            part: members[x].part,
-            address: members[x].address,
-            county: members[x].county,
-            data_source: members[x].data_source,
-            state: members[x].state,
-            committee: term.committee_id,
-            term_id: term._id,
-            ...options.bulkFields
-          },
-          {
-            timestamps: options.timestamps,
-            upsert: options.upsert
-          }
-        ).where({
-          // We want to exclude updating from the same source.
-          // This can be easily circumvented by renaming the source file
-          data_source: {
-            $ne: members[x].data_source
-          },
-          ...options.conditionals
-        });
+        try {
+          const memberImportResult = await MemberModel.updateOne(
+            {
+              // Matches ED, AD, and term for each for each import
+              // @todo figure out county/party matching. Term will ensure right party            electoral_district: members[x].electoral_district,
+              assembly_district: members[x].assembly_district,
+              office: members[x].office,
+              term_id: term._id
+            },
+            {
+              office_holder: members[x].office_holder,
+              sex: members[x].sex,
+              part: members[x].part,
+              address: members[x].address,
+              county: members[x].county,
+              data_source: members[x].data_source,
+              state: members[x].state,
+              committee: term.committee_id,
+              term_id: term._id,
+              ...options.bulkFields
+            },
+            {
+              timestamps: options.timestamps,
+              upsert: options.upsert
+            }
+          ).where({
+            // We want to exclude updating from the same source.
+            // This can be easily circumvented by renaming the source file
+            data_source: {
+              $ne: members[x].data_source
+            },
+            ...options.conditionals
+          });
 
-        if (updatedMember.ok) {
-          membersImported.push(updatedMember);
+          memberImportResults.n++;
+          if (memberImportResult.nModified > 0) {
+            memberImportResults.nModified += memberImportResult.nModified;
+          } else {
+            memberImportResults.unImportedRecords.push(members[x]);
+          }
+        } catch (e) {
+          reject("Error during list import", e);
         }
       }
-      if (membersImported.length === members.length) {
-        resolve(membersImported);
-      } else {
-        reject(
-          "Error during import",
-          membersImported.length,
-          "of",
-          members.length,
-          "imported"
-        );
-      }
+      resolve(memberImportResults);
     });
   }
 }

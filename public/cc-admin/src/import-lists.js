@@ -9,28 +9,18 @@ import {
   TextField,
   EditButton,
   DisabledInput,
-  LongTextInput,
   ReferenceInput,
   SelectInput,
-  SimpleForm,
   TextInput,
-  BooleanField,
-  SingleFieldList,
-  ReferenceManyField,
-  ReferenceArrayField,
   FunctionField,
   FileInput,
   FileField,
-  SelectField,
   TabbedForm,
   FormTab,
   BooleanInput,
   SelectArrayInput,
   NumberInput
 } from "admin-on-rest";
-import { WithPermission, SwitchPermissions, Permission } from "aor-permissions";
-import authClient from "./feathersAuthClient";
-import { checkUserCanEdit } from "./feathersAuthClient";
 import moment from "moment";
 
 const states = [
@@ -145,6 +135,7 @@ export const ImportListEdit = props => {
         <FormTab label="main">
           <DisabledInput label="Id" source="id" />
           <TextField label="Status" source="status" />
+
           <BooleanInput label="Approved" source="approved" />
           <BooleanInput
             label="Create members if not existing"
@@ -170,6 +161,16 @@ export const ImportListEdit = props => {
               }
             />
           </ReferenceInput>
+
+          <TextField label="Total Records" source="importResults.n" />
+          <TextField
+            label="Records Imported"
+            source="importResults.nModified"
+          />
+          <TextField
+            label="Records Not Imported"
+            source="importResults.unImportedRecords.length"
+          />
           <ListMembersList props={props} />
         </FormTab>
         <FormTab label="Conditionals">
@@ -186,6 +187,7 @@ export const ImportListEdit = props => {
             label="Assembly District"
             source="conditionals.assembly_district"
           />
+
           <SelectArrayInput
             label="County"
             source="conditionals.county"

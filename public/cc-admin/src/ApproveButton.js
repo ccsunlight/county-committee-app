@@ -22,16 +22,18 @@ class ApproveButton extends Component {
 
   handleClick() {
     const { push, record, showNotification } = this.props;
-    
+
     feathersRestClient(feathersClient)(PATCH, "term", {
       id: record.id,
       data: { approved: true },
       previousData: { approved: false }
-    }).then(result=> {
-      showNotification("Members created");
-    }).catch(error => {
-      showNotification(error.message)
-    });
+    })
+      .then(result => {
+        showNotification("Members created");
+      })
+      .catch(error => {
+        showNotification(error.message);
+      });
   }
 
   render() {
@@ -45,7 +47,6 @@ class ApproveButton extends Component {
     );
   }
 }
-
 
 ApproveButton.propTypes = {
   push: PropTypes.func,

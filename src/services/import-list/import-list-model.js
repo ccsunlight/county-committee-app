@@ -29,6 +29,9 @@ const importListSchema = new Schema(
       enum: ["Draft", "Completed", "Failed"],
       default: "Draft"
     },
+    importResults: {
+      type: Object
+    },
     members: [ccMemberModelSchema],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
