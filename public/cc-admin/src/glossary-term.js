@@ -1,27 +1,16 @@
 // in src/posts.js
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
 import {
   List,
   Edit,
-  Filter,
   Create,
-  SimpleList,
-  Responsive,
   Datagrid,
-  ReferenceField,
   TextField,
   EditButton,
   DisabledInput,
-  LongTextInput,
-  ReferenceInput,
-  SelectInput,
   SimpleForm,
   TextInput
-} from 'admin-on-rest';
-import { WithPermission, SwitchPermissions, Permission } from 'aor-permissions';
-import authClient from './feathersAuthClient';
-import { checkUserCanEdit } from './feathersAuthClient';
+} from "admin-on-rest";
 
 export const GlossaryTermList = props => (
   <List {...props} title="Glossary">
@@ -34,7 +23,7 @@ export const GlossaryTermList = props => (
 );
 
 const GlossaryTermTitle = ({ record }) => {
-  return <span>Post {record ? `"${record.title}"` : ''}</span>;
+  return <span>Post {record ? `"${record.title}"` : ""}</span>;
 };
 
 export const GlossaryTermEdit = props => (

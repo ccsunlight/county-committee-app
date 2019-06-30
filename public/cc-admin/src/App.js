@@ -23,12 +23,6 @@ import {
   CountyCommitteeCreate
 } from "./county-committees";
 
-import {
-  CountyCommitteeArchiveList,
-  CountyCommitteeArchiveEdit,
-  CountyCommitteeArchiveCreate
-} from "./county-committee-archives";
-
 import { PartyCallList, PartyCallEdit, PartyCallCreate } from "./party-calls";
 
 import { TermList, TermEdit, TermCreate } from "./terms";
@@ -121,7 +115,6 @@ const App = () => (
       create={MemberCreate}
       remove={Delete}
     />
-
 
     <Resource
       name="import-list"

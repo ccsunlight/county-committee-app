@@ -22,8 +22,7 @@ export const checkUserHasAccess = resource => {
     case "user":
     case "invite":
     case "action-log":
-      return localStorage.getItem("role") == "admin";
-      break;
+      return localStorage.getItem("role") === "admin";
     default:
       return true;
   }
@@ -73,7 +72,6 @@ export default (client, options = {}) => (type, params) => {
           console.error("Error authenticating!", error);
           return Promise.reject(error);
         });
-      break;
     case AUTH_ERROR:
       if (params.status === 401 || params.status === 403) {
         localStorage.removeItem(storageKey);
@@ -98,7 +96,7 @@ export default (client, options = {}) => (type, params) => {
       return localStorage.getItem(storageKey)
         ? Promise.resolve()
         : Promise.reject();
-      break;
+
     default:
       throw new Error(`Unsupported FeathersJS authClient action type ${type}`);
   }

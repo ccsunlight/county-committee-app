@@ -9,7 +9,6 @@ import {
   PATCH
 } from "admin-on-rest/lib/rest/types";
 
-import { showNotification } from "admin-on-rest";
 import { SubmissionError } from "redux-form";
 
 export default client => {
@@ -20,7 +19,7 @@ export default client => {
       case GET_MANY:
         let ids = params.ids || [];
         query = {
-          _id: { ["$in"]: ids }
+          _id: { $in: ids }
         };
         query["$limit"] = ids.length;
 
@@ -28,8 +27,8 @@ export default client => {
       case GET_MANY_REFERENCE:
         query = {
           [params.target]: params.id,
-          ["$limit"]: params.pagination.perPage,
-          ["$skip"]: params.pagination.skip
+          $limit: params.pagination.perPage,
+          $skip: params.pagination.skip
         };
 
         return service.find({ query });
