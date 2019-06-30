@@ -40,8 +40,6 @@ export default (client, options = {}) => (type, params) => {
     options
   );
 
-  console.log("AUTH CHECK", type, params);
-
   switch (type) {
     case AUTH_GET_PERMISSIONS:
       const role = localStorage.getItem("role");

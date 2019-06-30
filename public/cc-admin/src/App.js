@@ -195,8 +195,8 @@ const App = () => (
   </Admin>
 );
 
-feathersClient.on("created", message =>
-  console.log("Created a message", message)
-);
+// feathersClient.on("created", message =>
+//   console.log("Created a message", message)
+// );
 
 export default App;

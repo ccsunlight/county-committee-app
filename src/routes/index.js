@@ -23,7 +23,7 @@ const User = require("../services/user/user-model");
 const Address = require("../services/address");
 const NodeCache = require("node-cache");
 
-const cache = new NodeCache({ stdTTL: 604800 });
+const cache = new NodeCache({ stdTTL: 600 });
 
 const turf = require("turf");
 const unkinkPolygon = require("@turf/unkink-polygon");

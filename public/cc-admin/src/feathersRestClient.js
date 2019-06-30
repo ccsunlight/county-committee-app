@@ -66,7 +66,6 @@ export default client => {
   };
 
   const mapResponse = (response, type, resource, params) => {
-    console.log("TYPE", response, type, resource, params);
     switch (type) {
       case GET_ONE:
       case UPDATE:
