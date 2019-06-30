@@ -2,7 +2,7 @@ version: '3' # version of docker-compose to use
 
 services: # configuring each container
   cc-app:
-    image: node:8.11.3
+    image: node:10.16
     command: 
       - bash 
       - ./spinup.sh

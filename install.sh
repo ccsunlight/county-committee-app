@@ -5,6 +5,8 @@
 # Installs pdf util dependancy
 npm run install-pdf-lib;
 
+rm -R ./node_modules/
+
 npm install;
 
 # Runs data migrations

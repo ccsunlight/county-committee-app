@@ -1,18 +1,14 @@
 // in src/Menu.js
 import React from "react";
-import PropTypes from "prop-types";
 import inflection from "inflection";
 import MenuItem from "material-ui/MenuItem";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { MenuItemLink, getResources } from "admin-on-rest";
-
-import pure from "recompose/pure";
-import compose from "recompose/compose";
+import { getResources } from "admin-on-rest";
 
 // import { WithPermission, SwitchPermissions, Permission } from "aor-permissions";
-import authClient from "./feathersAuthClient";
-import { checkUserCanEdit, checkUserHasAccess } from "./feathersAuthClient";
+
+import { checkUserHasAccess } from "./feathersAuthClient";
 
 /* <MenuItem
                         key={resource.name}
@@ -25,7 +21,6 @@ import { checkUserCanEdit, checkUserHasAccess } from "./feathersAuthClient";
 
 function MenuItemWithAccess(props) {
   const resource = props.resource;
-  const onMenuTap = props.onMenuTap;
 
   if (!checkUserHasAccess(resource)) {
     return null;
