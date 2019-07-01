@@ -2,7 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const extract = require("pdf-text-extract");
+const pdfHTMLExtract = require("pdf-html-extract");
 const CertifiedList = require("./certified-list-model");
 const hooks = require("./hooks");
 const CountyCommitteeMember = require("../county-committee-member/county-committee-member-model");
@@ -11,11 +11,16 @@ const Term = require("../term/term-model");
 const FeathersMongoose = require("feathers-mongoose");
 const mongoose = require("mongoose");
 const moment = require("moment");
+const cheerio = require("cheerio");
 
 function ccExtractionException(message) {
   this.message = message;
   this.name = "CCMemberException";
 }
+
+// Tokens to search PDF for
+const DATA_START_DELIMITER = RegExp("Party Positions");
+const DATA_END_DELIMITER = RegExp("Page [0-9]+ of [0-9]+");
 
 class Service extends FeathersMongoose.Service {
   extractCountyFromPage(page) {
@@ -200,7 +205,7 @@ class Service extends FeathersMongoose.Service {
 
   getCCMembersFromCertifiedListPDF(filepath, committee_id) {
     return new Promise((resolve, reject) => {
-      extract(filepath, (err, pages) => {
+      pdfHTMLExtract(filepath, (err, pages) => {
         if (err) {
           reject(err);
           console.log(err);
@@ -258,38 +263,152 @@ class Service extends FeathersMongoose.Service {
       });
     });
   }
+  extractTablesFromPDF(filepath) {
+    return new Promise((resolve, reject) => {
+      pdfHTMLExtract(filepath, (err, pages) => {
+        if (err) {
+          reject(err);
+          console.log(err);
+        }
+        let electionDate = undefined;
+        const $ = cheerio.load(pages[0]);
+
+        const scrapedTables = [];
+
+        function cleanRowsOfText(rawRowsOfText) {
+          return rawRowsOfText
+            .map(function(row) {
+              return row.trim();
+            })
+            .filter(function(row, index) {
+              if (row && row.length > 0) {
+                return true;
+              }
+            });
+        }
+
+        function splitRowsOfTextInToArrays(rows, rowSize) {
+          var rowSize = scrapedTables[scrapedTables.length - 1].headers.length;
+          var arrayOfRows = [];
+
+          for (let i = 0; i < rows.length; i += rowSize) {
+            arrayOfRows.push(rows.slice(i, i + rowSize));
+          }
+
+          return arrayOfRows;
+        }
+        //Headings and page headers will be put in bold
+        $("body *").filter(function(index, element) {
+          if (DATA_START_DELIMITER.test($(element).text())) {
+            const rawRowsOfText = getTextOrNextUntil(element, "br");
+            const table = { startIndex: index, headers: ["Position"] };
+
+            table.rows = cleanRowsOfText(rawRowsOfText);
+            scrapedTables.push(table);
+            return true;
+          } else if (DATA_END_DELIMITER.test($(element).text())) {
+            scrapedTables[scrapedTables.length - 1].endIndex = index;
+
+            var rowSize =
+              scrapedTables[scrapedTables.length - 1].headers.length;
+
+            scrapedTables[
+              scrapedTables.length - 1
+            ].rows = splitRowsOfTextInToArrays(
+              scrapedTables[scrapedTables.length - 1].rows,
+              rowSize
+            );
+          } else if (
+            scrapedTables.length > 0 &&
+            index > scrapedTables[scrapedTables.length - 1].startIndex &&
+            !scrapedTables[scrapedTables.length - 1].endIndex
+          ) {
+            // Extracts other column headers and appends to table headers config
+            if (
+              scrapedTables[scrapedTables.length - 1].headers.indexOf(
+                $(element).text()
+              ) < 0 &&
+              $(element).text()
+            ) {
+              scrapedTables[scrapedTables.length - 1].headers.push(
+                $(element).text()
+              );
+            }
+          } else {
+            //console.log(element);
+          }
+        });
+
+        function getTextOrNextUntil(element, until, results) {
+          if (!results) {
+            results = [];
+          }
+
+          if (!element) {
+            return results;
+          } else if (element.type === "text") {
+            results.push($(element).text());
+            return getTextOrNextUntil(element.next, until, results);
+          } else {
+            // console.log(element);
+            return getTextOrNextUntil(element.next, until, results);
+          }
+        }
+
+        function getTextOrNext(element) {
+          if (element.type === "text") {
+            return $(element).text();
+          } else {
+            return getTextOrNext(element.next);
+          }
+        }
+        // const bTags = $("body *").filter(function(index, element) {
+        //   if (DATA_START_DELIMITER.test($(element).text())) {
+        //     const position = getTextOrNext(element);
+        //     scrapedTables[0].headers[0] = position;
+        //   } else {
+        //     //  console.log(element);
+        //   }
+        // });
+
+        console.log(
+          scrapedTables.map(table => {
+            console.log(table.rows);
+          })
+        );
+        // resolve(members);
+      });
+    });
+  }
 
   create(params) {
-    let certifiedList;
-
     return new Promise((resolve, reject) => {
       if (!fs.existsSync(params.filepath)) {
         reject("File does not exist: " + params.filepath);
         return;
       }
 
-      Term.findOne({ _id: params.term_id }).then(term => {
-        if (!term) {
-          throw Error("Term not found. Term ID:", params.term_id);
-        }
-        this.getCCMembersFromCertifiedListPDF(
-          params.filepath,
-          term.committee_id
-        ).then(members => {
-          let importedList = new CertifiedList({
-            term_id: params.term_id,
-            positions: members,
-            source: path.basename(params.filepath)
-          });
-          importedList.save(err => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(importedList);
-            }
-          });
-        });
-      });
+      this.extractTablesFromPDF(params.filepath);
+
+      resolve(true);
+
+      // this.getCCMembersFromCertifiedListPDF(
+      //   params.filepath,
+      //   term.committee_id
+      // ).then(members => {
+      //   let importedList = new CertifiedList({
+      //     term_id: params.term_id,
+      //     positions: members,
+      //     source: path.basename(params.filepath)
+      //   });
+      //   importedList.save(err => {
+      //     if (err) {
+      //       reject(err);
+      //     } else {
+      //       resolve(importedList);
+      //     }
+      //   });
+      // });
     });
   }
 }
