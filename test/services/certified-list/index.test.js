@@ -3,7 +3,7 @@
 const assert = require("assert");
 const app = require("../../../src/app");
 const MOCK_CERTIFIED_LIST_FILEPATH =
-  "/usr/src/app/test/mocks/MockCandidacyList.pdf";
+  "/usr/src/app/test/mocks/MockCandidacyListCitywidePartyPositions.pdf";
 const kings_certified_list_path =
   "/usr/src/app/test/mocks/KG_CCDEMLIST_100918.pdf";
 
@@ -41,6 +41,7 @@ describe("Certified List service", function() {
 
   it("can extract tables from pdf", done => {
     const CertifiedList = app.service(app.get("apiPath") + "/certified-list");
+    console.log("extract table");
     const certifiedListService = CertifiedList.create({
       filepath: MOCK_CERTIFIED_LIST_FILEPATH
     }).catch(error => {

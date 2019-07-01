@@ -112,8 +112,6 @@
     "path": "^0.12.7",
     "pdf-html-extract": "^1.1.0",
     "pdf-text-extract": "^1.5.0",
-    "pdf2html": "^2.4.0",
-    "pdftohtmljs": "^0.5.2",
     "permission": "^1.0.4",
     "pm2": "^2.5.0",
     "prettier": "^1.11.1",

@@ -22,6 +22,28 @@ function ccExtractionException(message) {
 const DATA_START_DELIMITER = RegExp("Party Positions");
 const DATA_END_DELIMITER = RegExp("Page [0-9]+ of [0-9]+");
 
+function cleanRowsOfText(rawRowsOfText) {
+  return rawRowsOfText
+    .map(function(row) {
+      return row.trim();
+    })
+    .filter(function(row, index) {
+      if (row && row.length > 0) {
+        return true;
+      }
+    });
+}
+
+function splitRowsOfTextInToArrays(rows, rowSize) {
+  var arrayOfRows = [];
+
+  for (let i = 0; i < rows.length; i += rowSize) {
+    arrayOfRows.push(rows.slice(i, i + rowSize));
+  }
+
+  return arrayOfRows;
+}
+
 class Service extends FeathersMongoose.Service {
   extractCountyFromPage(page) {
     // Matches "Bronx" from "Bronx County"
@@ -275,49 +297,14 @@ class Service extends FeathersMongoose.Service {
 
         const scrapedTables = [];
 
-        function cleanRowsOfText(rawRowsOfText) {
-          return rawRowsOfText
-            .map(function(row) {
-              return row.trim();
-            })
-            .filter(function(row, index) {
-              if (row && row.length > 0) {
-                return true;
-              }
-            });
-        }
-
-        function splitRowsOfTextInToArrays(rows, rowSize) {
-          var rowSize = scrapedTables[scrapedTables.length - 1].headers.length;
-          var arrayOfRows = [];
-
-          for (let i = 0; i < rows.length; i += rowSize) {
-            arrayOfRows.push(rows.slice(i, i + rowSize));
-          }
-
-          return arrayOfRows;
-        }
         //Headings and page headers will be put in bold
         $("body *").filter(function(index, element) {
           if (DATA_START_DELIMITER.test($(element).text())) {
-            const rawRowsOfText = getTextOrNextUntil(element, "br");
             const table = { startIndex: index, headers: ["Position"] };
-
-            table.rows = cleanRowsOfText(rawRowsOfText);
             scrapedTables.push(table);
             return true;
           } else if (DATA_END_DELIMITER.test($(element).text())) {
             scrapedTables[scrapedTables.length - 1].endIndex = index;
-
-            var rowSize =
-              scrapedTables[scrapedTables.length - 1].headers.length;
-
-            scrapedTables[
-              scrapedTables.length - 1
-            ].rows = splitRowsOfTextInToArrays(
-              scrapedTables[scrapedTables.length - 1].rows,
-              rowSize
-            );
           } else if (
             scrapedTables.length > 0 &&
             index > scrapedTables[scrapedTables.length - 1].startIndex &&
@@ -334,12 +321,30 @@ class Service extends FeathersMongoose.Service {
                 $(element).text()
               );
             }
-          } else {
-            //console.log(element);
           }
         });
+        // Extract rows
 
-        function getTextOrNextUntil(element, until, results) {
+        scrapedTables.forEach(function(table) {
+          const pageElements = $("body *").filter(function(index, element) {
+            return index > table.startIndex && index < table.endIndex;
+          });
+
+          const rawRowsOfText = [];
+
+          pageElements.map(function(index, element) {
+            const text = getTextOrNext(element.next);
+            console.log("push it", text);
+            rawRowsOfText.push(text);
+          });
+
+          table.rows = splitRowsOfTextInToArrays(
+            cleanRowsOfText(rawRowsOfText),
+            table.headers.length
+          );
+        });
+
+        function getTextOrNextArray(element, results) {
           if (!results) {
             results = [];
           }
@@ -348,10 +353,9 @@ class Service extends FeathersMongoose.Service {
             return results;
           } else if (element.type === "text") {
             results.push($(element).text());
-            return getTextOrNextUntil(element.next, until, results);
+            return getTextOrNextArray(element.next, results);
           } else {
-            // console.log(element);
-            return getTextOrNextUntil(element.next, until, results);
+            return getTextOrNextArray(element.next, results);
           }
         }
 
@@ -359,24 +363,20 @@ class Service extends FeathersMongoose.Service {
           if (element.type === "text") {
             return $(element).text();
           } else {
-            return getTextOrNext(element.next);
+            // @hack BR Tags create dupes if traveresed.
+            if (element.name !== "br") {
+              return getTextOrNext(element.next);
+            } else {
+              return "";
+            }
           }
         }
-        // const bTags = $("body *").filter(function(index, element) {
-        //   if (DATA_START_DELIMITER.test($(element).text())) {
-        //     const position = getTextOrNext(element);
-        //     scrapedTables[0].headers[0] = position;
-        //   } else {
-        //     //  console.log(element);
-        //   }
-        // });
 
-        console.log(
-          scrapedTables.map(table => {
-            console.log(table.rows);
-          })
-        );
-        // resolve(members);
+        scrapedTables.map(table => {
+          console.log(table);
+        });
+
+        resolve(scrapedTables);
       });
     });
   }
