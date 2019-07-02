@@ -44,9 +44,34 @@ describe("Certified List service", function() {
     console.log("extract table");
     const certifiedListService = CertifiedList.create({
       filepath: MOCK_CERTIFIED_LIST_FILEPATH
-    }).catch(error => {
-      console.log(error);
-    });
+    })
+      .then(dataTables => {
+        done();
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  });
+
+  it("can export a csv", done => {
+    const CertifiedListService = app.service(
+      app.get("apiPath") + "/certified-list"
+    );
+    CertifiedListService.create({
+      filepath: MOCK_CERTIFIED_LIST_FILEPATH
+    })
+      .then(certifiedList => {
+        CertifiedListService.generateCSV(certifiedList._id).then(
+          csvResultObject => {
+            console.log(csvResultObject);
+            assert(csvResultObject.filepath);
+            done();
+          }
+        );
+      })
+      .catch(error => {
+        console.log(error);
+      });
   });
 
   // it("can extract the Party from a page", () => {
