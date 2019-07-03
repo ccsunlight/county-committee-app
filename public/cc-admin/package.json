@@ -31,9 +31,12 @@
   "devDependencies": {
     "react-scripts": "^1.0.7"
   },
-  "browserslist": [
-    ">0.2%"
-  ],
+  "proxy": {
+    "/api/v1*": {
+      "target": "http://localhost"
+    }
+  },
+  "browserslist": [">0.2%"],
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
