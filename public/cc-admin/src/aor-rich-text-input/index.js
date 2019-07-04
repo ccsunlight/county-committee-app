@@ -1,10 +1,10 @@
-import debounce from 'lodash.debounce';
-import React, { Component } from 'react';
-import { createRef } from 'create-react-ref';
-import PropTypes from 'prop-types';
-import Quill from 'quill';
+import debounce from "lodash.debounce";
+import React, { Component } from "react";
+import { createRef } from "create-react-ref";
+import PropTypes from "prop-types";
+import Quill from "quill";
 
-import './RichTextInput.css';
+import "./RichTextInput.css";
 
 class RichTextInput extends React.Component {
   constructor(props) {
@@ -17,17 +17,17 @@ class RichTextInput extends React.Component {
 
     this.quill = new Quill(
       this.divRef.current,
-      Object.assign(options, { theme: 'snow' })
+      Object.assign(options, { theme: "snow" })
     );
 
     this.quill.pasteHTML(value);
 
-    this.editor = this.divRef.current.querySelector('.ql-editor');
-    this.quill.on('text-change', debounce(this.onTextChange.bind(this), 500));
+    this.editor = this.divRef.current.querySelector(".ql-editor");
+    this.quill.on("text-change", debounce(this.onTextChange.bind(this), 500));
   }
 
   componentWillUnmount() {
-    this.quill.off('text-change', this.onTextChange);
+    this.quill.off("text-change", this.onTextChange);
     this.quill = null;
   }
 
@@ -37,9 +37,9 @@ class RichTextInput extends React.Component {
 
   onTextChange() {
     // Removes empty p tags with linebreaks.
-    const regEx = new RegExp('<([p][a-z0-9]*)\\b[^>]*>(<br/?>*?)</\\1>', 'g');
+    const regEx = new RegExp("<([p][a-z0-9]*)\\b[^>]*>(<br/?>*?)</\\1>", "g");
 
-    this.props.input.onChange(this.editor.innerHTML.replace(regEx, ''));
+    this.props.input.onChange(this.editor.innerHTML.replace(regEx, ""));
   }
 
   componentWillReceiveProps(nextProps) {

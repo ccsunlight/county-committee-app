@@ -31,3 +31,6 @@ node_modules
 
 data/
 scripts/
+
+
+public/cc-admin/build
