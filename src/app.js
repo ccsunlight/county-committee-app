@@ -168,11 +168,6 @@ app
   .configure(middleware)
   .configure(local(localConfig));
 
-//.configure(jwt());
-//.configure(auth({ secret: 'super secret'}));
-//.configure(auth());
-//.configure(auth());
-
 app.service(apiPath + "/authentication").hooks({
   before: {
     create: [
@@ -205,6 +200,12 @@ app.service(apiPath + "/county-committee-member").hooks({
   }
 });
 
+app.service(apiPath + "/import-list").hooks({
+  before: {
+    all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
+  }
+});
+
 app.service(apiPath + "/certified-list").hooks({
   before: {
     // all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
@@ -216,9 +217,6 @@ app.service(apiPath + "/term").hooks({
     // all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
   }
 });
-
-// app.service(apiPath + '/invite').sendInvite({ email: 'joncrockett@gmail.com', role: 'admin'});
-// app.all(apiPath + '/authentication', auth.express.authenticate('jwt'))
 
 console.log("Starting env: ", app.get("env"));
 

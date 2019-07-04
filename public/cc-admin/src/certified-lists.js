@@ -1,53 +1,24 @@
 // in src/posts.js
 import React from "react";
-import { Link } from "react-router-dom";
 import {
   List,
   Edit,
-  Filter,
   Create,
   Datagrid,
-  ReferenceField,
   TextField,
   EditButton,
   DisabledInput,
-  LongTextInput,
-  ReferenceInput,
-  SelectInput,
   SimpleForm,
-  TextInput,
-  BooleanField,
-  SingleFieldList,
-  ReferenceManyField,
-  ReferenceArrayField,
-  FunctionField,
   FileInput,
-  FileField,
-  SelectField
+  FileField
 } from "admin-on-rest";
-import { WithPermission, SwitchPermissions, Permission } from "aor-permissions";
-import authClient from "./feathersAuthClient";
-import { checkUserCanEdit } from "./feathersAuthClient";
-import moment from "moment";
+import RaisedButton from "material-ui/RaisedButton";
 
 export const CertifiedListList = props => (
   <List {...props} title="Certified Lists">
     <Datagrid>
       <TextField source="id" />
       <TextField source="source" />
-      <ReferenceField
-        label="County Committee"
-        source="term_id"
-        reference="term"
-        allowEmpty={true}
-      >
-        <FunctionField
-          label="Name"
-          render={record =>
-            `${record.committee.county} ${record.committee.party}`
-          }
-        />
-      </ReferenceField>
       <EditButton />
     </Datagrid>
   </List>
@@ -55,31 +26,48 @@ export const CertifiedListList = props => (
 
 export const PartyPositionsList = ({ record, props }) => {
   let data = {};
-
+  let rowIndex = 0;
   const ids = record.positions
-    ? record.positions.slice(0, 50).map(position => {
-        data[position._id] = position;
-        return position._id;
+    ? record.positions.slice(0, 10).map((position, index) => {
+        position.rows.forEach(row => {
+          data[rowIndex++] = { position: position.name, row: row };
+        });
+        return rowIndex;
       })
     : [];
-  if (ids.length > 0) {
+
+  if (ids.length) {
     return (
       <Datagrid ids={ids} data={data} currentSort={{ _id: "ASC" }}>
-        <TextField source="_id" />
-        <TextField label="AD" source="assembly_district" />
-        <TextField label="ED" source="electoral_district" />
-
-        <TextField source="office" />
-        <TextField source="office_holder" />
+        <TextField label="Position" source="position" />
+        {record.positions[0].columnNames.map((column, index) => {
+          const sourceProp = { source: `row[${index}]` };
+          return (
+            <TextField key={String(index)} label={column} {...sourceProp} />
+          );
+        })}
       </Datagrid>
     );
   } else {
-    return (
-      <div>
-        Loading preview of positions. If it takes a while try hitting refresh.
-      </div>
-    );
+    return <div>Nothing yet</div>;
   }
+};
+
+export const ExportCSVButton = ({ record, props }) => {
+  const host = process.env.REACT_APP_API_HOSTNAME
+    ? process.env.REACT_APP_API_HOSTNAME + process.env.REACT_APP_API_BASEPATH
+    : window.location.origin + process.env.REACT_APP_API_BASEPATH;
+
+  const downloadLink = `${host}/certified-list/${record._id}?format=csv`;
+
+  return (
+    <RaisedButton
+      label="Export CSV"
+      color="primary"
+      href={downloadLink}
+      target="_blank"
+    />
+  );
 };
 
 export const CertifiedListEdit = props => {
@@ -87,27 +75,7 @@ export const CertifiedListEdit = props => {
     <Edit title={"Certified List"} {...props}>
       <SimpleForm>
         <DisabledInput label="Id" source="id" />
-        <ReferenceInput
-          label="Committee Term"
-          source="term_id"
-          reference="term"
-          perPage={200}
-        >
-          <SelectInput
-            optionText={
-              <FunctionField
-                label="Dates"
-                render={record =>
-                  `${record.committee.county} ${
-                    record.committee.party
-                  } ${moment(record.start_date).format("ll")} to ${moment(
-                    record.end_date
-                  ).format("ll")}`
-                }
-              />
-            }
-          />
-        </ReferenceInput>
+        <ExportCSVButton {...props} />
         <PartyPositionsList props={props} />
       </SimpleForm>
     </Edit>
@@ -118,27 +86,6 @@ export const CertifiedListCreate = props => {
   return (
     <Create title={"Create Certified List"} {...props}>
       <SimpleForm>
-        <ReferenceInput
-          label="Committee Term"
-          source="term_id"
-          reference="term"
-          perPage={200}
-        >
-          <SelectInput
-            optionText={
-              <FunctionField
-                label="Dates"
-                render={record =>
-                  `${record.committee.county} + ${
-                    record.committee.party
-                  } ${moment(record.start_date).format("ll")} to ${moment(
-                    record.end_date
-                  ).format("ll")}`
-                }
-              />
-            }
-          />
-        </ReferenceInput>
         <FileInput
           source="files_to_upload"
           label="Certified List"

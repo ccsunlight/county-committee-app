@@ -5,6 +5,7 @@
   "homepage": "/cc-admin",
   "dependencies": {
     "admin-on-rest": "^1.4.1",
+    "aor-dependent-input": "^1.2.0",
     "aor-feathers-client": "^0.3.1",
     "aor-permissions": "^1.0.2",
     "aor-rich-text-input": "^1.0.1",
@@ -27,13 +28,15 @@
     "start": "^5.1.0",
     "yarnpkg": "^0.15.1"
   },
-  "proxy": "http://localhost",
   "devDependencies": {
     "react-scripts": "^1.0.7"
   },
-  "browserslist": [
-    ">0.2%"
-  ],
+  "proxy": {
+    "/api/v1*": {
+      "target": "http://localhost"
+    }
+  },
+  "browserslist": [">0.2%"],
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

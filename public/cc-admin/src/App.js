@@ -23,12 +23,6 @@ import {
   CountyCommitteeCreate
 } from "./county-committees";
 
-import {
-  CountyCommitteeArchiveList,
-  CountyCommitteeArchiveEdit,
-  CountyCommitteeArchiveCreate
-} from "./county-committee-archives";
-
 import { PartyCallList, PartyCallEdit, PartyCallCreate } from "./party-calls";
 
 import { TermList, TermEdit, TermCreate } from "./terms";
@@ -46,6 +40,13 @@ import {
   GlossaryTermCreate,
   GlossaryTermEdit
 } from "./glossary-term";
+
+import {
+  ImportListList,
+  ImportListCreate,
+  ImportListEdit
+} from "./import-lists";
+
 import { NewsLinkList, NewsLinkCreate, NewsLinkEdit } from "./news-links";
 import { ActionLogList } from "./actionLog";
 import { ProfileList, ProfileEdit } from "./profile";
@@ -112,6 +113,15 @@ const App = () => (
       list={MemberList}
       edit={MemberEdit}
       create={MemberCreate}
+      remove={Delete}
+    />
+
+    <Resource
+      name="import-list"
+      icon={UserIcon}
+      list={ImportListList}
+      edit={ImportListEdit}
+      create={ImportListCreate}
       remove={Delete}
     />
 
@@ -185,8 +195,8 @@ const App = () => (
   </Admin>
 );
 
-feathersClient.on("created", message =>
-  console.log("Created a message", message)
-);
+// feathersClient.on("created", message =>
+//   console.log("Created a message", message)
+// );
 
 export default App;

@@ -1,30 +1,17 @@
 // in src/posts.js
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
 import {
   List,
   Edit,
-  Filter,
   Create,
-  SimpleList,
-  Responsive,
   Datagrid,
-  ReferenceField,
   TextField,
   EditButton,
   DisabledInput,
-  LongTextInput,
-  ReferenceInput,
-  SelectInput,
   SimpleForm,
   TextInput,
-  DateInput,
-  DateField
-} from 'admin-on-rest';
-import { WithPermission, SwitchPermissions, Permission } from 'aor-permissions';
-import authClient from './feathersAuthClient';
-import { checkUserCanEdit } from './feathersAuthClient';
-
+  DateInput
+} from "admin-on-rest";
 export const NewsLinkList = props => (
   <List {...props} title="News">
     <Datagrid>
@@ -37,7 +24,7 @@ export const NewsLinkList = props => (
 );
 
 const NewsLinkTitle = ({ record }) => {
-  return <span>Post {record ? `"${record.title}"` : ''}</span>;
+  return <span>Post {record ? `"${record.title}"` : ""}</span>;
 };
 
 export const NewsLinkEdit = props => (
@@ -62,7 +49,7 @@ export const NewsLinkCreate = props => (
         type="url"
         options={{
           hintText:
-            'If you enter an article url and save it will fetch all the meta info.'
+            "If you enter an article url and save it will fetch all the meta info."
         }}
       />
 

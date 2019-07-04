@@ -9,6 +9,8 @@ import {
   PATCH
 } from "admin-on-rest/lib/rest/types";
 
+import { SubmissionError } from "redux-form";
+
 export default client => {
   const mapRequest = (type, resource, params) => {
     const service = client.service(resource);
@@ -17,7 +19,7 @@ export default client => {
       case GET_MANY:
         let ids = params.ids || [];
         query = {
-          _id: { ["$in"]: ids }
+          _id: { $in: ids }
         };
         query["$limit"] = ids.length;
 
@@ -25,8 +27,8 @@ export default client => {
       case GET_MANY_REFERENCE:
         query = {
           [params.target]: params.id,
-          ["$limit"]: params.pagination.perPage,
-          ["$skip"]: params.pagination.skip
+          $limit: params.pagination.perPage,
+          $skip: params.pagination.skip
         };
 
         return service.find({ query });
@@ -76,7 +78,9 @@ export default client => {
     }
   };
   return (type, resource, params) =>
-    mapRequest(type, resource, params).then(response =>
-      mapResponse(response, type, resource, params)
-    );
+    mapRequest(type, resource, params)
+      .then(response => mapResponse(response, type, resource, params))
+      .catch(error => {
+        throw new SubmissionError(error.errors);
+      });
 };
