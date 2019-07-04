@@ -2,7 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const extract = require("pdf-text-extract");
+const pdfTextExtract = require("pdf-text-extract");
 const CertifiedList = require("./certified-list-model");
 const hooks = require("./hooks");
 const CountyCommitteeMember = require("../county-committee-member/county-committee-member-model");
@@ -11,284 +11,158 @@ const Term = require("../term/term-model");
 const FeathersMongoose = require("feathers-mongoose");
 const mongoose = require("mongoose");
 const moment = require("moment");
-
+const converter = require("json-2-csv");
+const feathers = require("feathers");
 function ccExtractionException(message) {
   this.message = message;
   this.name = "CCMemberException";
 }
 
-class Service extends FeathersMongoose.Service {
-  extractCountyFromPage(page) {
-    // Matches "Bronx" from "Bronx County"
-    // Matches "New York" from "New York County"
-    var match = page.match(/\b(\w+?\s?\w*)(?= County)\b/i);
+// Tokens to search PDF for
+const DATA_START_DELIMITER = RegExp("Party Positions");
+const DATA_END_DELIMITER = RegExp("Page [0-9]+ of [0-9]+");
 
-    if (match) {
-      return match[0];
-    }
-  }
-
-  extractCCMembersFromPage(page) {
-    var rows = page.match(/(.+)/g);
-
-    var county = this.extractCountyFromPage(page);
-    const party = this.extractPartyFromPage(page);
-
-    var headerRowIndex = rows.findIndex(this.isMemberTableHeaderRow);
-    var footerRowIndex = rows.findIndex(this.isMemberTableFooterRow);
-    if (headerRowIndex > 0 && footerRowIndex > 0) {
-      var ccMemberRows = rows.slice(headerRowIndex + 1, footerRowIndex);
-
-      var errors = [];
-      var ccMembers = [];
-
-      ccMemberRows.forEach((memberRow, index) => {
-        try {
-          ccMembers.push(this.extractCCMemberDataFromRow(memberRow, county));
-        } catch (e) {
-          errors.push(e);
-        }
-      });
-
-      return ccMembers;
-    }
-  }
-
-  extractPartyFromPage(page) {
-    var match = page.match(
-      /persons were duly elected as\s+(.+)\sCounty Committee/
-    );
-
-    if (match) {
-      return match[1];
-    }
-  }
-
-  /**
-   * { function_description }
-   *
-   * @param      {<type>}  firstPage  The first page
-   */
-  extractElectionDate(firstPage) {
-    var re = /(?=Primary Election held).+?,\s(.+)\b/i;
-    var matches = firstPage.match(re);
-
-    if (matches && matches.length === 2) {
-      return matches[1];
-    } else {
-      return false;
-    }
-  }
-
-  /**
-   * Determines if row is a table header to extract columns
-   * and determine where member data is in PDF.
-   * @param  {[type]} row [description]
-   * @return {[type]}     [description]
-   */
-  isMemberTableHeaderRow(row) {
-    return /Tally\s+Entry Type/.test(row);
-  }
-
-  /**
-   * Determines if row is a table footer to extract columns
-   * and determine where member ends is in PDF.
-   * @param  {[type]} row [description]
-   * @return {[type]}     [description]
-   */
-  isMemberTableFooterRow(row) {
-    return /Page \d+ of \d+/.test(row);
-  }
-
-  //ED/AD Office Holder Address Tally Entry Type
-  /**
-   * Extracts a member's attributes from a row of text
-   * @param  {String} row    [description]
-   * @param  {String} county [description]
-   * @param  {String} state  [description]
-   * @return {Object}        [description]
-   */
-  extractCCMemberDataFromRow(row, county, state = "NY") {
-    if (!county) {
-      throw new this.ccExtractionException(
-        "County not provided for member row: " + row
-      );
-    }
-
-    // Data object for CC Member
-    let cc_member = {
-      petition_number: undefined,
-      office: undefined,
-      office_holder: undefined,
-      address: undefined,
-      tally: undefined,
-      entry_type: undefined,
-      ed_ad: undefined,
-      electoral_district: undefined,
-      assembly_district: undefined,
-      data_source: undefined,
-      county: county,
-      state: state
-    };
-
-    //
-    // Lots of gnarly regex logic to parse fields here.
-    //
-    // You've been warned.
-    //
-
-    // Splits up by two space matches.
-    // @todo make sure there are no one spaced out items!
-    var rowFields = row.split(/\s{2,}/);
-
-    // Edge case for space at begninning
-    if (rowFields[0] == "") {
-      rowFields.shift();
-    }
-    // petition checker
-    if (!isNaN(rowFields[0])) {
-      cc_member.petition_number = rowFields.shift();
-    }
-
-    if (/County Committee/i.test(rowFields[0])) {
-      cc_member.office = rowFields.shift();
-    } else {
-      throw new this.ccExtractionException(
-        "Petition or position Field Not Valid. " + rowFields[0] + " Row: " + row
-      );
-    }
-
-    // ED AD extractor
-    if (/\d+\/\d+/.test(rowFields[0])) {
-      cc_member.ed_ad = rowFields.shift();
-      var ed_ad = cc_member.ed_ad.split("/");
-      cc_member.electoral_district = parseInt(ed_ad[0], 10);
-      cc_member.assembly_district = parseInt(ed_ad[1], 10);
-    } else {
-      throw new this.ccExtractionException(
-        "ED/AD Field Not Valid. " + rowFields[0] + " Row: " + row
-      );
-    }
-
-    // Office Holder extractor
-    if (/Vacancy/i.test(rowFields[0])) {
-      cc_member.office_holder = rowFields.shift();
-    } else {
-      cc_member.office_holder = rowFields.shift();
-
-      //if (/NY/.test(rowFields[0])) {
-      cc_member.address = rowFields.shift();
-      //} else {
-      //    throw 'Address Field Not Valid. ' + rowFields[0] + ' Row: ' + row;
-      //}
-
-      if (!isNaN(parseInt(rowFields[0], 10))) {
-        cc_member.tally = rowFields.shift();
-      } else {
-        throw new this.ccExtractionException(
-          "Tally Field Not Valid. " + rowFields[0] + " Row: " + row
-        );
+function cleanRowsOfText(rawRowsOfText) {
+  return rawRowsOfText
+    .map(function(row) {
+      return row.trim();
+    })
+    .filter(function(row, index) {
+      if (row && row.length > 0) {
+        return true;
       }
-    }
+    });
+}
 
-    if (/.+$/i.test(rowFields[0])) {
-      cc_member.entry_type = rowFields.shift();
-    }
+function splitRowsOfTextInToArrays(rows, rowSize) {
+  var arrayOfRows = [];
 
-    return cc_member;
+  for (let i = 0; i < rows.length; i += rowSize) {
+    arrayOfRows.push(rows.slice(i, i + rowSize));
   }
 
-  getCCMembersFromCertifiedListPDF(filepath, committee_id) {
+  return arrayOfRows;
+}
+
+class Service extends FeathersMongoose.Service {
+  extractTablesFromPDF(filepath) {
     return new Promise((resolve, reject) => {
-      extract(filepath, (err, pages) => {
+      pdfTextExtract(filepath, (err, pages) => {
         if (err) {
           reject(err);
-          console.log(err);
         }
-        let electionDate = undefined;
-        let members = [];
-        let county, party;
+        const dataTables = [];
 
-        // Goes through each page and creates new members to import
-        pages.forEach((page, index) => {
-          if (index === 0) {
-            electionDate = this.extractElectionDate(page);
-          }
-          // Keeps checking pages until it can extract county
-          // Some pages have county on them others don't
-          if (!county) {
-            county = this.extractCountyFromPage(page);
-          }
+        pages.forEach(function(page, index) {
+          const lines = page.split("\n");
+          let pageDataStartIndex, pageDataEndIndex;
 
-          if (!committee_id) {
-            throw Error("Committee ID required");
-          }
+          lines.forEach(function(line, index) {
+            if (DATA_START_DELIMITER.test(line)) {
+              pageDataStartIndex = index + 1;
+            } else if (DATA_END_DELIMITER.test(line)) {
+              pageDataEndIndex = index;
+            }
+          });
 
-          // @todo remove this
-          // if (!committee_id) {
-          //   committee_id = "5ae69c059404c403ea06f8b1";
-          // }
+          const pageLinesWithData = lines.slice(
+            pageDataStartIndex,
+            pageDataEndIndex
+          );
 
-          if (!party) {
-            party = this.extractPartyFromPage(page);
-          }
+          const pageDataTables = pageLinesWithData.reduce(function(
+            table,
+            line,
+            index
+          ) {
+            if (
+              line === "" &&
+              pageLinesWithData[index - 1] === "" &&
+              pageLinesWithData[index + 1] !== "" &&
+              index !== pageLinesWithData.length - 1
+            ) {
+              table.push({
+                name: undefined,
+                columnNames: undefined,
+                rows: []
+              });
+            } else if (table.length) {
+              if (line && !table[table.length - 1].name) {
+                table[table.length - 1].name = line;
+              } else if (line && !table[table.length - 1].columnNames) {
+                table[table.length - 1].columnNames = line.split(/\s\s+/);
+              } else if (line) {
+                table[table.length - 1].rows.push(line.split(/\s\s+/));
+              }
+            }
+            return table;
+          },
+          []);
 
-          const extractedMembers = this.extractCCMembersFromPage(page);
-
-          if (extractedMembers) {
-            members = members.concat(
-              extractedMembers.map(function(member) {
-                member.committee = committee_id;
-                const ccMember = new CountyCommitteeMember(member);
-                ccMember.party = party;
-                ccMember.data_source = path.basename(filepath);
-
-                ccMember.term_begins = new Date(electionDate);
-                ccMember.term_ends = moment(ccMember.term_begins).add(
-                  2,
-                  "years"
-                );
-                return ccMember;
-              })
-            );
-          }
+          dataTables.push(...pageDataTables);
         });
 
-        resolve(members);
+        resolve(dataTables);
       });
     });
   }
 
-  create(params) {
-    let certifiedList;
+  generateCSV(_id) {
+    {
+      const DELIMITER = ",";
+      //const Utils = this.app.service("/utils");
 
+      return new Promise((resolve, reject) => {
+        const dataObjects = [];
+        CertifiedList.findOne(_id).then(certifiedList => {
+          certifiedList.positions.map(function(position) {
+            // Go through all rows for each position and generate an object
+            position.rows.forEach(function(row, rowIndex) {
+              const dataObject = { positionName: position.name };
+
+              // Go through each column and map the appropriate index of row to the object
+              position.columnNames.forEach(function(columnName, colIndex) {
+                dataObject[columnName] = row[colIndex];
+              });
+
+              dataObjects.push(dataObject);
+            });
+          });
+
+          converter
+            .json2csvAsync(dataObjects)
+            .then(csv => {
+              // const filename = Utils.saveCSVTextToTempFile(
+              //   csv,
+              //   certifiedList.id + ".csv"
+              // );
+              resolve(csv);
+            })
+            .catch(err => console.log("ERROR: " + err.message));
+        });
+      });
+    }
+  }
+
+  setup(app, path) {
+    this.app = app;
+  }
+
+  create(params) {
     return new Promise((resolve, reject) => {
       if (!fs.existsSync(params.filepath)) {
         reject("File does not exist: " + params.filepath);
         return;
       }
 
-      Term.findOne({ _id: params.term_id }).then(term => {
-        if (!term) {
-          throw Error("Term not found. Term ID:", params.term_id);
-        }
-        this.getCCMembersFromCertifiedListPDF(
-          params.filepath,
-          term.committee_id
-        ).then(members => {
-          let importedList = new CertifiedList({
-            term_id: params.term_id,
-            positions: members,
-            source: path.basename(params.filepath)
+      this.extractTablesFromPDF(params.filepath).then(dataTables => {
+        CertifiedList.create({ positions: dataTables })
+          .then(certifiedList => {
+            resolve(certifiedList);
+          })
+          .catch(error => {
+            reject(error);
           });
-          importedList.save(err => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(importedList);
-            }
-          });
-        });
       });
     });
   }
@@ -306,13 +180,43 @@ module.exports = function() {
     lean: false
   };
 
+  const service = new Service(options);
+
+  service.setup(app, app.get("apiPath") + "/certified-list");
+
   // Initialize our service with any options it requires
-  app.use(app.get("apiPath") + "/certified-list", new Service(options));
+  app.use(app.get("apiPath") + "/certified-list", service, function updateData(
+    req,
+    res,
+    next
+  ) {
+    // If it's request in a csv format send a download attachment response
+    // of the CSV text
+    // @todo find a better way to handle this
+    if (req.query.format === "csv") {
+      res.setHeader(
+        "Content-disposition",
+        `attachment; filename=certified-list-csv-${req.params.__feathersId}.csv`
+      );
+      res.setHeader("Content-type", "text/plain");
+
+      res.send(res.data, options, function(err) {
+        if (err) {
+          next(err);
+        } else {
+        }
+      });
+    } else {
+      next();
+    }
+  });
 
   // Get our initialize service to that we can bind hooks
   const certifiedListService = app.service(
     app.get("apiPath") + "/certified-list"
   );
+
+  //certifiedListService.setup(app);
 
   // Set up our before hooks
   certifiedListService.before(hooks.before);

@@ -10,16 +10,12 @@ const Schema = mongoose.Schema;
 const ccMemberModelSchema = require("../county-committee-member/county-committee-member-model")
   .schema;
 
+const converter = require("json-2-csv");
+
 const certifiedListSchema = new Schema(
   {
     source: { type: String, required: false },
-    term_id: {
-      type: "ObjectId",
-      ref: "term"
-    },
-    positions: [ccMemberModelSchema],
-    isApproved: { type: Boolean, default: false },
-    isImported: { type: Boolean, default: false },
+    positions: { type: Array },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
   },
