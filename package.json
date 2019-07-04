@@ -25,7 +25,11 @@
     "install-pdf-lib": "apt-get -y update && apt-get -y install poppler-utils",
     "cert": "node cert/gene rate-cert.js",
     "test:watch":
+<<<<<<< HEAD
       "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/certified-list/*.test.js'",
+=======
+      "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/**/*.test.js'",
+>>>>>>> 2807ce827a40bfaa97712a2fbae2aae00e324028
     "test":
       "mocha  --inspect=0.0.0.0 --recursive --exit --bail test/services/**/*.test.js",
     "precommit": "lint-staged",

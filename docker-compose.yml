@@ -2,11 +2,7 @@ version: '3' # version of docker-compose to use
 
 services: # configuring each container
   cc-app:
-<<<<<<< HEAD
-    image: node:8.11.3
-=======
     image: node:10.16
->>>>>>> pdf-list-extractor
     command: 
       - bash 
       - ./spinup.sh

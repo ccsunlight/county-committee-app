@@ -17,8 +17,8 @@ module.exports = function() {
     if (err.code == 401) {
       res.status(401).json({ message: "Authentication failed." });
     } else if (err.name === "ValidationError") {
-      console.log("error", err);
-      res.status(400).json({ ...err, status: 400 });
+      console.log('error', err)
+      res.status(400).json({...err, status: 400});
     }
   });
 
