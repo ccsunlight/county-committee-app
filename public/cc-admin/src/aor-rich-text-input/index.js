@@ -4,11 +4,7 @@ import { createRef } from "create-react-ref";
 import PropTypes from "prop-types";
 import Quill from "quill";
 
-<<<<<<< HEAD
 import "./RichTextInput.css";
-=======
-import './RichTextInput.css';
->>>>>>> 2807ce827a40bfaa97712a2fbae2aae00e324028
 
 class RichTextInput extends React.Component {
   constructor(props) {
