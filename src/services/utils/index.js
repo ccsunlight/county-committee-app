@@ -58,6 +58,18 @@ class Service {
     return tempFileFullPath;
   }
 
+  saveCSVTextToTempFile(csvText, filename) {
+    const tempFileFullPath = os.tmpdir() + "/" + filename;
+
+    if (csvText) {
+      fs.writeFileSync(tempFileFullPath, csvText);
+    } else {
+      throw Error("Something went wrong while trying to save " + filename);
+    }
+
+    return tempFileFullPath;
+  }
+
   find(params) {
     return Promise.resolve([]);
   }

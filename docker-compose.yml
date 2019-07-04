@@ -27,3 +27,4 @@ services: # configuring each container
 
 volumes:
   cc-db-test-data:
+    external: true

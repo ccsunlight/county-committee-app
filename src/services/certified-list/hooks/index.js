@@ -2,13 +2,36 @@
 
 const globalHooks = require("../../../hooks");
 const hooks = require("feathers-hooks");
-const CountyCommitteeMemberModel = require("../../county-committee-member/county-committee-member-model");
-const CertifiedListModel = require("../certified-list-model");
+var mongoose = require("mongoose");
 
 exports.before = {
   all: [],
-  find: [],
-  get: [],
+  find: [
+    // Excludes the "positions" property from finds
+    // to avoid memory overload of returning
+    // 1000+ array.
+    // @todo move positions to their own collection
+    function(context) {
+      context.params.query.$select = { positions: 0 };
+
+      return context;
+    }
+  ],
+  get: [
+    async function(context) {
+      if (context.params.query.format === "csv") {
+        console.log("format csv");
+
+        const csv = await context.service.generateCSV(
+          mongoose.Types.ObjectId(context.id)
+        );
+
+        context.result = csv;
+      }
+
+      return context;
+    }
+  ],
   create: [saveCertifiedListJsonDataPDF],
   update: [saveCertifiedListJsonDataPDF],
   patch: [],
@@ -21,34 +44,7 @@ exports.after = {
   get: [],
   create: [globalHooks.logAction],
   update: [globalHooks.logAction],
-  patch: [
-    function(hook) {
-      // Only import list if members have not been imported.
-      if (hook.result.isApproved && !hook.result.isImported) {
-        const membersToImport = hook.result.members;
-
-        membersToImport.forEach((ccMember, index) => {
-          CountyCommitteeMemberModel.create(ccMember, function(
-            err,
-            addedMember
-          ) {
-            if (err) console.error(err);
-
-            // If all members are imported, set the flag to true.
-            if (index === membersToImport.length - 1) {
-              CertifiedListModel.findByIdAndUpdate(
-                hook.result._id,
-                { isImported: true },
-                {},
-                success => {}
-              );
-            }
-          });
-        });
-      }
-    },
-    globalHooks.logAction
-  ],
+  patch: [globalHooks.logAction],
   remove: [globalHooks.logAction]
 };
 

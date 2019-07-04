@@ -4,11 +4,9 @@ import rest from "feathers-rest/client";
 import authentication from "feathers-authentication-client";
 import localstorage from "feathers-localstorage";
 
-const apiPath = "/api/v1";
-
 const host = process.env.REACT_APP_API_HOSTNAME
-  ? process.env.REACT_APP_API_HOSTNAME + apiPath
-  : window.location.origin + apiPath;
+  ? process.env.REACT_APP_API_HOSTNAME + process.env.REACT_APP_API_BASEPATH
+  : window.location.origin + process.env.REACT_APP_API_BASEPATH;
 
 const jwtOpts = {
   header: "Authorization", // the default authorization header
