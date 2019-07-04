@@ -19,7 +19,8 @@ import {
   FormTab,
   BooleanInput,
   SelectArrayInput,
-  NumberInput
+  NumberInput,
+  required
 } from "admin-on-rest";
 import moment from "moment";
 
@@ -143,6 +144,7 @@ export const ImportListEdit = props => {
           />
           <ReferenceInput
             label="Committee Term"
+            validate={required}
             source="term_id"
             reference="term"
           >
@@ -248,6 +250,7 @@ export const ImportListCreate = props => {
       <TabbedForm>
         <FormTab label="main">
           <ReferenceInput
+            validate={required}
             label="Committee Term"
             source="term_id"
             reference="term"

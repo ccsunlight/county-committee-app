@@ -8,14 +8,11 @@ import {
   TextField,
   EditButton,
   DisabledInput,
-  ReferenceInput,
-  SelectInput,
   SimpleForm,
-  FunctionField,
   FileInput,
   FileField
 } from "admin-on-rest";
-import moment from "moment";
+import RaisedButton from "material-ui/RaisedButton";
 
 export const CertifiedListList = props => (
   <List {...props} title="Certified Lists">

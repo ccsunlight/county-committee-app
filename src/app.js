@@ -200,8 +200,6 @@ app.service(apiPath + "/county-committee-member").hooks({
   }
 });
 
-
-
 app.service(apiPath + "/import-list").hooks({
   before: {
     all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
