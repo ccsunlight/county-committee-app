@@ -5,18 +5,14 @@ import {
   Edit,
   Create,
   Datagrid,
-  ReferenceField,
   TextField,
   EditButton,
   DisabledInput,
-  ReferenceInput,
-  SelectInput,
   SimpleForm,
-  FunctionField,
   FileInput,
   FileField
 } from "admin-on-rest";
-import moment from "moment";
+import RaisedButton from "material-ui/RaisedButton";
 
 export const CertifiedListList = props => (
   <List {...props} title="Certified Lists">
@@ -33,7 +29,7 @@ export const PartyPositionsList = ({ record, props }) => {
   let rowIndex = 0;
   const ids = record.positions
     ? record.positions.slice(0, 10).map((position, index) => {
-        position.rows.map(row => {
+        position.rows.forEach(row => {
           data[rowIndex++] = { position: position.name, row: row };
         });
         return rowIndex;
@@ -57,11 +53,29 @@ export const PartyPositionsList = ({ record, props }) => {
   }
 };
 
+export const ExportCSVButton = ({ record, props }) => {
+  const host = process.env.REACT_APP_API_HOSTNAME
+    ? process.env.REACT_APP_API_HOSTNAME + process.env.REACT_APP_API_BASEPATH
+    : window.location.origin + process.env.REACT_APP_API_BASEPATH;
+
+  const downloadLink = `${host}/certified-list/${record._id}?format=csv`;
+
+  return (
+    <RaisedButton
+      label="Export CSV"
+      color="primary"
+      href={downloadLink}
+      target="_blank"
+    />
+  );
+};
+
 export const CertifiedListEdit = props => {
   return (
     <Edit title={"Certified List"} {...props}>
       <SimpleForm>
         <DisabledInput label="Id" source="id" />
+        <ExportCSVButton {...props} />
         <PartyPositionsList props={props} />
       </SimpleForm>
     </Edit>
