@@ -66,6 +66,7 @@ class Service extends FeathersMongoose.Service {
               // Matches ED, AD, and term for each for each import
               // @todo figure out county/party matching. Term will ensure right party            electoral_district: members[x].electoral_district,
               assembly_district: members[x].assembly_district,
+              electoral_district: members[x].electoral_district,
               office: members[x].office,
               term_id: term._id
             },
@@ -74,8 +75,11 @@ class Service extends FeathersMongoose.Service {
               sex: members[x].sex,
               part: members[x].part,
               address: members[x].address,
+              entry_type: members[x].entry_type,
               county: members[x].county,
               data_source: members[x].data_source,
+              electoral_district: members[x].electoral_district,
+              assembly_district: members[x].assembly_district,
               state: members[x].state,
               committee: term.committee_id,
               term_id: term._id,

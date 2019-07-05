@@ -12,7 +12,7 @@ describe("Party Call Service", function() {
 
   let ccService, ccMemberService;
   let mock_term, mock_county_committee, mock_county_committee_member;
-
+  let cleanupDBDocs = [];
   /**
    * Sets up the database
    */
@@ -37,9 +37,11 @@ describe("Party Call Service", function() {
           committee_id: county_committee._id
         });
         mock_county_committee = county_committee;
+        cleanupDBDocs.push(county_committee);
 
         term.save(function(err) {
           mock_term = term;
+          cleanupDBDocs.push(mock_term);
 
           ccMemberService
             .create({
@@ -59,7 +61,7 @@ describe("Party Call Service", function() {
               state: "NY"
             })
             .then(function(member) {
-              mock_county_committee_member = member;
+              cleanupDBDocs.push(member);
               done();
             });
         });
@@ -70,10 +72,9 @@ describe("Party Call Service", function() {
    * Cleans up the DB after each test.
    */
   afterEach(function(done) {
-    mock_county_committee.remove();
-    mock_county_committee_member.remove();
-    mock_term.remove();
-
+    for (let x = 0; x < cleanupDBDocs.length; x++) {
+      cleanupDBDocs[x].remove();
+    }
     done();
   });
 
@@ -96,6 +97,30 @@ describe("Party Call Service", function() {
 
   it("registered the party-call service", () => {
     assert.ok(app.service(app.get("apiPath") + "/party-call"));
+  });
+
+  it("Output the election results in CSV format", done => {
+    const PartyCallService = app.service(app.get("apiPath") + "/party-call");
+    let filepath = "/usr/src/app/import/Bronx Party Call 2018 - Sheet1.csv";
+
+    PartyCallService.create({
+      filepath: filepath,
+      term_id: mock_term._id
+    }).then(partyCall => {
+      cleanupDBDocs.push(partyCall);
+      PartyCallService.get(partyCall._id, {
+        query: { format: "csv" }
+      }).then(csv => {
+        assert(typeof csv === "string");
+        assert(
+          /updatedAt,createdAt,_id,party,committee,county,data_source,assembly_district,electoral_district,ed_ad,entry_type,office_holder,office,state,part,id/.test(
+            csv
+          )
+        );
+
+        done();
+      });
+    });
   });
 
   it("can extract ED/AD", () => {

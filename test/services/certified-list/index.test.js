@@ -41,7 +41,7 @@ describe("Certified List service", function() {
 
   it("can extract tables from pdf", done => {
     const CertifiedList = app.service(app.get("apiPath") + "/certified-list");
-    console.log("extract table");
+
     const certifiedListService = CertifiedList.create({
       filepath: MOCK_CERTIFIED_LIST_FILEPATH
     })
@@ -63,8 +63,7 @@ describe("Certified List service", function() {
       .then(certifiedList => {
         CertifiedListService.generateCSV(certifiedList._id).then(
           csvResultObject => {
-            console.log(csvResultObject);
-            assert(csvResultObject.filepath);
+            assert(csvResultObject);
             done();
           }
         );

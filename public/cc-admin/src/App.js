@@ -47,6 +47,12 @@ import {
   ImportListEdit
 } from "./import-lists";
 
+import {
+  BOEElectionResultsList,
+  BOEElectionResultsCreate,
+  BOEElectionResultsEdit
+} from "./boe-election-results";
+
 import { NewsLinkList, NewsLinkCreate, NewsLinkEdit } from "./news-links";
 import { ActionLogList } from "./actionLog";
 import { ProfileList, ProfileEdit } from "./profile";
@@ -118,10 +124,21 @@ const App = () => (
 
     <Resource
       name="import-list"
+      options={{ label: "Imports" }}
       icon={UserIcon}
       list={ImportListList}
       edit={ImportListEdit}
       create={ImportListCreate}
+      remove={Delete}
+    />
+
+    <Resource
+      name="boe-election-results"
+      options={{ label: "BOE Scraper" }}
+      icon={UserIcon}
+      list={BOEElectionResultsList}
+      edit={BOEElectionResultsEdit}
+      create={BOEElectionResultsCreate}
       remove={Delete}
     />
 

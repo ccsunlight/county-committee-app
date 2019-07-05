@@ -20,8 +20,6 @@ exports.before = {
   get: [
     async function(context) {
       if (context.params.query.format === "csv") {
-        console.log("format csv");
-
         const csv = await context.service.generateCSV(
           mongoose.Types.ObjectId(context.id)
         );

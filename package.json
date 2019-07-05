@@ -16,7 +16,8 @@
     "node": ">= 6.10.2"
   },
   "scripts": {
-    "install-app": "bash ./install.sh",
+    "preinstall": "bash ./pre-install.sh",
+    "postinstall": "bash ./post-install.sh",
     "dev": "nodemon  --inspect=0.0.0.0 -e js,json,hbs src/",
     "start": "node --inspect=0.0.0.0 src/",
     "build-admin":
@@ -24,10 +25,9 @@
     "migrate": "bash ./init-migration.sh",
     "install-pdf-lib": "apt-get -y update && apt-get -y install poppler-utils",
     "cert": "node cert/gene rate-cert.js",
-    "test:watch":
-      "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/certified-list/*.test.js'",
+    "test:watch": "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/**/*.test.js'",
     "test":
-      "mocha  --inspect=0.0.0.0 --recursive --exit --bail test/services/**/*.test.js",
+      "mocha  --inspect=0.0.0.0 --recursive --exit --bail test/services/party-call/*.test.js",
     "precommit": "lint-staged",
     "format": "prettier",
     "jshint": "jshint src/. test/. --config",
@@ -58,6 +58,7 @@
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
     "cheerio": "^1.0.0-rc.3",
+    "cheerio-tableparser": "^1.0.1",
     "commander": "^2.15.1",
     "compression": "^1.6.2",
     "cors": "^2.8.1",
@@ -90,8 +91,10 @@
     "handlebars-dateformat": "^1.1.1",
     "handlebars-paginate": "^0.1.0",
     "hbs": "^4.0.4",
+    "html-table-to-json": "^0.4.0",
     "husky": "^0.14.3",
     "js-beautify": "^1.7.5",
+    "jsdom": "^15.1.1",
     "json-2-csv": "^3.5.5",
     "json2csv": "^3.11.5",
     "lint-staged": "^7.3.0",
@@ -103,6 +106,7 @@
     "mongoose-lean-virtuals": "^0.3.4",
     "node-cache": "^4.1.1",
     "node-geocoder": "^3.23.0",
+    "node-html-parser": "^1.1.16",
     "nodemailer": "^4.0.1",
     "open-graph-scraper": "^3.6.1",
     "passport": "^0.3.2",
@@ -122,6 +126,8 @@
     "serve-favicon": "^2.4.2",
     "slugify": "^1.2.6",
     "smtp-server": "^3.0.1",
+    "table-scraper": "^0.1.0",
+    "tabletojson": "^1.0.4",
     "turf": "^3.0.14",
     "underscore": "^1.9.0",
     "winston": "^2.4.0",
@@ -131,7 +137,7 @@
   "devDependencies": {
     "fast-csv": "^2.4.1",
     "jshint": "^2.10.2",
-    "mocha": "5.1.1",
+    "mocha": "^5.1.1",
     "mocha-osx-reporter": "^0.1.2",
     "nodemon": "^1.19.1",
     "onchange": "^3.3.0"
