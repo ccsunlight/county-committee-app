@@ -105,7 +105,7 @@ describe("Import List Service", function() {
       });
   });
 
-  it("can will reject an import with invalid records", done => {
+  it("will reject an import with invalid records", done => {
     let filepath = MOCK_CSV_FILE_PATH_WITH_ERRORS;
     const ImportListService = app.service(app.get("apiPath") + "/import-list");
 

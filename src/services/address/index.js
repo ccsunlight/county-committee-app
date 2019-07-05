@@ -84,15 +84,12 @@ class Service {
         return committee._id;
       });
 
-
       // Get the current active terms for the user's party
 
       const currentTerms = yield Term.find({
         end_date: { $gt: new Date() },
         committee_id: { $in: partyCommitteeIds }
       });
-
-      
 
       const currentTermIds = currentTerms.map(function(term) {
         return term._id;
@@ -130,25 +127,22 @@ class Service {
         })
       );
 
-
-
-      const upcomingTermIds = partyCommittees.map(partyCommittee=> {
+      const upcomingTermIds = partyCommittees.map(partyCommittee => {
         return partyCommittee.upcoming_term_id;
-      })
+      });
 
-      
       if (upcomingTermIds.length) {
-      const partyCallForEd = yield partyCall
-        .findOne({
-          term_id: { $in: upcomingTermIds },
-          positions: {
-            $elemMatch: {
-              assembly_district: ad,
-              electoral_district: ed
+        const partyCallForEd = yield partyCall
+          .findOne({
+            term_id: { $in: upcomingTermIds },
+            positions: {
+              $elemMatch: {
+                assembly_district: ad,
+                electoral_district: ed
+              }
             }
-          }
-        })
-        .exec();
+          })
+          .exec();
 
         if (partyCallForEd) {
           let partyPositions = partyCallForEd.positions.filter(position => {
@@ -157,7 +151,7 @@ class Service {
               position.electoral_district === ed
             );
           });
-  
+
           if (partyPositions) {
             partyPositionsToBeFilled = partyPositions.map(function(position) {
               return {
@@ -167,7 +161,6 @@ class Service {
             });
           }
         }
-  
       }
 
       let result = {

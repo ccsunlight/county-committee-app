@@ -132,13 +132,9 @@ class Service extends FeathersMongoose.Service {
           converter
             .json2csvAsync(dataObjects)
             .then(csv => {
-              // const filename = Utils.saveCSVTextToTempFile(
-              //   csv,
-              //   certifiedList.id + ".csv"
-              // );
               resolve(csv);
             })
-            .catch(err => console.log("ERROR: " + err.message));
+            .catch(err => reject("ERROR: " + err.message));
         });
       });
     }
