@@ -14,9 +14,9 @@ import {
   SimpleForm,
   FunctionField,
   FileInput,
-  FileField,
-  RaisedButton
+  FileField
 } from "admin-on-rest";
+import RaisedButton from "material-ui/RaisedButton";
 import moment from "moment";
 
 export const PartyCallList = props => (
@@ -75,7 +75,7 @@ export const ExportCSVButton = ({ record, props }) => {
     ? process.env.REACT_APP_API_HOSTNAME + process.env.REACT_APP_API_BASEPATH
     : window.location.origin + process.env.REACT_APP_API_BASEPATH;
 
-  const downloadLink = `${host}/boe-election-results/${record._id}?format=csv`;
+  const downloadLink = `${host}/party-call/${record._id}?format=csv`;
 
   return (
     <RaisedButton
@@ -92,7 +92,7 @@ export const PartyCallEdit = props => {
     <Edit title={"Import list members"} {...props}>
       <SimpleForm>
         <DisabledInput label="Id" source="id" />
-
+        <ExportCSVButton {...props} />
         <ReferenceInput
           label="Committee Term"
           source="term_id"

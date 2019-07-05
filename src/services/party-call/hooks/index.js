@@ -33,13 +33,12 @@ exports.after = {
     function(context) {
       if (context.params.query.format === "csv") {
         return new Promise((resolve, reject) => {
-          const positions = context.result.positions.map(function(position) {
-            return position.toObject();
-          });
-          converter.json2csvAsync(positions).then(csv => {
-            context.result = csv;
-            resolve(context);
-          });
+          converter
+            .json2csvAsync(JSON.parse(JSON.stringify(context.result.positions)))
+            .then(csv => {
+              context.result = csv;
+              resolve(context);
+            });
         });
       }
     }

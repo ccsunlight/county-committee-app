@@ -227,7 +227,31 @@ module.exports = function() {
   };
 
   // Initialize our service with any options it requires
-  app.use(app.get("apiPath") + "/party-call", new Service(options));
+  app.use(
+    app.get("apiPath") + "/party-call",
+    new Service(options),
+    function updateData(req, res, next) {
+      // If it's request in a csv format send a download attachment response
+      // of the CSV text
+      // @todo find a better way to handle this
+      if (req.query.format === "csv") {
+        res.setHeader(
+          "Content-disposition",
+          `attachment; filename=party-call-${req.params.__feathersId}.csv`
+        );
+        res.setHeader("Content-type", "text/plain");
+
+        res.send(res.data, options, function(err) {
+          if (err) {
+            next(err);
+          } else {
+          }
+        });
+      } else {
+        next();
+      }
+    }
+  );
 
   // Get our initialize service to that we can bind hooks
   const partyCallService = app.service(app.get("apiPath") + "/party-call");

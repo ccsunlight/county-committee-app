@@ -134,7 +134,7 @@ class Service extends FeathersMongoose.Service {
             .then(csv => {
               resolve(csv);
             })
-            .catch(err => console.log("ERROR: " + err.message));
+            .catch(err => reject("ERROR: " + err.message));
         });
       });
     }

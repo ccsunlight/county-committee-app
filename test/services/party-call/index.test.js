@@ -112,7 +112,12 @@ describe("Party Call Service", function() {
         query: { format: "csv" }
       }).then(csv => {
         assert(typeof csv === "string");
-        assert(/,/.test(csv));
+        assert(
+          /updatedAt,createdAt,_id,party,committee,county,data_source,assembly_district,electoral_district,ed_ad,entry_type,office_holder,office,state,part,id/.test(
+            csv
+          )
+        );
+
         done();
       });
     });
