@@ -4,6 +4,7 @@ const globalHooks = require("../../../hooks");
 const hooks = require("feathers-hooks");
 const CountyCommitteeMemberModel = require("../../county-committee-member/county-committee-member-model");
 const PartyCallModel = require("../party-call-model");
+const converter = require("json-2-csv");
 
 exports.before = {
   all: [],
@@ -28,7 +29,20 @@ exports.before = {
 exports.after = {
   all: [],
   find: [],
-  get: [],
+  get: [
+    function(context) {
+      if (context.params.query.format === "csv") {
+        return new Promise((resolve, reject) => {
+          converter
+            .json2csvAsync(JSON.parse(JSON.stringify(context.result.positions)))
+            .then(csv => {
+              context.result = csv;
+              resolve(context);
+            });
+        });
+      }
+    }
+  ],
   create: [globalHooks.logAction],
   update: [globalHooks.logAction],
   patch: [

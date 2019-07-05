@@ -136,7 +136,6 @@ export const ImportListEdit = props => {
         <FormTab label="main">
           <DisabledInput label="Id" source="id" />
           <TextField label="Status" source="status" />
-
           <BooleanInput label="Approved" source="approved" />
           <BooleanInput
             label="Create members if not existing"
@@ -163,7 +162,6 @@ export const ImportListEdit = props => {
               }
             />
           </ReferenceInput>
-
           <TextField label="Total Records" source="importResults.n" />
           <TextField
             label="Records Imported"
@@ -181,6 +179,7 @@ export const ImportListEdit = props => {
             label="Office Holder"
             source="conditionals.office_holder"
           />
+          <TextInput label="Party" source="conditionals.party" />
           <NumberInput
             label="Election District"
             source="conditionals.election_district"
@@ -189,7 +188,6 @@ export const ImportListEdit = props => {
             label="Assembly District"
             source="conditionals.assembly_district"
           />
-
           <SelectArrayInput
             label="County"
             source="conditionals.county"
@@ -212,6 +210,7 @@ export const ImportListEdit = props => {
         <FormTab label="Bulk Fields">
           <TextInput label="Entry Type" source="bulkFields.entry_type" />
           <TextInput label="Office Holder" source="bulkFields.office_holder" />
+
           <SelectInput
             source="bulkFields.party"
             label="Party"
@@ -284,6 +283,8 @@ export const ImportListCreate = props => {
             label="Office Holder"
             source="conditionals.office_holder"
           />
+
+          <TextInput label="Party" source="conditionals.party" />
           <NumberInput
             label="Election District"
             source="conditionals.election_district"

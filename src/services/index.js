@@ -19,6 +19,7 @@ const address = require("./address");
 const term = require("./term");
 const enrollment = require("./enrollment");
 const importList = require("./import-list");
+const boeElectionResults = require("./boe-election-results");
 
 const mongoose = require("mongoose");
 
@@ -42,6 +43,7 @@ module.exports = function() {
   app.configure(countyCommitteeMember);
   app.configure(countyCommittee);
   // app.configure(countyCommitteeArchive);
+  app.configure(boeElectionResults);
   app.configure(edGeometry);
   app.configure(invite);
   app.configure(actionLog);
