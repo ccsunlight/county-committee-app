@@ -16,7 +16,8 @@
     "node": ">= 6.10.2"
   },
   "scripts": {
-    "install-app": "bash ./install.sh",
+    "preinstall": "bash ./pre-install.sh",
+    "postinstall": "bash ./post-install.sh",
     "dev": "nodemon  --inspect=0.0.0.0 -e js,json,hbs src/",
     "start": "node --inspect=0.0.0.0 src/",
     "build-admin":
@@ -27,7 +28,7 @@
     "test:watch":
       "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/boe-election-results/*.test.js'",
     "test":
-      "mocha  --inspect=0.0.0.0 --recursive --exit --bail test/services/boe-election-results/*.test.js",
+      "mocha  --inspect=0.0.0.0 --recursive --exit --bail test/services/**/*.test.js",
     "precommit": "lint-staged",
     "format": "prettier",
     "jshint": "jshint src/. test/. --config",
@@ -137,7 +138,7 @@
   "devDependencies": {
     "fast-csv": "^2.4.1",
     "jshint": "^2.10.2",
-    "mocha": "5.1.1",
+    "mocha": "^5.1.1",
     "mocha-osx-reporter": "^0.1.2",
     "nodemon": "^1.19.1",
     "onchange": "^3.3.0"
