@@ -57,7 +57,7 @@ describe("BOE Election Results Service", function() {
     });
   });
 
-  it("can create a new document with election results", done => {
+  it("Output the election results in CSV format", done => {
     const BoeElectionResultsService = app.service(
       app.get("apiPath") + "/boe-election-results"
     );

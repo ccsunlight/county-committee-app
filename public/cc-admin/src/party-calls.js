@@ -14,7 +14,8 @@ import {
   SimpleForm,
   FunctionField,
   FileInput,
-  FileField
+  FileField,
+  RaisedButton
 } from "admin-on-rest";
 import moment from "moment";
 
@@ -69,11 +70,29 @@ export const PartyPositionsList = ({ record, props }) => {
   }
 };
 
+export const ExportCSVButton = ({ record, props }) => {
+  const host = process.env.REACT_APP_API_HOSTNAME
+    ? process.env.REACT_APP_API_HOSTNAME + process.env.REACT_APP_API_BASEPATH
+    : window.location.origin + process.env.REACT_APP_API_BASEPATH;
+
+  const downloadLink = `${host}/boe-election-results/${record._id}?format=csv`;
+
+  return (
+    <RaisedButton
+      label="Export CSV"
+      color="primary"
+      href={downloadLink}
+      target="_blank"
+    />
+  );
+};
+
 export const PartyCallEdit = props => {
   return (
     <Edit title={"Import list members"} {...props}>
       <SimpleForm>
         <DisabledInput label="Id" source="id" />
+
         <ReferenceInput
           label="Committee Term"
           source="term_id"
