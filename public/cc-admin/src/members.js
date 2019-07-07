@@ -39,23 +39,18 @@ const MemberFilter = props => (
   <Filter {...props}>
     <TextInput label="ED" source="electoral_district" />
     <TextInput label="AD" source="assembly_district" />
-    <ReferenceInput
-      label="County Committee"
-      source="term_id"
-      reference="term"
-    >
+    <ReferenceInput label="County Committee" source="term_id" reference="term">
       <SelectInput
         optionText={
-        <FunctionField
-          label="Terms"
-          render={record =>
-            `${record.committee.county} + ${
-              record.committee.party
-            } ${moment(record.start_date).format("ll")} to ${moment(
-              record.start_date
-            ).format("ll")}`
-          }
-        />}
+          <FunctionField
+            label="Terms"
+            render={record =>
+              `${record.committee.county} + ${record.committee.party} ${moment(
+                record.start_date
+              ).format("ll")} to ${moment(record.end_date).format("ll")}`
+            }
+          />
+        }
       />
     </ReferenceInput>
   </Filter>
