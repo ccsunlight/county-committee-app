@@ -128,90 +128,30 @@ describe("Import List Service", function() {
     );
 
     const TermService = app.service(app.get("apiPath") + "/term");
-    // Creates a certified list
-    CertifiedListService.create({
-      filepath: MOCK_CERTIFIED_LIST_FILE_PATH,
+
+    // Then appoints members to vacancies
+    ImportListService.create({
+      filepath: MOCK_CSV_FILE_PATH,
       term_id: mock_term._id
-    }).then(certified_list => {
-      cleanupDBDocs.push(certified_list);
+    }).then(importedList => {
+      cleanupDBDocs.push(importedList);
 
-      // Then generates members from certified list
-      TermService.createMembersFromCertifiedList({
-        term_id: mock_term._id
-      }).then(success => {
-        // Then appoints members to vacancies
-        ImportListService.create({
-          filepath: MOCK_CSV_FILE_PATH,
-          term_id: mock_term._id
-        }).then(importedList => {
-          cleanupDBDocs.push(importedList);
+      TermService.importMembersToTerm(importedList.members, mock_term, {
+        bulkFields: { entry_type: "Appointed" },
+        upsert: true
+      }).then(memberImportResults => {
+        cleanupDBDocs.concat(memberImportResults);
+        // assert.equal(
+        //   memberImportResults.nModified,
+        //   importedList.members.length
+        // );
 
-          TermService.importMembersToTerm(importedList.members, mock_term, {
-            bulkFields: { entry_type: "Appointed" },
-            upsert: true,
-            conditionals: {
-              entry_type: { $ne: "Appointed" }
-            }
-          }).then(memberImportResults => {
-            cleanupDBDocs.concat(memberImportResults);
-            assert.equal(
-              memberImportResults.nModified,
-              importedList.members.length
-            );
-
-            CountyCommitteeMemberModel.find({
-              term_id: mock_term._id,
-              entry_type: "Appointed"
-            }).then(function(members) {
-              assert.equal(members.length, importedList.members.length);
-              done();
-            });
-          });
-        });
-      });
-    });
-  });
-
-  it("can migrate an imported list with some unmatched member", done => {
-    const ImportListService = app.service(app.get("apiPath") + "/import-list");
-    const CertifiedListService = app.service(
-      app.get("apiPath") + "/certified-list"
-    );
-
-    const TermService = app.service(app.get("apiPath") + "/term");
-    // Creates a certified list
-    CertifiedListService.create({
-      filepath: MOCK_CERTIFIED_LIST_FILE_PATH,
-      term_id: mock_term._id
-    }).then(certified_list => {
-      cleanupDBDocs.push(certified_list);
-
-      // Then generates members from certified list
-      TermService.createMembersFromCertifiedList({
-        term_id: mock_term._id
-      }).then(success => {
-        // Then appoints members to vacancies
-        ImportListService.create({
-          filepath: MOCK_CSV_FILE_PATH,
-          term_id: mock_term._id
-        }).then(importedList => {
-          cleanupDBDocs.push(importedList);
-
-          TermService.importMembersToTerm(importedList.members, mock_term, {
-            bulkFields: { entry_type: "Appointed" },
-            upsert: true,
-            conditionals: {
-              entry_type: "TKTK"
-            }
-          }).then(memberImportResults => {
-            cleanupDBDocs.concat(memberImportResults);
-            assert.equal(
-              memberImportResults.unImportedRecords.length,
-              importedList.members.length
-            );
-
-            done();
-          });
+        CountyCommitteeMemberModel.find({
+          term_id: mock_term._id,
+          entry_type: "Appointed"
+        }).then(function(members) {
+          assert.equal(members.length, importedList.members.length);
+          done();
         });
       });
     });

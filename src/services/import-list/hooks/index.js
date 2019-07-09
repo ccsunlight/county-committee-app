@@ -20,9 +20,9 @@ exports.before = {
     }
   ],
   get: [],
-  create: [savePartyCallJsonDataCSV],
-  update: [savePartyCallJsonDataCSV],
-  patch: [savePartyCallJsonDataCSV],
+  create: [saveJSONDataToCSV],
+  update: [saveJSONDataToCSV],
+  patch: [saveJSONDataToCSV],
   remove: []
 };
 
@@ -72,13 +72,13 @@ exports.after = {
 };
 
 /**
- * Checks for a data json string for party call and if present uses that
- * to create the party call. For use with JSON rest POST requests.
+ * Checks for a data json string for a list and if present uses that
+ * to create the list. For use with JSON rest POST requests.
  *
  * @param {Object} context The hook context
  * @return {Object} The modified hook context
  */
-function savePartyCallJsonDataCSV(context) {
+function saveJSONDataToCSV(context) {
   if (context.data.hasOwnProperty("file_data")) {
     let csvBase64DataObject = context.data.file_data.pop();
     if (csvBase64DataObject) {

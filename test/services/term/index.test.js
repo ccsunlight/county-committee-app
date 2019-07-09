@@ -18,6 +18,7 @@ describe("term service", function() {
   let TermService, CertifiedListService;
   let county_committee;
 
+  const cleanupDBDocs = [];
   let ccService, ccMemberService;
   let mock_term, mock_county_committee, mock_county_committee_member;
 
@@ -47,9 +48,11 @@ describe("term service", function() {
           committee_id: county_committee._id
         });
         mock_county_committee = county_committee;
+        cleanupDBDocs.push(mock_county_committee);
 
         term.save(function(err) {
           mock_term = term;
+          cleanupDBDocs.push(mock_term);
 
           ccMemberService
             .create({
@@ -70,22 +73,22 @@ describe("term service", function() {
             })
             .then(function(member) {
               mock_county_committee_member = member;
+              cleanupDBDocs.push(mock_county_committee_member);
               done();
             });
         });
       });
   });
-
-  afterEach(async function(done) {
-    await ccService.remove({ _id: mock_county_committee._id });
-    await TermService.remove({ _id: mock_term._id });
-    MemberModel.deleteMany({ term_id: mock_term._id }).then(success => {
-      done();
-    });
+  afterEach(function(done) {
+    for (let x = 0; x < cleanupDBDocs.length; x++) {
+      cleanupDBDocs[x].remove();
+    }
+    done();
   });
 
-  it("registered the terms service", () => {
+  it("registered the terms service", done => {
     assert.ok(app.service(app.get("apiPath") + "/term"));
+    done();
   });
 
   it("can create a term", done => {
@@ -93,57 +96,13 @@ describe("term service", function() {
       committee_id: mock_county_committee._id,
       ...termMock
     }).then(term => {
+      cleanupDBDocs.push(term);
       assert(term._id);
       assert(term.start_date);
       assert(term.end_date);
       assert(term.committee_id);
       assert(term.committee, "It has an aliased county committee");
       done();
-    });
-  });
-
-  it("can create county committee members from certified list", done => {
-    CertifiedListService.create({
-      filepath: cerfied_list_path,
-      term_id: mock_term._id
-    }).then(certified_list => {
-      assert(certified_list);
-      assert(certified_list.positions);
-      TermService.createMembersFromCertifiedList({
-        term_id: mock_term._id
-      }).then(members => {
-        assert(members.length, 2500);
-        CertifiedListService.remove({ term_id: mock_term._id }).then(
-          success => {
-            done();
-          }
-        );
-      });
-    });
-  });
-
-  it("should return an error message when converting a list to members fails", done => {
-    CertifiedListService.create({
-      filepath: cerfied_list_path,
-      term_id: mock_term._id
-    }).then(certified_list => {
-      assert(certified_list);
-      assert(certified_list.positions);
-      // Attempts to create members for the same certified list.
-      TermService.createMembersFromCertifiedList({
-        term_id: mock_term._id
-      }).then(members => {
-        assert(members.length, 2500);
-
-        TermService.createMembersFromCertifiedList({
-          term_id: mock_term._id
-        })
-          .then(members => {})
-          .catch(e => {
-            assert(e, "Error is thrown");
-            done();
-          });
-      });
     });
   });
 });

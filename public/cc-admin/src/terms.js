@@ -17,12 +17,13 @@ import {
   DateInput,
   DateField
 } from "admin-on-rest";
-import ApproveButton from "./ApproveButton";
 
 export const TermList = props => (
   <List {...props} title="Terms">
     <Datagrid>
       <TextField source="id" />
+      <DateField source="start_date" />
+      <DateField source="end_date" />
       <ReferenceField
         label="Committee"
         source="committee_id"
@@ -33,8 +34,6 @@ export const TermList = props => (
           render={record => `${record.county} ${record.party}`}
         />
       </ReferenceField>
-      <DateField source="start_date" />
-      <DateField source="end_date" />
       <EditButton />
     </Datagrid>
   </List>
@@ -45,6 +44,8 @@ export const TermEdit = props => {
     <Edit title={"Edit Term"} {...props}>
       <SimpleForm>
         <DisabledInput label="Id" source="id" />
+        <DateInput source="start_date" />
+        <DateInput source="end_date" />
         <ReferenceInput
           label="County Committee"
           source="committee_id"
@@ -62,32 +63,6 @@ export const TermEdit = props => {
         </ReferenceInput>
 
         <ReferenceManyField
-          label="Certified List"
-          target="term_id"
-          reference="certified-list"
-        >
-          <Datagrid>
-            <TextField source="_id" />
-            <TextField source="source" />
-            <EditButton />
-          </Datagrid>
-        </ReferenceManyField>
-
-        <ApproveButton />
-
-        <ReferenceManyField
-          label="Party Call"
-          target="term_id"
-          reference="party-call"
-        >
-          <Datagrid>
-            <TextField source="_id" />
-            <TextField source="source" />
-            <EditButton />
-          </Datagrid>
-        </ReferenceManyField>
-
-        <ReferenceManyField
           label="CC Members"
           target="term_id"
           reference="county-committee-member"
@@ -101,9 +76,6 @@ export const TermEdit = props => {
             <EditButton />
           </Datagrid>
         </ReferenceManyField>
-
-        <DateInput source="start_date" />
-        <DateInput source="end_date" />
       </SimpleForm>
     </Edit>
   );

@@ -637,3 +637,23 @@ img {
     border-radius: 10px;
   }
 }
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  margin: 0 0 40px;
+}
+
+.cc-chart p {
+  margin: 10px 20px;
+}
+
+.cc-chart h4 {
+  margin: 20px 20px;
+}
+
+.chart-fineprint {
+  text-align: left;
+  font-style: italic;
+  margin: 10px 20px;
+}
