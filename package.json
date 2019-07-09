@@ -28,7 +28,7 @@
     "test:watch":
       "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/**/*.test.js'",
     "test":
-      "mocha  --inspect=0.0.0.0 --recursive --exit --bail test/services/party-call/*.test.js",
+      "mocha  --inspect=0.0.0.0 --recursive --exit --bail test/services/**/*.test.js",
     "precommit": "lint-staged",
     "format": "prettier",
     "jshint": "jshint src/. test/. --config",

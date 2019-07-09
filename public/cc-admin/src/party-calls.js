@@ -18,7 +18,10 @@ import {
 } from "admin-on-rest";
 import RaisedButton from "material-ui/RaisedButton";
 import moment from "moment";
-
+/**
+ * @deprecated
+ * @param {@} props
+ */
 export const PartyCallList = props => (
   <List {...props} title="Party Calls">
     <Datagrid>
