@@ -23,8 +23,6 @@ import {
   CountyCommitteeCreate
 } from "./county-committees";
 
-import { PartyCallList, PartyCallEdit, PartyCallCreate } from "./party-calls";
-
 import { TermList, TermEdit, TermCreate } from "./terms";
 
 import {
@@ -100,16 +98,6 @@ const App = () => (
       list={CertifiedListList}
       edit={CertifiedListEdit}
       create={CertifiedListCreate}
-      remove={Delete}
-    />
-
-    <Resource
-      name="party-call"
-      options={{ label: "Party Calls" }}
-      icon={ActionLogIcon}
-      list={PartyCallList}
-      edit={PartyCallEdit}
-      create={PartyCallCreate}
       remove={Delete}
     />
 

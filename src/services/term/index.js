@@ -7,29 +7,6 @@ const hooks = require("./hooks");
 const mongoose = require("mongoose");
 
 class Service extends FeathersMongoose.Service {
-  createMembersFromCertifiedList(params) {
-    return new Promise((resolve, reject) => {
-      TermModel.findOne(params.term_id).then(term => {
-        let positions = term.certified_list.positions;
-        let members = [];
-        positions.forEach(position => {
-          let member = new MemberModel(position);
-          member.term_id = term._id;
-          members.push(member);
-        });
-
-        MemberModel.insertMany(members)
-          .then(raw_result => {
-            resolve(raw_result);
-          })
-          .catch(err => {
-            debugger;
-            reject(err);
-          });
-      });
-    });
-  }
-
   /**
    * Appoints members to a term
    * @param {Members} members

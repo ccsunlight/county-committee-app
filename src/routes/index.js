@@ -219,7 +219,7 @@ const getCountyCommitteeBreakdown = co(function*(county, party) {
 
   let numOfVacancies = yield countyCommitteeMember
     .find({
-      office_holder: "Vacancy",
+      office_holder: { $in: ["Vacancy", "None"] },
       term_id: countyCommittee.current_term_id
     })
     .count();

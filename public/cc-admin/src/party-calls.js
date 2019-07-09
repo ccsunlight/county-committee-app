@@ -18,7 +18,10 @@ import {
 } from "admin-on-rest";
 import RaisedButton from "material-ui/RaisedButton";
 import moment from "moment";
-
+/**
+ * @deprecated
+ * @param {@} props
+ */
 export const PartyCallList = props => (
   <List {...props} title="Party Calls">
     <Datagrid>
@@ -136,7 +139,7 @@ export const PartyCallCreate = props => {
                   `${record.committee.county} + ${
                     record.committee.party
                   } ${moment(record.start_date).format("ll")} to ${moment(
-                    record.start_date
+                    record.end_date
                   ).format("ll")}`
                 }
               />

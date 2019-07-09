@@ -76,6 +76,7 @@ export const CountyCommitteeEdit = props => (
         source="current_term_id"
         reference="term"
         filter={{ committee_id: props.match.params.id }}
+        allowEmpty
       >
         <SelectInput
           optionText={
@@ -95,6 +96,7 @@ export const CountyCommitteeEdit = props => (
         source="upcoming_term_id"
         reference="term"
         filter={{ committee_id: props.match.params.id }}
+        allowEmpty
       >
         <SelectInput
           optionText={
