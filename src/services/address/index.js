@@ -11,7 +11,6 @@ const countyCommitteeMember = require("../county-committee-member/county-committ
 const partyCall = require("../party-call/party-call-model");
 const Term = require("../term/term-model");
 const edGeometry = require("../edGeometry/edGeometry-model");
-
 const hooks = require("./hooks");
 const NodeGeocoder = require("node-geocoder");
 
@@ -208,8 +207,40 @@ class Service {
 module.exports = function() {
   const app = this;
 
+  const service = new Service();
+
+  service.id = "fullAddress";
+  service.docs = {
+    description: "Service to manage projects",
+
+    definitions: {
+      operations: {
+        get: {
+          operationId: "fullAddress",
+          description:
+            "Returns all pets from the system that the user has access to",
+          responses: {
+            "200": {
+              description: "A list of pets."
+            }
+          },
+          parameters: [
+            {
+              name: "fullAddress",
+              in: "path",
+              description: "ID of pet that needs to be updated",
+              required: true,
+              schema: {
+                type: "string"
+              }
+            }
+          ]
+        }
+      }
+    }
+  };
   // Initialize our service with any options it requires
-  app.use(app.get("apiPath") + "/address", new Service());
+  app.use(app.get("apiPath") + "/address", service);
 
   // Get our initialize service to that we can bind hooks
   const addressService = app.service(app.get("apiPath") + "/address");

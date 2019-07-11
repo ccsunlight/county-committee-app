@@ -49,11 +49,6 @@ const logger = new winston.Logger({
     new winston.transports.MongooseLogger({
       level: "info"
     })
-    /* new(winston.transports.MongoDB)({
-            db: 'mongodb://172.17.0.2:27017/county-committee',
-            collection: 'action-log'
-        })
-        */
   ]
 });
 

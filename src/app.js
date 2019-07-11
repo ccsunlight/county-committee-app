@@ -154,11 +154,34 @@ app
   .configure(
     swagger({
       docsPath: apiPath + "/docs",
+      prefix: /api\/v\d\//,
+      versionPrefix: /v\d/,
       uiIndex: true,
-      info: {
-        title: "CC Sunlight API",
-        description:
-          "Endpoints for main entities. Some endpoints require auth. Most non write operations do not. These endpoints are not yet stable. Please use for dev purposes only."
+      include: {
+        tags: [],
+        paths: ["api/v1/address"]
+      },
+      specs: {
+        info: {
+          title: "CC Sunlight API",
+          description:
+            "Endpoints for main entities. Some endpoints require auth. Most non write operations do not. These endpoints are not yet stable. Please use for dev purposes only."
+        }
+        // definitions: {
+        //   paths: {
+        //     "address/{fullAddress}": {
+        //       get: {
+        //         description:
+        //           "Returns all pets from the system that the user has access to",
+        //         responses: {
+        //           "200": {
+        //             description: "A list of pets."
+        //           }
+        //         }
+        //       }
+        //     }
+        //   }
+        // }
       }
     })
   )

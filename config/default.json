@@ -1,79 +1,81 @@
+{
+  "host": "localhost",
+  "port": "80",
+  "public": "../public",
+  "api": {
+    "basePath": "api",
+    "version": "v1",
+    "defaultItemLimit": 200
+  },
+  "authentication": {
+    "secret": "AUTHENTICATION_SECRET",
+    "strategies": ["jwt", "local"],
+    "path": "/authentication",
+    "service": "user",
+    "jwt": {
+      "header": {
+        "type": "access"
+      },
+      "audience": "localhost",
+      "subject": "anonymous",
+      "issuer": "feathers",
+      "algorithm": "HS256",
+      "expiresIn": "1d"
+    },
+    "session": true,
+    "local": {
+      "entity": "user",
+      "service": "user",
+      "usernameField": "email",
+      "passwordField": "password"
+    }
+  },
+  "acl": [
     {
-    "host": "localhost",
-    "port": "80",
-    "public": "../public",
-    "api": {
-        "basePath": "api",
-        "version": "v1",
-        "defaultItemLimit": 200
+      "url": "/api/v1/user",
+      "method": "GET",
+      "allow": {
+        "authenticated": true,
+        "role": "admin"
+      }
     },
-    "authentication": {
-        "secret": "AUTHENTICATION_SECRET",
-        "strategies": [
-            "jwt",
-            "local"
-        ],
-        "path": "/authentication",
-        "service": "user",
-        "jwt": {
-            "header": {
-                "type": "access"
-            },
-            "audience": "localhost",
-            "subject": "anonymous",
-            "issuer": "feathers",
-            "algorithm": "HS256",
-            "expiresIn": "1d"
-        },
-        "session": true,
-        "local": {
-            "entity": "user",
-            "service": "user",
-            "usernameField": "email",
-            "passwordField": "password"
-        }
+    {
+      "url": "/api/v1/user",
+      "method": "POST",
+      "allow": {
+        "authenticated": true,
+        "role": "admin"
+      }
     },
-    "acl": [{
-        "url": "/api/v1/user",
-        "method": "GET",
-        "allow": {
-            "authenticated": true,
-            "role": "admin"
-        }
-    }, {
-        "url": "/api/v1/user",
-        "method": "POST",
-        "allow": {
-            "authenticated": true,
-            "role": "admin"
-        }
-    }, {
-        "url": "/api/v1/user",
-        "method": "PUT",
-        "allow": {
-            "authenticated": true,
-            "role": "admin"
-        }
-    }, {
-        "url": "/api/v1/user",
-        "method": "DELETE",
-        "allow": {
-            "authenticated": true,
-            "role": "admin"
-        }
-    }, {
-        "url": "/",
-        "method": "GET",
-        "allow": {
-            "authenticated": false
-        }
-
-    }, {
-        "url": "/all",
-        "method": "GET",
-        "allow": {
-            "authenticated": false
-        }
-    }]
-  
+    {
+      "url": "/api/v1/user",
+      "method": "PUT",
+      "allow": {
+        "authenticated": true,
+        "role": "admin"
+      }
+    },
+    {
+      "url": "/api/v1/user",
+      "method": "DELETE",
+      "allow": {
+        "authenticated": true,
+        "role": "admin"
+      }
+    },
+    {
+      "url": "/",
+      "method": "GET",
+      "allow": {
+        "authenticated": false
+      }
+    },
+    {
+      "url": "/all",
+      "method": "GET",
+      "allow": {
+        "authenticated": false
+      }
+    }
+  ]
 }
