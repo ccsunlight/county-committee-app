@@ -90,7 +90,7 @@
     "feathers-rest": "^1.7.1",
     "feathers-seeder": "^1.0.8",
     "feathers-socketio": "^1.5.2",
-    "feathers-swagger": "^0.6.0",
+    "feathers-swagger": "^1.1.0",
     "file-api": "^0.10.4",
     "filereader": "^0.10.3",
     "generate-password": "^1.4.2",
