@@ -47,13 +47,13 @@ termSchema.virtual("committee", {
   options: { sort: { _id: 1 } }
 });
 
-termSchema.virtual("certified_list", {
-  ref: "certified-list",
-  localField: "_id",
-  foreignField: "term_id",
-  justOne: true,
-  options: { sort: { _id: 1 } }
-});
+// termSchema.virtual("certified_list", {
+//   ref: "certified-list",
+//   localField: "_id",
+//   foreignField: "term_id",
+//   justOne: true,
+//   options: { sort: { _id: 1 } }
+// });
 
 // Populate needs to be call in the pre hook
 // to work properly
