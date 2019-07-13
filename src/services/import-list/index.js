@@ -48,14 +48,7 @@ class Service extends FeathersMongoose.Service {
    * @param {Object} params The params object passed to the service
    */
   importMemberListCSVFileAsObjects(params) {
-    const {
-      filepath,
-      party,
-      county,
-      state,
-      committee_id,
-      entry_type = "Appointed"
-    } = params;
+    const { filepath, party, county, state, committee_id } = params;
 
     var parse = require("csv-parse");
 
@@ -73,7 +66,6 @@ class Service extends FeathersMongoose.Service {
             county: county,
             party: party,
             committee: committee_id,
-            entry_type: entry_type,
             data_source: filepath,
             state: state
           })
