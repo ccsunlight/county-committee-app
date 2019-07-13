@@ -47,7 +47,7 @@ class Service extends FeathersMongoose.Service {
    * functions
    * @param {Object} params The params object passed to the service
    */
-  importMemberListCSVFileAsObjects(params) {
+  extractMembersFromCSV(params) {
     const { filepath, party, county, state, committee_id } = params;
 
     var parse = require("csv-parse");
@@ -88,7 +88,7 @@ class Service extends FeathersMongoose.Service {
           return;
         } else {
           let countyCommittee = term.committee;
-          this.importMemberListCSVFileAsObjects({
+          this.extractMembersFromCSV({
             county: countyCommittee.county,
             party: countyCommittee.party,
             committee_id: countyCommittee._id,

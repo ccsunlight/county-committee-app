@@ -41,7 +41,7 @@ exports.after = {
           );
 
           TermService.get(context.data.term_id).then(function(term) {
-            TermService.importMembersToTerm(context.data.members, term, {
+            TermService.importMembersToTerm(context.data, term, {
               bulkFields: { ...context.data.bulkFields },
               upsert: context.data.upsert,
               conditionals: {

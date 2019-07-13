@@ -26,7 +26,7 @@
     "migrate": "bash ./init-migration.sh",
     "install-pdf-lib": "apt-get -y update && apt-get -y install poppler-utils",
     "cert": "node cert/gene rate-cert.js",
-    "test:watch": "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/**/*.test.js'",
+    "test:watch": "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/import-list/*.test.js'",
     "test": "mocha  --inspect=0.0.0.0 --recursive --exit --bail test/services/**/*.test.js",
     "precommit": "lint-staged",
     "format": "prettier",

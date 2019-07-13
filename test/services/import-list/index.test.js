@@ -11,14 +11,17 @@ const path = require("path");
 
 const MOCK_CSV_FILE_PATH = path.resolve(
   __dirname,
+  "mocks/",
   "mock-queens-appointed-cc-members-sept-2018.csv"
 );
 const MOCK_CSV_FILE_PATH_WITH_ERRORS = path.resolve(
   __dirname,
+  "mocks/",
   "mock-queens-appointed-cc-members-sept-2018-with-errors.csv"
 );
 const MOCK_CERTIFIED_LIST_FILE_PATH = path.resolve(
   __dirname,
+  "mocks/",
   "MOCK_QNS_CCDEMLIST_92018.pdf"
 );
 describe("Import List Service", function() {
@@ -136,24 +139,38 @@ describe("Import List Service", function() {
     }).then(importedList => {
       cleanupDBDocs.push(importedList);
 
-      TermService.importMembersToTerm(importedList.members, mock_term, {
+      TermService.importMembersToTerm(importedList, mock_term, {
         bulkFields: { entry_type: "Appointed" },
         upsert: true
-      }).then(memberImportResults => {
-        cleanupDBDocs.concat(memberImportResults);
-        // assert.equal(
-        //   memberImportResults.nModified,
-        //   importedList.members.length
-        // );
+      })
+        .then(memberImportResults => {
+          cleanupDBDocs.concat(memberImportResults);
 
-        CountyCommitteeMemberModel.find({
-          term_id: mock_term._id,
-          entry_type: "Appointed"
-        }).then(function(members) {
-          assert.equal(members.length, importedList.members.length);
+          // console.log(memberImportResults.nModified);
+          assert(memberImportResults.hasOwnProperty("modifiedResults"));
+          assert(memberImportResults.hasOwnProperty("insertedResults"));
+          assert(memberImportResults.hasOwnProperty("notMatchedResults"));
+          assert(memberImportResults.hasOwnProperty("nInserted"));
+          assert(memberImportResults.hasOwnProperty("nModified"));
+          assert(memberImportResults.hasOwnProperty("nNotMatched"));
+          assert(memberImportResults.hasOwnProperty("n"));
+          assert.equal(
+            memberImportResults.nInserted,
+            importedList.members.length
+          );
+
+          CountyCommitteeMemberModel.find({
+            term_id: mock_term._id,
+            entry_type: "Appointed"
+          }).then(function(members) {
+            assert.equal(members.length, importedList.members.length);
+            done();
+          });
+        })
+        .catch(e => {
+          console.log(e);
           done();
         });
-      });
     });
   });
 });

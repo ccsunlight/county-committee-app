@@ -122,13 +122,15 @@ const updateEdDb = co(function*() {
       createdAt: { $lt: expireTimeMS }
     });
 
-    // If there is no expired documents, don't update.
+    // If there is no expired geo documents,
+    // check that there are any geo documents at all
     if (!firstExpriedEdGeometryDoc) {
       const anyEdGeomtryDoc = yield edGeometry.findOne({});
 
-      // If there are no ed geometry docs in the DB, proceed.
+      // If there are already geo documents, don't proceed
+      // with import
       if (anyEdGeomtryDoc) {
-        console.log("No expired edgeometries found, exiting.");
+        // console.log("No expired edgeometries found, exiting.");
         return;
       }
     }

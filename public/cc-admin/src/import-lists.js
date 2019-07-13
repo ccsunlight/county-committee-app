@@ -115,9 +115,11 @@ export const ListMembersList = ({ record, props }) => {
     return (
       <Datagrid ids={ids} data={data} currentSort={{ _id: "ASC" }}>
         <TextField source="_id" />
-        <TextField source="office" />
         <TextField source="assembly_district" />
         <TextField source="electoral_district" />
+        <TextField source="office" />
+        <TextField source="office_holder" />
+        <TextField source="entry_type" />
       </Datagrid>
     );
   } else {
@@ -126,6 +128,37 @@ export const ListMembersList = ({ record, props }) => {
         Loading preview of positions. If it takes a while try hitting refresh.
       </div>
     );
+  }
+};
+
+export const ImportResultsList = ({ record, importResultsSource, props }) => {
+  let data = {};
+
+  if (!record.importResults) {
+    return null;
+  }
+  const ids = record.importResults[importResultsSource]
+    ? record.importResults[importResultsSource]
+        .slice(0, 50)
+        .map((result, index) => {
+          data[index] = result;
+          return index;
+        })
+    : [];
+  if (ids.length > 0) {
+    return (
+      <Datagrid ids={ids} data={data} currentSort={{ _id: "ASC" }}>
+        <TextField source="member._id" />
+        <TextField source="member.assembly_district" />
+        <TextField source="member.electoral_district" />
+        <TextField source="member.office" />
+        <TextField source="member.office_holder" />
+        <TextField source="member.entry_type" />
+        <TextField source="member.party" />
+      </Datagrid>
+    );
+  } else {
+    return <div>No results found</div>;
   }
 };
 
@@ -162,16 +195,20 @@ export const ImportListEdit = props => {
               }
             />
           </ReferenceInput>
+
           <TextField label="Total Records" source="importResults.n" />
           <TextField
-            label="Records Imported"
+            label="Records Modified"
             source="importResults.nModified"
           />
           <TextField
-            label="Records Not Imported"
-            source="importResults.unImportedRecords.length"
+            label="Records Inserted"
+            source="importResults.nInserted"
           />
-          <ListMembersList props={props} />
+          <TextField
+            label="Records Not Matched"
+            source="importResults.nNotMatched"
+          />
         </FormTab>
         <FormTab label="Conditionals">
           <TextInput label="Entry Type" source="conditionals.entry_type" />
@@ -236,6 +273,25 @@ export const ImportListEdit = props => {
             choices={states.map(state => {
               return { id: state, name: state };
             })}
+          />
+        </FormTab>
+        <FormTab label="CSV Pending">
+          <p>* Shows first 50 rows</p>
+          <ListMembersList {...props} />
+        </FormTab>
+        <FormTab label="Inserted">
+          <p>* Shows first 50 rows</p>
+          <ImportResultsList {...props} importResultsSource="insertedResults" />
+        </FormTab>
+        <FormTab label="Modified">
+          <p>* Shows first 50 rows</p>
+          <ImportResultsList {...props} importResultsSource="modifiedResults" />
+        </FormTab>
+        <FormTab label="Not Matched">
+          <p>* Shows first 50 rows</p>
+          <ImportResultsList
+            {...props}
+            importResultsSource="notMatchedResults"
           />
         </FormTab>
       </TabbedForm>
@@ -276,71 +332,6 @@ export const ImportListCreate = props => {
           <FileInput source="files_to_upload" label="Party Call" accept=".csv">
             <FileField source="src" title="title" />
           </FileInput>
-        </FormTab>
-        <FormTab label="Conditionals">
-          <TextInput label="Entry Type" source="conditionals.entry_type" />
-          <TextInput
-            label="Office Holder"
-            source="conditionals.office_holder"
-          />
-
-          <TextInput label="Party" source="conditionals.party" />
-          <NumberInput
-            label="Election District"
-            source="conditionals.election_district"
-          />
-          <NumberInput
-            label="Assembly District"
-            source="conditionals.assembly_district"
-          />
-          <SelectArrayInput
-            label="County"
-            source="conditionals.county"
-            choices={[
-              { id: "Queens", name: "Queens" },
-              { id: "Bronx", name: "Bronx" },
-              { id: "New York", name: "New York" },
-              { id: "Kings", name: "Kings" },
-              { id: "Richmond", name: "Richmond" }
-            ]}
-          />
-          <SelectArrayInput
-            label="State"
-            source="conditionals.state"
-            choices={states.map(state => {
-              return { id: state, name: state };
-            })}
-          />
-        </FormTab>
-        <FormTab label="Bulk Fields">
-          <TextInput label="Entry Type" source="bulkFields.entry_type" />
-          <TextInput label="Office Holder" source="bulkFields.office_holder" />
-          <SelectInput
-            source="bulkFields.party"
-            label="Party"
-            choices={[
-              { id: "Democratic", name: "Democratic" },
-              { id: "Republican", name: "Republican" }
-            ]}
-          />
-          <SelectInput
-            source="bulkFields.county"
-            label="County"
-            choices={[
-              { id: "Queens", name: "Queens" },
-              { id: "Bronx", name: "Bronx" },
-              { id: "New York", name: "New York" },
-              { id: "Kings", name: "Kings" },
-              { id: "Richmond", name: "Richmond" }
-            ]}
-          />
-          <SelectInput
-            source="bulkFields.state"
-            label="State"
-            choices={states.map(state => {
-              return { id: state, name: state };
-            })}
-          />
         </FormTab>
       </TabbedForm>
     </Create>
