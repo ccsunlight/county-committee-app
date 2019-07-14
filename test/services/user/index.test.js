@@ -2,7 +2,7 @@
 
 const assert = require("assert");
 
-describe("User service", function() {
+describe("User Service", function() {
   const app = require("../../../src/app");
 
   it("registered the users service", () => {

@@ -15,7 +15,7 @@ const moment = require("moment");
 //   FileList = FileAPI.FileList,
 //   FileReader = FileAPI.FileReader;
 
-describe("Certified List service", function() {
+describe("Certified List Service", function() {
   this.timeout(10000);
 
   let ccService, ccMemberService;

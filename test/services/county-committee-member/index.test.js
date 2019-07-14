@@ -2,7 +2,7 @@
 
 const assert = require("assert");
 
-describe("county-committee-member service", function() {
+describe("County Committee Member Service", function() {
   const app = require("../../../src/app");
 
   it("registers the county-committee-member service", () => {

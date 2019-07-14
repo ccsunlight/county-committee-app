@@ -12,7 +12,7 @@ import {
   FileInput,
   FileField
 } from "admin-on-rest";
-import RaisedButton from "material-ui/RaisedButton";
+import { ExportCSVButton } from "./ExportCSVButton";
 
 export const CertifiedListList = props => (
   <List {...props} title="Certified Lists">
@@ -53,29 +53,12 @@ export const PartyPositionsList = ({ record, props }) => {
   }
 };
 
-export const ExportCSVButton = ({ record, props }) => {
-  const host = process.env.REACT_APP_API_HOSTNAME
-    ? process.env.REACT_APP_API_HOSTNAME + process.env.REACT_APP_API_BASEPATH
-    : window.location.origin + process.env.REACT_APP_API_BASEPATH;
-
-  const downloadLink = `${host}/certified-list/${record._id}?format=csv`;
-
-  return (
-    <RaisedButton
-      label="Export CSV"
-      color="primary"
-      href={downloadLink}
-      target="_blank"
-    />
-  );
-};
-
 export const CertifiedListEdit = props => {
   return (
     <Edit title={"Certified List"} {...props}>
       <SimpleForm>
         <DisabledInput label="Id" source="id" />
-        <ExportCSVButton {...props} />
+        <ExportCSVButton props={props} />
         <PartyPositionsList props={props} />
       </SimpleForm>
     </Edit>

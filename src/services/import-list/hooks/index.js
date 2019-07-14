@@ -5,6 +5,7 @@ const hooks = require("feathers-hooks");
 const CountyCommitteeMemberModel = require("../../county-committee-member/county-committee-member-model");
 const AppointedListModel = require("../import-list-model");
 const TermService = require("../../term");
+const converter = require("json-2-csv");
 
 exports.before = {
   all: [],
@@ -29,7 +30,47 @@ exports.before = {
 exports.after = {
   all: [],
   find: [],
-  get: [],
+  get: [
+    function(context) {
+      if (context.params.query.format === "csv") {
+        return new Promise((resolve, reject) => {
+          const modifiedRows = context.result.importResults.modifiedResults.map(
+            (result, index) => {
+              return {
+                import_status: "modified",
+                ...result.member
+              };
+            }
+          );
+
+          const insertedRows = context.result.importResults.insertedResults.map(
+            (result, index) => {
+              return {
+                import_status: "inserted",
+                ...result.member
+              };
+            }
+          );
+
+          const notMatchedRows = context.result.importResults.notMatchedResults.map(
+            (result, index) => {
+              return {
+                import_status: "unmatched",
+                ...result.member
+              };
+            }
+          );
+
+          const rows = [...modifiedRows, ...insertedRows, ...notMatchedRows];
+
+          converter.json2csvAsync(rows).then(csv => {
+            context.result = csv;
+            resolve(context);
+          });
+        });
+      }
+    }
+  ],
   create: [globalHooks.logAction],
   update: [
     globalHooks.logAction,
@@ -41,13 +82,14 @@ exports.after = {
           );
 
           TermService.get(context.data.term_id).then(function(term) {
-            TermService.importMembersToTerm(context.data.members, term, {
-              bulkFields: { ...context.data.bulkFields },
-              upsert: context.data.upsert,
-              conditionals: {
-                ...context.data.conditionals
-              }
-            })
+            context.service
+              .importMembersToTerm(context.data, term, {
+                bulkFields: { ...context.data.bulkFields },
+                upsert: context.data.upsert,
+                conditionals: {
+                  ...context.data.conditionals
+                }
+              })
               .then(async importResults => {
                 const result = await context.service.patch(
                   { _id: context.data._id },

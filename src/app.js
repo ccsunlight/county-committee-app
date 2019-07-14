@@ -193,20 +193,14 @@ app
 
 app.service(apiPath + "/authentication").hooks({
   before: {
-    create: [
-      // You can chain multiple strategies
-      auth.hooks.authenticate(["jwt", "local"])
-    ],
+    create: [auth.hooks.authenticate(["jwt", "local"])],
     remove: [auth.hooks.authenticate("jwt")]
   }
 });
 
 app.service(apiPath + "/authentication").hooks({
   after: {
-    create: [
-      // You can chain multiple strategies
-      globalHooks.logAction
-    ],
+    create: [globalHooks.logAction],
     remove: [globalHooks.logAction]
   }
 });
@@ -231,13 +225,13 @@ app.service(apiPath + "/import-list").hooks({
 
 app.service(apiPath + "/certified-list").hooks({
   before: {
-    // all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
+    all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
   }
 });
 
 app.service(apiPath + "/term").hooks({
   before: {
-    // all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
+    all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
   }
 });
 

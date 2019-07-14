@@ -12,8 +12,7 @@ import {
   SimpleForm,
   required
 } from "admin-on-rest";
-import RaisedButton from "material-ui/RaisedButton";
-
+import { ExportCSVButton } from "./ExportCSVButton";
 const TABLE_SELECTOR =
   "body > table > tbody > tr > td > table > tbody > tr > td > table > tbody > tr > td > table";
 
@@ -35,7 +34,6 @@ export const ResultsList = ({ record, props }) => {
   const ids = record.results
     ? record.results.slice(0, 500).map((office, index) => {
         data[index] = office;
-        console.log(data[index]);
         return index;
       })
     : [];
@@ -57,30 +55,13 @@ export const ResultsList = ({ record, props }) => {
   }
 };
 
-export const ExportCSVButton = ({ record, props }) => {
-  const host = process.env.REACT_APP_API_HOSTNAME
-    ? process.env.REACT_APP_API_HOSTNAME + process.env.REACT_APP_API_BASEPATH
-    : window.location.origin + process.env.REACT_APP_API_BASEPATH;
-
-  const downloadLink = `${host}/boe-election-results/${record._id}?format=csv`;
-
-  return (
-    <RaisedButton
-      label="Export CSV"
-      color="primary"
-      href={downloadLink}
-      target="_blank"
-    />
-  );
-};
-
 export const BOEElectionResultsEdit = props => {
   return (
     <Edit title={"BOE Election Results"} {...props}>
       <SimpleForm>
         <DisabledInput label="Id" source="id" />
         <TextField source="url" />
-        <ExportCSVButton {...props} />
+        <ExportCSVButton props={props} />
         <ResultsList props={props} />
       </SimpleForm>
     </Edit>
