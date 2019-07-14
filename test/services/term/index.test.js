@@ -14,7 +14,7 @@ const termMock = require("../../mocks/term.mock.json");
 const ccMock = require("../../mocks/county-committee.mock.json");
 const mongoose = require("mongoose");
 
-describe("term service", function() {
+describe("Term Service", function() {
   let TermService, CertifiedListService;
   let county_committee;
 

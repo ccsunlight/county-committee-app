@@ -122,6 +122,11 @@ const countyCommitteeMemberSchema = new Schema(
       type: String,
       required: true
     },
+    import_list_id: {
+      type: Schema.Types.ObjectId,
+      ref: "import_list",
+      required: false
+    },
     committee: {
       type: Schema.Types.ObjectId,
       required: true,

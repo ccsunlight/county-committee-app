@@ -16,7 +16,7 @@ import {
   FileInput,
   FileField
 } from "admin-on-rest";
-import RaisedButton from "material-ui/RaisedButton";
+import { ExportCSVButton } from "./ExportCSVButton";
 import moment from "moment";
 /**
  * @deprecated
@@ -73,29 +73,12 @@ export const PartyPositionsList = ({ record, props }) => {
   }
 };
 
-export const ExportCSVButton = ({ record, props }) => {
-  const host = process.env.REACT_APP_API_HOSTNAME
-    ? process.env.REACT_APP_API_HOSTNAME + process.env.REACT_APP_API_BASEPATH
-    : window.location.origin + process.env.REACT_APP_API_BASEPATH;
-
-  const downloadLink = `${host}/party-call/${record._id}?format=csv`;
-
-  return (
-    <RaisedButton
-      label="Export CSV"
-      color="primary"
-      href={downloadLink}
-      target="_blank"
-    />
-  );
-};
-
 export const PartyCallEdit = props => {
   return (
     <Edit title={"Import list members"} {...props}>
       <SimpleForm>
         <DisabledInput label="Id" source="id" />
-        <ExportCSVButton {...props} />
+        <ExportCSVButton props={props} />
         <ReferenceInput
           label="Committee Term"
           source="term_id"
