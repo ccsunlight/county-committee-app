@@ -139,7 +139,7 @@ describe("Import List Service", function() {
     }).then(importedList => {
       cleanupDBDocs.push(importedList);
 
-      TermService.importMembersToTerm(importedList, mock_term, {
+      ImportListService.importMembersToTerm(importedList, mock_term, {
         bulkFields: { entry_type: "Appointed" },
         upsert: true
       })

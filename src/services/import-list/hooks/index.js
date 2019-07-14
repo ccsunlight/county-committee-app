@@ -3,6 +3,7 @@
 const globalHooks = require("../../../hooks");
 const hooks = require("feathers-hooks");
 const CountyCommitteeMemberModel = require("../../county-committee-member/county-committee-member-model");
+
 const AppointedListModel = require("../import-list-model");
 const TermService = require("../../term");
 
@@ -41,13 +42,14 @@ exports.after = {
           );
 
           TermService.get(context.data.term_id).then(function(term) {
-            TermService.importMembersToTerm(context.data, term, {
-              bulkFields: { ...context.data.bulkFields },
-              upsert: context.data.upsert,
-              conditionals: {
-                ...context.data.conditionals
-              }
-            })
+            context.service
+              .importMembersToTerm(context.data, term, {
+                bulkFields: { ...context.data.bulkFields },
+                upsert: context.data.upsert,
+                conditionals: {
+                  ...context.data.conditionals
+                }
+              })
               .then(async importResults => {
                 const result = await context.service.patch(
                   { _id: context.data._id },
