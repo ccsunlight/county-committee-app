@@ -23,6 +23,7 @@ import {
   required
 } from "admin-on-rest";
 import moment from "moment";
+import { ExportCSVButton } from "./ExportCSVButton";
 
 const states = [
   "AL",
@@ -195,7 +196,7 @@ export const ImportListEdit = props => {
               }
             />
           </ReferenceInput>
-
+          <ExportCSVButton props={props} />
           <TextField label="Total Records" source="importResults.n" />
           <TextField
             label="Records Modified"
@@ -247,7 +248,6 @@ export const ImportListEdit = props => {
         <FormTab label="Bulk Fields">
           <TextInput label="Entry Type" source="bulkFields.entry_type" />
           <TextInput label="Office Holder" source="bulkFields.office_holder" />
-
           <SelectInput
             source="bulkFields.party"
             label="Party"
