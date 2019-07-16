@@ -393,11 +393,11 @@ router.get("/get_address", function(req, res, next) {
     addressSvc
       .get(req.query.address, { party: party })
       .then(
-        co(function*(data) {
-          if (data.ad) {
+        co(function*(addressDistrictData) {
+          if (addressDistrictData.ad) {
             // @todo move this to feathers map service.
             const allGeomDocsInAd = yield edGeometry.find({
-              ad: data.ad
+              ad: addressDistrictData.ad
             });
 
             const cleanedAllGeomDocsInAd = yield bb.map(
@@ -412,11 +412,12 @@ router.get("/get_address", function(req, res, next) {
                     };
                   }
                 );
+
                 // For map seats.
                 const memberDocs = yield countyCommitteeMember.find({
                   assembly_district: doc.ad,
                   electoral_district: doc.ed,
-                  party: party
+                  term_id: addressDistrictData.term._id
                 });
                 const filledDocs = _.filter(
                   memberDocs,
@@ -435,11 +436,11 @@ router.get("/get_address", function(req, res, next) {
               })
             );
 
-            data.cleanedAllGeomDocsInAd = JSON.stringify(
+            addressDistrictData.cleanedAllGeomDocsInAd = JSON.stringify(
               cleanedAllGeomDocsInAd
             );
 
-            res.render("get_address", data);
+            res.render("get_address", addressDistrictData);
           } else {
             const locals = {
               address: req.query.address,
@@ -451,7 +452,6 @@ router.get("/get_address", function(req, res, next) {
         })
       )
       .catch(function(error) {
-        console.log(error);
         const locals = {
           address: req.query.address,
           error: error.message
@@ -459,8 +459,6 @@ router.get("/get_address", function(req, res, next) {
         res.render("get_address", locals);
       });
   } catch (err) {
-    console.log("err no data", err);
-
     if (err.message === "Not in NYC")
       console.log("TODO: the address must be in NYC");
     else if (err.name === "HttpError")
