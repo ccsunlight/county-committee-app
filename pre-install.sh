@@ -1,6 +1,6 @@
 
-# Creating env file from sample
-cp .env_example .env
+# Creating env file from sample but don't overwrite if already existing
+cp -n .env_example .env 
 
 # Installs pdf util dependancy
 npm run install-pdf-lib;
