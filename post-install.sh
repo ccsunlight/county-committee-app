@@ -7,7 +7,9 @@
 # Runs data migrations
 npm run migrate;
 
-cp ./public/cc-admin/.env_example ./public/cc-admin/.env
+# Copy but don't overwrite if already existing
+cp -n ./public/cc-admin/.env_example ./public/cc-admin/.env
+
 # Creates the admin react scripts
 npm run build-admin;
 
