@@ -88,7 +88,7 @@ class Service {
       const currentTerms = yield Term.find({
         end_date: { $gt: new Date() },
         committee_id: { $in: partyCommitteeIds }
-      });
+      }).lean();
 
       const currentTermIds = currentTerms.map(function(term) {
         return term._id;
@@ -114,7 +114,7 @@ class Service {
           if (!term) {
             term = yield Term.findOne({
               _id: member.term_id
-            });
+            }).lean();
           }
           return {
             office: member.office,
@@ -172,7 +172,7 @@ class Service {
         members: memberData,
         partyPositionsToBeFilled: partyPositionsToBeFilled || [],
         party: party,
-        term: term
+        term: { ...term, party_call: null }
       };
 
       return result;
