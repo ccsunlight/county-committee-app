@@ -20,8 +20,33 @@ module.exports = function() {
     lean: false
   };
 
+  const service = new Service(options);
   // Initialize our service with any options it requires
-  app.use(app.get("apiPath") + "/term", new Service(options));
+  app.use(app.get("apiPath") + "/term", service, function updateData(
+    req,
+    res,
+    next
+  ) {
+    // If it's request in a csv format send a download attachment response
+    // of the CSV text
+    // @todo find a better way to handle this
+    if (req.query.format === "csv") {
+      res.setHeader(
+        "Content-disposition",
+        `attachment; filename=term-results-${req.params.__feathersId}.csv`
+      );
+      res.setHeader("Content-type", "text/plain");
+
+      res.send(res.data, options, function(err) {
+        if (err) {
+          next(err);
+        } else {
+        }
+      });
+    } else {
+      next();
+    }
+  });
 
   // Get our initialize service to that we can bind hooks
   const termService = app.service(app.get("apiPath") + "/term");

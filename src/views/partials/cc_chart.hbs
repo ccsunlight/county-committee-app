@@ -1,7 +1,9 @@
 <div class="mdl-cell mdl-cell--6-col-desktop mdl-cell--6-col-tablet mdl-cell--12-col-phone">
 		<div class="mdl-grid cc-chart">
 			<div class="mdl-card mdl-cell mdl-cell--12-col mdl-shadow--2dp through mdl-shadow--16dp">
-			<h4>{{this.county}} County {{this.party}} Party</h4>
+			<h4>{{county}} County {{party}} Party</h4>
+			
+			<p><strong>Term:</strong> {{dateFormat term_start_date "MMM D, YYYY"}} — {{dateFormat term_end_date "MMM D, YYYY"}}</p>
 			<p><small>Source: NY BOE</small></p>
 			
 			<div class="chart-container"><canvas id="myChart-{{county}}"></canvas></div>
@@ -30,8 +32,8 @@
 			{
 			label:"Vacant Seats",
 			data: [
-				{{this.numOfVacancies}}, {{this.numOfElected}},
-				{{this.numOfAppointed}}
+				{{numOfVacancies}}, {{numOfElected}},
+				{{numOfAppointed}}
 				],
 				fill:false,
 				backgroundColor: [
@@ -47,7 +49,7 @@
 			}
 		]
 	};
-	var myPieChart = new Chart(document.getElementById("myChart-{{this.county}}"),{
+	var myPieChart = new Chart(document.getElementById("myChart-{{county}}"),{
 		type: 'pie',
 		data: data,
 		options: {
