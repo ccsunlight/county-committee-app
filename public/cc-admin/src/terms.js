@@ -18,6 +18,8 @@ import {
   DateField
 } from "admin-on-rest";
 
+import { ExportCSVButton } from "./ExportCSVButton";
+
 export const TermList = props => (
   <List {...props} title="Terms">
     <Datagrid>
@@ -46,6 +48,7 @@ export const TermEdit = props => {
         <DisabledInput label="Id" source="id" />
         <DateInput source="start_date" />
         <DateInput source="end_date" />
+        <ExportCSVButton props={props} />
         <ReferenceInput
           label="County Committee"
           source="committee_id"

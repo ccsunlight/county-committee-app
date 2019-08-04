@@ -11,7 +11,8 @@ const download = require("download");
 //const NodeGeocoder = require('node-geocoder');
 const serveStatic = require("feathers").static;
 const auth = require("feathers-authentication");
-const CountyCommittee = require("../services/county-committee/county-committee-model");
+const CountyCommitteeModel = require("../services/county-committee/county-committee-model");
+const TermModel = require("../services/term/term-model");
 const partyCall = require("../services/party-call/party-call-model");
 
 const countyCommitteeMember = require("../services/county-committee-member/county-committee-member-model");
@@ -199,7 +200,7 @@ updateEdDb();
 const getCountyCommitteeBreakdown = co(function*(county, party) {
   // Lean not working with "findOne" due to custom hooks
   // so need to use "find" instead.
-  let countyCommitteeResult = yield CountyCommittee.find(
+  let countyCommitteeResult = yield CountyCommitteeModel.find(
     {
       county: county,
       party: party
@@ -209,6 +210,12 @@ const getCountyCommitteeBreakdown = co(function*(county, party) {
     .lean()
     .exec();
   const countyCommittee = countyCommitteeResult.pop();
+
+  let currentTerm = yield TermModel.findOne({
+    _id: countyCommittee.current_term_id
+  })
+    .lean()
+    .exec();
 
   let numOfElected = yield countyCommitteeMember
     .find({
@@ -233,19 +240,11 @@ const getCountyCommitteeBreakdown = co(function*(county, party) {
     })
     .count();
 
-  let countySeatBreakdowns = [
-    {
-      county: county,
-      numOfSeats: numOfElected + numOfVacancies + numOfAppointed,
-      numOfElected: numOfElected,
-      numOfVacancies: numOfVacancies,
-      numOfAppointed: numOfAppointed
-    }
-  ];
-
   return {
     county: county,
     party: party,
+    term_start_date: currentTerm.start_date,
+    term_end_date: currentTerm.end_date,
     numOfSeats: numOfElected + numOfVacancies + numOfAppointed,
     numOfElected: numOfElected,
     numOfVacancies: numOfVacancies,
@@ -521,7 +520,7 @@ router.get(["/news", "/news/:pageNum"], function(req, res, next) {
 });
 
 router.get("/counties/:alias", function(req, res, next) {
-  CountyCommittee.findOne({
+  CountyCommitteeModel.findOne({
     alias: new RegExp(req.params.alias, "i")
   }).then(function(county_committee) {
     if (county_committee) {
