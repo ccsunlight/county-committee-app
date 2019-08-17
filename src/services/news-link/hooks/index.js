@@ -1,8 +1,18 @@
-'use strict';
+"use strict";
 
-const globalHooks = require('../../../hooks');
-const hooks = require('feathers-hooks');
-const metascraper = require('metascraper');
+const globalHooks = require("../../../hooks");
+const hooks = require("feathers-hooks");
+const metascraper = require("metascraper")([
+  require("metascraper-author")(),
+  require("metascraper-date")(),
+  require("metascraper-description")(),
+  require("metascraper-image")(),
+  require("metascraper-logo")(),
+  require("metascraper-publisher")(),
+  require("metascraper-title")(),
+  require("metascraper-url")()
+]);
+const request = require("request-promise");
 
 exports.before = {
   all: [],
@@ -11,44 +21,51 @@ exports.before = {
   create: [
     function(hook) {
       return new Promise(function(fulfill, reject) {
-        metascraper.scrapeUrl(hook.data.url).then(function(metadata) {
-          // {
-          //   "author": "Ellen Huet",
-          //   "date": "2016-05-24T18:00:03.894Z",
-          //   "description": "The HR startups go to war.",
-          //   "image": "https://assets.bwbx.io/images/users/iqjWHBFdfxIU/ioh_yWEn8gHo/v1/-1x-1.jpg",
-          //   "publisher": "Bloomberg.com",
-          //   "title": "As Zenefits Stumbles, Gusto Goes Head-On by Selling Insurance"
-          // }
+        request(hook.data.url).then(html => {
+          metascraper({ url: hook.data.url, html })
+            .then(function(metadata) {
+              // {
+              //   "author": "Ellen Huet",
+              //   "date": "2016-05-24T18:00:03.894Z",
+              //   "description": "The HR startups go to war.",
+              //   "image": "https://assets.bwbx.io/images/users/iqjWHBFdfxIU/ioh_yWEn8gHo/v1/-1x-1.jpg",
+              //   "publisher": "Bloomberg.com",
+              //   "title": "As Zenefits Stumbles, Gusto Goes Head-On by Selling Insurance"
+              // }
 
-          if (metadata.title) {
-            hook.data.title = metadata.title;
-          }
+              if (metadata.title) {
+                hook.data.title = metadata.title;
+              }
 
-          if (metadata.description) {
-            hook.data.description = metadata.description;
-          }
+              if (metadata.description) {
+                hook.data.description = metadata.description;
+              }
 
-          if (metadata.image) {
-            hook.data.image = metadata.image;
-          }
+              if (metadata.image) {
+                hook.data.image = metadata.image;
+              }
 
-          if (metadata.publisher) {
-            hook.data.site_name = metadata.publisher;
-          }
+              if (metadata.publisher) {
+                hook.data.site_name = metadata.publisher;
+              }
 
-          if (metadata.date) {
-            hook.data.published_on = metadata.date;
-          }
+              if (metadata.date) {
+                hook.data.published_on = metadata.date;
+              }
 
-          fulfill(hook);
+              fulfill(hook);
+            })
+            .catch(e => {
+              console.log(e);
+              reject(hook);
+            });
         });
       });
     }
   ],
   update: [
     function(hook) {
-      console.log('hook', hook);
+      console.log("hook", hook);
       delete hook.data.updatedAt;
       return hook;
     }

@@ -1,6 +1,7 @@
 {
   "host": "localhost",
-  "port": "80",
+  "protocol": "http:",
+  "port": "4000",
   "public": "../public",
   "api": {
     "basePath": "api",
