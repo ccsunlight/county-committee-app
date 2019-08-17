@@ -487,14 +487,16 @@ router.get(["/news/rss.xml"], async function(req, res, next) {
     .sort([["createdAt", -1]])
     .exec()
     .then(newsLinks => {
-      console.log(newsLinks);
-      /* lets create an rss feed */
       var feed = new RSS({
         title: "County Committee in the News",
         description: "description",
-        feed_url: "http://ccsunlight.org/news/rss.xml",
-        site_url: "http://ccsunlight.org",
-        image_url: "https://ccsunlight.org/favicon.png",
+        feed_url: `${req.app.get("protocol")}//${req.app.get(
+          "host"
+        )}/news/rss.xml`,
+        site_url: `${req.app.get("protocol")}//${req.app.get("host")}`,
+        image_url: `${req.app.get("protocol")}//${req.app.get(
+          "host"
+        )}/favicon.png`,
         language: "en",
         categories: ["Local Politics", "County Committee", "New York"],
         pubDate: Date.now(),
