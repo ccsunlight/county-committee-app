@@ -18,7 +18,7 @@ const partyCall = require("../services/party-call/party-call-model");
 const countyCommitteeMember = require("../services/county-committee-member/county-committee-member-model");
 const edGeometry = require("../services/edGeometry/edGeometry-model");
 const page = require("../services/page/page-model");
-const news = require("../services/news-link/news-link-model");
+const newsModel = require("../services/news-link/news-link-model");
 const confirm = require("../services/invite/email-confirm");
 const User = require("../services/user/user-model");
 const Address = require("../services/address");
@@ -28,6 +28,7 @@ const cache = new NodeCache({ stdTTL: 600 });
 
 const turf = require("turf");
 const unkinkPolygon = require("@turf/unkink-polygon");
+const RSS = require("rss");
 
 // Prevents crawlers from cralwer not on production
 router.use("/robots.txt", function(req, res) {
@@ -480,6 +481,44 @@ router.get("/get_address", function(req, res, next) {
   }
 });
 
+router.get(["/news/rss.xml"], async function(req, res, next) {
+  newsModel
+    .find({})
+    .sort([["createdAt", -1]])
+    .exec()
+    .then(newsLinks => {
+      console.log(newsLinks);
+      /* lets create an rss feed */
+      var feed = new RSS({
+        title: "County Committee in the News",
+        description: "description",
+        feed_url: "http://ccsunlight.org/news/rss.xml",
+        site_url: "http://ccsunlight.org",
+        image_url: "https://ccsunlight.org/favicon.png",
+        language: "en",
+        categories: ["Local Politics", "County Committee", "New York"],
+        pubDate: Date.now(),
+        ttl: "60",
+        custom_namespaces: {},
+        custom_elements: []
+      });
+
+      newsLinks.forEach(item => {
+        feed.item({
+          title: item.title,
+          description: item.description,
+          url: item.url, // link to the item
+          guid: item.id, // optional - defaults to url
+          categories: ["Local Politics", "County Committee", "New York"], // optional - array of item categories
+          date: item.published_on, // any format that js Date can parse.
+          enclosure: { url: item.image } // optional enclosure
+        });
+      });
+      res.set("Content-Type", "text/xml");
+      res.send(feed.xml());
+    });
+});
+
 /* GET home page. */
 router.get(["/news", "/news/:pageNum"], function(req, res, next) {
   let perPage = 20;
@@ -489,8 +528,8 @@ router.get(["/news", "/news/:pageNum"], function(req, res, next) {
     pageNum = 0;
   }
 
-  news.count({}).then(function(count) {
-    news
+  newsModel.count({}).then(function(count) {
+    newsModel
       .find({})
       .skip(perPage * pageNum)
       .limit(perPage)
