@@ -1,5 +1,8 @@
 "use strict";
 
+// No BOE Election pages currently available.
+return;
+
 const assert = require("assert");
 
 const app = require("../../../src/app");
