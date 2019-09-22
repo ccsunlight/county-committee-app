@@ -2,12 +2,21 @@
 
 const globalHooks = require("../../../hooks");
 const hooks = require("feathers-hooks");
-const CountyCommitteeMemberModel = require("../../county-committee-member/county-committee-member-model");
-const CertifiedListModel = require("../certified-list-model");
+var mongoose = require("mongoose");
 
 exports.before = {
   all: [],
-  find: [],
+  find: [
+    // Excludes the "positions" property from finds
+    // to avoid memory overload of returning
+    // 1000+ array.
+    // @todo move positions to their own collection
+    function(context) {
+      context.params.query.$select = { positions: 0 };
+
+      return context;
+    }
+  ],
   get: [
     async function(context) {
       if (context.params.query.format === "csv") {
@@ -28,27 +37,22 @@ exports.before = {
 };
 
 exports.after = {
-  all: [
-    function(hook) {
-      if (hook.result.data) {
-        hook.result.data.map(function(record) {
-          record.id = record._id;
-          return record;
-        });
-      }
-    }
+  all: [],
+  find: [],
+  get: [
+    // function(context) {
+    //   console.log("generate CSV", context.result._id);
+    //   return new Promise((resolve, reject) => {
+    //     context.service
+    //       .generateCSV(mongoose.Types.ObjectId(context.result._id))
+    //       .then(csv => {
+    //         // context.result.positions = "";
+    //         context.result.positions = csv.split("\n");
+    //         resolve(context);
+    //       });
+    //   });
+    // }
   ],
-  find: [
-    function(hook) {
-      if (hook.result.data) {
-        hook.result.data.map(function(record) {
-          record.id = record._id;
-          return record;
-        });
-      }
-    }
-  ],
-  get: [],
   create: [globalHooks.logAction],
   update: [globalHooks.logAction],
   patch: [globalHooks.logAction],

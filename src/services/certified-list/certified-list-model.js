@@ -7,28 +7,16 @@
 
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const ccMemberModelSchema = require("../county-committee-member/county-committee-member-model")
-  .schema;
+const partyPositionSchema = require("./party-position-model").schema;
 
-const converter = require("json-2-csv");
-
-const certifiedListSchema = new Schema(
-  {
-    source: { type: String, required: false },
-    positions: { type: Array },
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now }
-  },
-  {
-    toObject: {
-      virtuals: true
-    },
-    toJSON: {
-      virtuals: true
-    },
-    timestamps: true
-  }
-);
+const certifiedListSchema = new Schema({
+  county: { type: String, required: false },
+  source: { type: String, required: true },
+  positions: [partyPositionSchema],
+  isImported: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
 
 const certifiedListModel = mongoose.model(
   "certified-list",
