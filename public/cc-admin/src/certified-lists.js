@@ -26,6 +26,7 @@ import {
 import { WithPermission, SwitchPermissions, Permission } from "aor-permissions";
 import authClient from "./feathersAuthClient";
 import { checkUserCanEdit } from "./feathersAuthClient";
+import { ExportCSVButton } from "./ExportCSVButton";
 
 export const CertifiedListList = props => (
   <List {...props} title="Imported Certified Lists">
@@ -40,15 +41,16 @@ export const CertifiedListList = props => (
 export const PartyPositionList = ({ record, props }) => {
   let data = {};
 
-  const ids = record.positions.slice(0, 100).map(position => {
-    data[position._id] = position;
-    return position._id;
-  });
+  const ids = record.positions
+    ? record.positions.slice(0, 50).map(position => {
+        data[position.id] = position;
+        return position.id;
+      })
+    : [];
 
   return (
-    <Datagrid ids={ids} data={data} currentSort={{ _id: "ASC" }}>
-      <TextField source="_id" />
-      <TextField source="office" />
+    <Datagrid ids={ids} data={data} currentSort={{ id: "ASC" }}>
+      <TextField source="id" />
       <TextField source="office_holder" />
       <TextField source="assembly_district" />
       <TextField source="electoral_district" />
@@ -73,15 +75,13 @@ export const CertifiedListCreate = props => {
   );
 };
 
-export const CertifiedListEdit = props => {
-  return (
-    <Edit title={"Import list Positions"} {...props}>
-      <SimpleForm>
-        <DisabledInput label="Id" source="id" />
-        <h4>Sample of imported members</h4>
-        <TextField source="positions.length" label="Total Positions imported" />
-        <PartyPositionList title="Only first 100 rows shown" props={props} />
-      </SimpleForm>
-    </Edit>
-  );
-};
+export const CertifiedListEdit = props => (
+  <Edit title={"Import list Positions"} {...props}>
+    <SimpleForm>
+      <DisabledInput label="Id" source="id" />
+      <ExportCSVButton props={props} />
+      <TextField source="positions.length" label="Total Positions imported" />
+      <PartyPositionList title="Only first 100 rows shown" props={props} />
+    </SimpleForm>
+  </Edit>
+);

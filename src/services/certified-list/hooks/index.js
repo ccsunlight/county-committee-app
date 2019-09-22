@@ -4,17 +4,20 @@ const globalHooks = require("../../../hooks");
 const hooks = require("feathers-hooks");
 const CountyCommitteeMemberModel = require("../../county-committee-member/county-committee-member-model");
 const CertifiedListModel = require("../certified-list-model");
+const mongoose = require("mongoose");
 
 exports.before = {
   all: [],
   find: [],
   get: [
     async function(context) {
+      console.log("CONTEXT");
       if (context.params.query.format === "csv") {
         const csv = await context.service.generateCSV(
           mongoose.Types.ObjectId(context.id)
         );
 
+        console.log("CSV", csv);
         context.result = csv;
       }
 
@@ -29,24 +32,24 @@ exports.before = {
 
 exports.after = {
   all: [
-    function(hook) {
-      if (hook.result.data) {
-        hook.result.data.map(function(record) {
-          record.id = record._id;
-          return record;
-        });
-      }
-    }
+    // function(hook) {
+    //   if (hook.result.data) {
+    //     hook.result.data.map(function(record) {
+    //       record.id = record._id;
+    //       return record;
+    //     });
+    //   }
+    // }
   ],
   find: [
-    function(hook) {
-      if (hook.result.data) {
-        hook.result.data.map(function(record) {
-          record.id = record._id;
-          return record;
-        });
-      }
-    }
+    // function(hook) {
+    //   if (hook.result.data) {
+    //     hook.result.data.map(function(record) {
+    //       record.id = record._id;
+    //       return record;
+    //     });
+    //   }
+    // }
   ],
   get: [],
   create: [globalHooks.logAction],

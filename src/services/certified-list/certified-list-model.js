@@ -9,14 +9,25 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const partyPositionSchema = require("./party-position-model").schema;
 
-const certifiedListSchema = new Schema({
-  county: { type: String, required: false },
-  source: { type: String, required: true },
-  positions: [partyPositionSchema],
-  isImported: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
-});
+const certifiedListSchema = new Schema(
+  {
+    county: { type: String, required: false },
+    source: { type: String, required: true },
+    positions: [partyPositionSchema],
+    isImported: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
+  },
+  {
+    toObject: {
+      virtuals: true
+    },
+    toJSON: {
+      virtuals: true
+    },
+    timestamps: true
+  }
+);
 
 const certifiedListModel = mongoose.model(
   "certified-list",

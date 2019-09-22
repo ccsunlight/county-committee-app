@@ -3,10 +3,12 @@
 const fs = require("fs");
 const path = require("path");
 const extract = require("pdf-text-extract");
+const FeathersMongoose = require("feathers-mongoose");
+const converter = require("json-2-csv");
+
 const CertifiedList = require("./certified-list-model");
 const hooks = require("./hooks");
 const PartyPosition = require("./party-position-model");
-const FeathersMongoose = require("feathers-mongoose");
 
 function certifiedListExtractionException(message) {
   this.message = message;
@@ -14,6 +16,36 @@ function certifiedListExtractionException(message) {
 }
 
 class Service extends FeathersMongoose.Service {
+  generateCSV(_id) {
+    {
+      const DELIMITER = ",";
+      //const Utils = this.app.service("/utils");
+
+      return new Promise((resolve, reject) => {
+        const dataObjects = [];
+        console.log("YOYO");
+        CertifiedList.findOne(_id).then(certifiedList => {
+          certifiedList.positions.forEach(position => {
+            dataObjects.push({
+              id: position.id,
+              office: position.office,
+              office_holder: position.office_holder,
+              assembly_district: position.assembly_district,
+              electoral_district: position.electoral_district,
+              address: position.address
+            });
+          });
+          converter
+            .json2csvAsync(dataObjects)
+            .then(csv => {
+              resolve(csv);
+            })
+            .catch(err => reject("ERROR: " + err.message));
+        });
+      });
+    }
+  }
+
   extractCountyFromPage(page) {
     var match = page.match(/IN THE CITY OF NEW YORK\s+(.+), .+Party/);
 
@@ -222,6 +254,10 @@ class Service extends FeathersMongoose.Service {
     });
   }
 
+  setup(app, path) {
+    this.app = app;
+  }
+
   create(params) {
     let certifiedList;
 
@@ -255,17 +291,45 @@ module.exports = function() {
     paginate: {
       default: 10,
       max: 25
-    }
+    },
+    lean: false
   };
 
+  const service = new Service(options);
+
+  service.setup(app, app.get("apiPath") + "/certified-list", service);
+
   // Initialize our service with any options it requires
-  app.use(app.get("apiPath") + "/certified-list", new Service(options));
+  app.use(app.get("apiPath") + "/certified-list", service, function updateData(
+    req,
+    res,
+    next
+  ) {
+    // If it's request in a csv format send a download attachment response
+    // of the CSV text
+    // @todo find a better way to handle this
+    if (req.query.format === "csv") {
+      res.setHeader(
+        "Content-disposition",
+        `attachment; filename=certified-list-csv-${req.params.__feathersId}.csv`
+      );
+      res.setHeader("Content-type", "text/plain");
+
+      res.send(res.data, options, function(err) {
+        if (err) {
+          next(err);
+        } else {
+        }
+      });
+    } else {
+      next();
+    }
+  });
 
   // Get our initialize service to that we can bind hooks
   const certifiedListService = app.service(
     app.get("apiPath") + "/certified-list"
   );
-
   // Set up our before hooks
   certifiedListService.before(hooks.before);
 
