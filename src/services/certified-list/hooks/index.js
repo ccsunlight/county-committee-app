@@ -11,13 +11,10 @@ exports.before = {
   find: [],
   get: [
     async function(context) {
-      console.log("CONTEXT");
       if (context.params.query.format === "csv") {
         const csv = await context.service.generateCSV(
           mongoose.Types.ObjectId(context.id)
         );
-
-        console.log("CSV", csv);
         context.result = csv;
       }
 

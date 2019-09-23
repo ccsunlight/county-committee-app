@@ -23,16 +23,23 @@ class Service extends FeathersMongoose.Service {
 
       return new Promise((resolve, reject) => {
         const dataObjects = [];
-        console.log("YOYO");
+
         CertifiedList.findOne(_id).then(certifiedList => {
           certifiedList.positions.forEach(position => {
             dataObjects.push({
               id: position.id,
               office: position.office,
               office_holder: position.office_holder,
+              address: position.address,
+              data_source: position.data_source,
               assembly_district: position.assembly_district,
               electoral_district: position.electoral_district,
-              address: position.address
+              ed_ad: position.ed_ad,
+              entry_type: position.ed_ad,
+              state: position.state,
+              part: position.part,
+              tally: position.tally,
+              petition_number: position.petition_number
             });
           });
           converter

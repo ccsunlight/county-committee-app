@@ -3,7 +3,8 @@ const Schema = mongoose.Schema;
 const partyPositionSchema = new Schema(
   {
     petition_number: {
-      type: Number
+      type: Number,
+      default: ""
     },
     office: {
       type: String,
@@ -14,10 +15,12 @@ const partyPositionSchema = new Schema(
       required: true
     },
     address: {
-      type: String
+      type: String,
+      default: ""
     },
     tally: {
-      type: Number
+      type: Number,
+      default: ""
     },
     entry_type: {
       type: String,
