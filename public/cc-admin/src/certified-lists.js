@@ -1,37 +1,23 @@
 // in src/posts.js
 import React from "react";
-import { Link } from "react-router-dom";
 import {
   List,
   Edit,
-  Filter,
   Create,
-  SimpleList,
-  Responsive,
   Datagrid,
-  ReferenceField,
   TextField,
   EditButton,
   DisabledInput,
-  LongTextInput,
-  ReferenceInput,
-  ReferenceManyField,
-  SelectInput,
   SimpleForm,
-  TextInput,
-  BooleanField,
   FileInput,
   FileField
 } from "admin-on-rest";
-import { WithPermission, SwitchPermissions, Permission } from "aor-permissions";
-import authClient from "./feathersAuthClient";
-import { checkUserCanEdit } from "./feathersAuthClient";
 import { ExportCSVButton } from "./ExportCSVButton";
 
 export const CertifiedListList = props => (
   <List {...props} title="Imported Certified Lists">
     <Datagrid>
-      <TextField source="_id" />
+      <TextField source="id" />
       <TextField source="source" />
       <EditButton />
     </Datagrid>
@@ -51,6 +37,7 @@ export const PartyPositionList = ({ record, props }) => {
   return (
     <Datagrid ids={ids} data={data} currentSort={{ id: "ASC" }}>
       <TextField source="id" />
+      <TextField source="office" />
       <TextField source="office_holder" />
       <TextField source="assembly_district" />
       <TextField source="electoral_district" />

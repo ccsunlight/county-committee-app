@@ -3,7 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const pdfTextExtract = require("pdf-text-extract");
-const CertifiedList = require("./certified-list-model");
+const CandidacyList = require("./candidacy-list-model");
 const hooks = require("./hooks");
 const CountyCommitteeMember = require("../county-committee-member/county-committee-member-model");
 const CountyCommittee = require("../county-committee/county-committee-model");
@@ -114,8 +114,8 @@ class Service extends FeathersMongoose.Service {
 
       return new Promise((resolve, reject) => {
         const dataObjects = [];
-        CertifiedList.findOne(_id).then(certifiedList => {
-          certifiedList.positions.map(function(position) {
+        CandidacyList.findOne(_id).then(candidacyList => {
+          candidacyList.positions.map(function(position) {
             // Go through all rows for each position and generate an object
             position.rows.forEach(function(row, rowIndex) {
               const dataObject = { positionName: position.name };
@@ -152,9 +152,9 @@ class Service extends FeathersMongoose.Service {
       }
 
       this.extractTablesFromPDF(params.filepath).then(dataTables => {
-        CertifiedList.create({ positions: dataTables })
-          .then(certifiedList => {
-            resolve(certifiedList);
+        CandidacyList.create({ positions: dataTables })
+          .then(candidacyList => {
+            resolve(candidacyList);
           })
           .catch(error => {
             reject(error);
@@ -168,7 +168,7 @@ module.exports = function() {
   const app = this;
 
   const options = {
-    Model: CertifiedList,
+    Model: CandidacyList,
     paginate: {
       default: 10,
       max: 25
@@ -178,10 +178,10 @@ module.exports = function() {
 
   const service = new Service(options);
 
-  service.setup(app, app.get("apiPath") + "/certified-list");
+  service.setup(app, app.get("apiPath") + "/candidacy-list");
 
   // Initialize our service with any options it requires
-  app.use(app.get("apiPath") + "/certified-list", service, function updateData(
+  app.use(app.get("apiPath") + "/candidacy-list", service, function updateData(
     req,
     res,
     next
@@ -192,7 +192,7 @@ module.exports = function() {
     if (req.query.format === "csv") {
       res.setHeader(
         "Content-disposition",
-        `attachment; filename=certified-list-csv-${req.params.__feathersId}.csv`
+        `attachment; filename=candidacy-list-csv-${req.params.__feathersId}.csv`
       );
       res.setHeader("Content-type", "text/plain");
 
@@ -208,17 +208,17 @@ module.exports = function() {
   });
 
   // Get our initialize service to that we can bind hooks
-  const certifiedListService = app.service(
-    app.get("apiPath") + "/certified-list"
+  const candidacyListService = app.service(
+    app.get("apiPath") + "/candidacy-list"
   );
 
-  //certifiedListService.setup(app);
+  //candidacyListService.setup(app);
 
   // Set up our before hooks
-  certifiedListService.before(hooks.before);
+  candidacyListService.before(hooks.before);
 
   // Set up our after hooks
-  certifiedListService.after(hooks.after);
+  candidacyListService.after(hooks.after);
 };
 
 module.exports.Service = Service;

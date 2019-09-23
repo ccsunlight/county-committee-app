@@ -30,8 +30,8 @@ exports.before = {
       return context;
     }
   ],
-  create: [saveCertifiedListJsonDataPDF],
-  update: [saveCertifiedListJsonDataPDF],
+  create: [saveCandidactListJsonDataPDF],
+  update: [saveCandidactListJsonDataPDF],
   patch: [],
   remove: []
 };
@@ -39,20 +39,7 @@ exports.before = {
 exports.after = {
   all: [],
   find: [],
-  get: [
-    // function(context) {
-    //   console.log("generate CSV", context.result._id);
-    //   return new Promise((resolve, reject) => {
-    //     context.service
-    //       .generateCSV(mongoose.Types.ObjectId(context.result._id))
-    //       .then(csv => {
-    //         // context.result.positions = "";
-    //         context.result.positions = csv.split("\n");
-    //         resolve(context);
-    //       });
-    //   });
-    // }
-  ],
+  get: [],
   create: [globalHooks.logAction],
   update: [globalHooks.logAction],
   patch: [globalHooks.logAction],
@@ -66,7 +53,7 @@ exports.after = {
  * @param {Object} context The hook context
  * @return {Object} The modified hook context
  */
-function saveCertifiedListJsonDataPDF(context) {
+function saveCandidactListJsonDataPDF(context) {
   if (context.data.hasOwnProperty("file_data")) {
     let csvBase64DataObject = context.data.file_data.pop();
     if (csvBase64DataObject) {

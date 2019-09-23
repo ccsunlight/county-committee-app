@@ -1,25 +1,18 @@
 "use strict";
 
-// certified-list-model.js - A mongoose model
+// candidacy-list-model.js - A mongoose model
 //
 // See http://mongoosejs.com/docs/models.html
 // for more of what you can do here.
 
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const ccMemberModelSchema = require("../county-committee-member/county-committee-member-model")
-  .schema;
-
 const converter = require("json-2-csv");
 
-const certifiedListSchema = new Schema(
+const candidacyListSchema = new Schema(
   {
     source: { type: String, required: false },
     positions: { type: Array },
-    type: {
-      type: String,
-      enum: ["party_position_certified_list", "party_position_candidacy_list"]
-    },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
   },
@@ -34,9 +27,9 @@ const certifiedListSchema = new Schema(
   }
 );
 
-const certifiedListModel = mongoose.model(
-  "certified-list",
-  certifiedListSchema
+const candidacyListModel = mongoose.model(
+  "candidacy-list",
+  candidacyListSchema
 );
 
-module.exports = certifiedListModel;
+module.exports = candidacyListModel;

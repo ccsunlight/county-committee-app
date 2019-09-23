@@ -31,6 +31,12 @@ import {
   CertifiedListCreate
 } from "./certified-lists";
 
+import {
+  CandidacyListList,
+  CandidacyListEdit,
+  CandidacyListCreate
+} from "./candidacy-lists";
+
 import { PageList, PageEdit, PageCreate } from "./pages";
 import { UserList, UserEdit } from "./users";
 import {
@@ -98,6 +104,16 @@ const App = () => (
       list={CertifiedListList}
       edit={CertifiedListEdit}
       create={CertifiedListCreate}
+      remove={Delete}
+    />
+
+    <Resource
+      name="candidacy-list"
+      options={{ label: "Candidacy Lists" }}
+      icon={ActionLogIcon}
+      list={CandidacyListList}
+      edit={CandidacyListEdit}
+      create={CandidacyListCreate}
       remove={Delete}
     />
 
