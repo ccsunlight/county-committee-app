@@ -24,45 +24,31 @@ export const CertifiedListList = props => (
   </List>
 );
 
-export const PartyPositionsList = ({ record, props }) => {
+export const PartyPositionList = ({ record, props }) => {
   let data = {};
-  let rowIndex = 0;
+
   const ids = record.positions
-    ? record.positions.slice(0, 10).map((position, index) => {
-        position.rows.forEach(row => {
-          data[rowIndex++] = { position: position.name, row: row };
-        });
-        return rowIndex;
+    ? record.positions.slice(0, 50).map(position => {
+        data[position.id] = position;
+        return position.id;
       })
     : [];
 
+  // Errors out if it trys to display without any data
   if (ids.length) {
     return (
-      <Datagrid ids={ids} data={data} currentSort={{ _id: "ASC" }}>
-        <TextField label="Position" source="position" />
-        {record.positions[0].columnNames.map((column, index) => {
-          const sourceProp = { source: `row[${index}]` };
-          return (
-            <TextField key={String(index)} label={column} {...sourceProp} />
-          );
-        })}
+      <Datagrid ids={ids} data={data} currentSort={{ id: "ASC" }}>
+        <TextField label="id" source="id" />
+        <TextField source="office" />
+        <TextField source="office_holder" />
+        <TextField source="assembly_district" />
+        <TextField source="electoral_district" />
+        <TextField source="tally" />
       </Datagrid>
     );
   } else {
     return <div>Nothing yet</div>;
   }
-};
-
-export const CertifiedListEdit = props => {
-  return (
-    <Edit title={"Certified List"} {...props}>
-      <SimpleForm>
-        <DisabledInput label="Id" source="id" />
-        <ExportCSVButton props={props} />
-        <PartyPositionsList props={props} />
-      </SimpleForm>
-    </Edit>
-  );
 };
 
 export const CertifiedListCreate = props => {
@@ -80,3 +66,14 @@ export const CertifiedListCreate = props => {
     </Create>
   );
 };
+
+export const CertifiedListEdit = props => (
+  <Edit title={"Import list Positions"} {...props}>
+    <SimpleForm>
+      <DisabledInput label="Id" source="id" />
+      <ExportCSVButton props={props} />
+      <TextField source="positions.length" label="Total Positions imported" />
+      <PartyPositionList title="Only first 50 rows shown" props={props} />
+    </SimpleForm>
+  </Edit>
+);

@@ -1,6 +1,7 @@
 "use strict";
 
 const certifiedList = require("./certified-list");
+const candidacyList = require("./candidacy-list");
 const partyCall = require("./party-call");
 
 const utils = require("./utils");
@@ -49,7 +50,7 @@ module.exports = function() {
   app.configure(actionLog);
   app.configure(glossaryTerm);
   app.configure(newsLink);
-
+  app.configure(candidacyList);
   app.configure(certifiedList);
   app.configure(partyCall);
   app.configure(term);

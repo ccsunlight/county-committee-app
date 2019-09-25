@@ -2,52 +2,43 @@
 
 const globalHooks = require("../../../hooks");
 const hooks = require("feathers-hooks");
-const CountyCommitteeMemberModel = require("../../county-committee-member/county-committee-member-model");
-const CertifiedListModel = require("../certified-list-model");
-const mongoose = require("mongoose");
+var mongoose = require("mongoose");
 
 exports.before = {
   all: [],
-  find: [],
+  find: [
+    // Excludes the "positions" property from finds
+    // to avoid memory overload of returning
+    // 1000+ array.
+    // @todo move positions to their own collection
+    function(context) {
+      context.params.query.$select = { positions: 0 };
+
+      return context;
+    }
+  ],
   get: [
     async function(context) {
       if (context.params.query.format === "csv") {
         const csv = await context.service.generateCSV(
           mongoose.Types.ObjectId(context.id)
         );
+
         context.result = csv;
       }
 
       return context;
     }
   ],
-  create: [saveCertifiedListJsonDataPDF],
-  update: [saveCertifiedListJsonDataPDF],
+  create: [saveCandidactListJsonDataPDF],
+  update: [saveCandidactListJsonDataPDF],
   patch: [],
   remove: []
 };
 
 exports.after = {
-  all: [
-    // function(hook) {
-    //   if (hook.result.data) {
-    //     hook.result.data.map(function(record) {
-    //       record.id = record._id;
-    //       return record;
-    //     });
-    //   }
-    // }
-  ],
-  find: [
-    // function(hook) {
-    //   if (hook.result.data) {
-    //     hook.result.data.map(function(record) {
-    //       record.id = record._id;
-    //       return record;
-    //     });
-    //   }
-    // }
-  ],
+  all: [],
+  find: [],
   get: [],
   create: [globalHooks.logAction],
   update: [globalHooks.logAction],
@@ -62,7 +53,7 @@ exports.after = {
  * @param {Object} context The hook context
  * @return {Object} The modified hook context
  */
-function saveCertifiedListJsonDataPDF(context) {
+function saveCandidactListJsonDataPDF(context) {
   if (context.data.hasOwnProperty("file_data")) {
     let csvBase64DataObject = context.data.file_data.pop();
     if (csvBase64DataObject) {

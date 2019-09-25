@@ -2,111 +2,20 @@
 
 const fs = require("fs");
 const path = require("path");
-const pdfTextExtract = require("pdf-text-extract");
+const extract = require("pdf-text-extract");
+const FeathersMongoose = require("feathers-mongoose");
+const converter = require("json-2-csv");
+
 const CertifiedList = require("./certified-list-model");
 const hooks = require("./hooks");
-const CountyCommitteeMember = require("../county-committee-member/county-committee-member-model");
-const CountyCommittee = require("../county-committee/county-committee-model");
-const Term = require("../term/term-model");
-const FeathersMongoose = require("feathers-mongoose");
-const mongoose = require("mongoose");
-const moment = require("moment");
-const converter = require("json-2-csv");
-const feathers = require("feathers");
-function ccExtractionException(message) {
+const PartyPosition = require("./party-position-model");
+
+function certifiedListExtractionException(message) {
   this.message = message;
-  this.name = "CCMemberException";
-}
-
-// Tokens to search PDF for
-const DATA_START_DELIMITER = RegExp("Party Positions");
-const DATA_END_DELIMITER = RegExp("Page [0-9]+ of [0-9]+");
-
-function cleanRowsOfText(rawRowsOfText) {
-  return rawRowsOfText
-    .map(function(row) {
-      return row.trim();
-    })
-    .filter(function(row, index) {
-      if (row && row.length > 0) {
-        return true;
-      }
-    });
-}
-
-function splitRowsOfTextInToArrays(rows, rowSize) {
-  var arrayOfRows = [];
-
-  for (let i = 0; i < rows.length; i += rowSize) {
-    arrayOfRows.push(rows.slice(i, i + rowSize));
-  }
-
-  return arrayOfRows;
+  this.name = "CertifiedListExtractionException";
 }
 
 class Service extends FeathersMongoose.Service {
-  extractTablesFromPDF(filepath) {
-    return new Promise((resolve, reject) => {
-      pdfTextExtract(filepath, (err, pages) => {
-        if (err) {
-          reject(err);
-        }
-        const dataTables = [];
-
-        pages.forEach(function(page, index) {
-          const lines = page.split("\n");
-          let pageDataStartIndex, pageDataEndIndex;
-
-          lines.forEach(function(line, index) {
-            if (DATA_START_DELIMITER.test(line)) {
-              pageDataStartIndex = index + 1;
-            } else if (DATA_END_DELIMITER.test(line)) {
-              pageDataEndIndex = index;
-            }
-          });
-
-          const pageLinesWithData = lines.slice(
-            pageDataStartIndex,
-            pageDataEndIndex
-          );
-
-          const pageDataTables = pageLinesWithData.reduce(function(
-            table,
-            line,
-            index
-          ) {
-            if (
-              line === "" &&
-              pageLinesWithData[index - 1] === "" &&
-              pageLinesWithData[index + 1] !== "" &&
-              index !== pageLinesWithData.length - 1
-            ) {
-              table.push({
-                name: undefined,
-                columnNames: undefined,
-                rows: []
-              });
-            } else if (table.length) {
-              if (line && !table[table.length - 1].name) {
-                table[table.length - 1].name = line;
-              } else if (line && !table[table.length - 1].columnNames) {
-                table[table.length - 1].columnNames = line.split(/\s\s+/);
-              } else if (line) {
-                table[table.length - 1].rows.push(line.split(/\s\s+/));
-              }
-            }
-            return table;
-          },
-          []);
-
-          dataTables.push(...pageDataTables);
-        });
-
-        resolve(dataTables);
-      });
-    });
-  }
-
   generateCSV(_id) {
     {
       const DELIMITER = ",";
@@ -114,21 +23,25 @@ class Service extends FeathersMongoose.Service {
 
       return new Promise((resolve, reject) => {
         const dataObjects = [];
+
         CertifiedList.findOne(_id).then(certifiedList => {
-          certifiedList.positions.map(function(position) {
-            // Go through all rows for each position and generate an object
-            position.rows.forEach(function(row, rowIndex) {
-              const dataObject = { positionName: position.name };
-
-              // Go through each column and map the appropriate index of row to the object
-              position.columnNames.forEach(function(columnName, colIndex) {
-                dataObject[columnName] = row[colIndex];
-              });
-
-              dataObjects.push(dataObject);
+          certifiedList.positions.forEach(position => {
+            dataObjects.push({
+              id: position.id,
+              office: position.office,
+              office_holder: position.office_holder,
+              address: position.address,
+              data_source: position.data_source,
+              assembly_district: position.assembly_district,
+              electoral_district: position.electoral_district,
+              ed_ad: position.ed_ad,
+              entry_type: position.ed_ad,
+              state: position.state,
+              part: position.part,
+              tally: position.tally,
+              petition_number: position.petition_number
             });
           });
-
           converter
             .json2csvAsync(dataObjects)
             .then(csv => {
@@ -140,26 +53,239 @@ class Service extends FeathersMongoose.Service {
     }
   }
 
+  extractCountyFromPage(page) {
+    var match = page.match(/IN THE CITY OF NEW YORK\s+(.+), .+Party/);
+
+    if (match) {
+      return match[1];
+    }
+  }
+
+  extractPartyPositionsFromPage(page) {
+    var rows = page.match(/(.+)/g);
+
+    // var county = this.extractCountyFromPage(page);
+    // const party = this.extractPartyFromPage(page);
+
+    var headerRowIndex = rows.findIndex(this.isPartyPositionTableHeaderRow);
+    var footerRowIndex = rows.findIndex(this.isPartyPositionTableFooterRow);
+    if (headerRowIndex > 0 && footerRowIndex > 0) {
+      var partyPositionRows = rows.slice(headerRowIndex + 1, footerRowIndex);
+
+      var errors = [];
+      var partyPositions = [];
+
+      partyPositionRows.forEach((partyPositionRow, index) => {
+        try {
+          partyPositions.push(
+            this.extractPartyPositionDataFromRow(partyPositionRow)
+          );
+        } catch (e) {
+          errors.push(e);
+        }
+      });
+
+      return partyPositions;
+    }
+  }
+
+  extractPartyFromPage(page) {
+    var match = page.match(
+      /persons were duly elected as\s+(.+)\sCounty Committee/
+    );
+
+    if (match) {
+      return match[1];
+    }
+  }
+
+  /**
+   * Determines if row is a table header to extract columns
+   * and determine where member data is in PDF.
+   * @param  {[type]} row [description]
+   * @return {[type]}     [description]
+   */
+  isPartyPositionTableHeaderRow(row) {
+    return /Tally\s+Entry Type/.test(row);
+  }
+
+  /**
+   * Determines if row is a table footer to extract columns
+   * and determine where member ends is in PDF.
+   * @param  {[type]} row [description]
+   * @return {[type]}     [description]
+   */
+  isPartyPositionTableFooterRow(row) {
+    return /Page \d+ of \d+/.test(row);
+  }
+
+  //ED/AD Office Holder Address Tally Entry Type
+  /**
+   * Extracts a member's attributes from a row of text
+   * @param  {String} row    [description]
+   * @param  {String} county [description]
+   * @param  {String} state  [description]
+   * @return {Object}        [description]
+   */
+  extractPartyPositionDataFromRow(row) {
+    // if (!county) {
+    //   throw new this.ccExtractionException(
+    //     "County not provided for member row: " + row
+    //   );
+    // }
+
+    // Data object for CC Member
+    let party_position = {
+      petition_number: undefined,
+      office: undefined,
+      office_holder: undefined,
+      address: undefined,
+      tally: undefined,
+      entry_type: undefined,
+      ed_ad: undefined,
+      electoral_district: undefined,
+      assembly_district: undefined,
+      data_source: undefined
+      //county: county,
+      //state: state
+    };
+
+    //
+    // Lots of gnarly regex logic to parse fields here.
+    //
+    // You've been warned.
+    //
+
+    // Splits up by two space matches.
+    // @todo make sure there are no one spaced out items!
+    var rowFields = row.split(/\s{2,}/);
+
+    // Edge case for space at begninning
+    if (rowFields[0] == "") {
+      rowFields.shift();
+    }
+    // petition checker
+    if (!isNaN(rowFields[0])) {
+      party_position.petition_number = rowFields.shift();
+    }
+
+    if (/County Committee/i.test(rowFields[0])) {
+      party_position.office = rowFields.shift();
+    } else {
+      throw new this.ccExtractionException(
+        "Petition or position Field Not Valid. " + rowFields[0] + " Row: " + row
+      );
+    }
+
+    // ED AD extractor
+    if (/\d+\/\d+/.test(rowFields[0])) {
+      party_position.ed_ad = rowFields.shift();
+      var ed_ad = party_position.ed_ad.split("/");
+      party_position.electoral_district = parseInt(ed_ad[0], 10);
+      party_position.assembly_district = parseInt(ed_ad[1], 10);
+    } else {
+      throw new this.ccExtractionException(
+        "ED/AD Field Not Valid. " + rowFields[0] + " Row: " + row
+      );
+    }
+
+    // Office Holder extractor
+    if (/Vacancy/i.test(rowFields[0])) {
+      party_position.office_holder = rowFields.shift();
+    } else {
+      party_position.office_holder = rowFields.shift();
+
+      //if (/NY/.test(rowFields[0])) {
+      party_position.address = rowFields.shift();
+      //} else {
+      //    throw 'Address Field Not Valid. ' + rowFields[0] + ' Row: ' + row;
+      //}
+
+      if (!isNaN(parseInt(rowFields[0], 10))) {
+        party_position.tally = rowFields.shift();
+      } else {
+        throw new this.ccExtractionException(
+          "Tally Field Not Valid. " + rowFields[0] + " Row: " + row
+        );
+      }
+    }
+
+    if (/.+$/i.test(rowFields[0])) {
+      party_position.entry_type = rowFields.shift();
+    }
+
+    return party_position;
+  }
+
+  extractPartyPositionsFromCertifiedListPDF(filepath) {
+    return new Promise((resolve, reject) => {
+      extract(filepath, (err, pages) => {
+        if (err) {
+          reject(err);
+          console.log(err);
+        }
+
+        let partyPositions = [];
+        let county, party;
+        pages.forEach((page, index) => {
+          // Keeps checking pages until it can extract county
+          // Some pages have county on them others don't
+          // if (!county) {
+          //   county = this.extractCountyFromPage(page);
+          // }
+
+          // if (!party) {
+          //   party = this.extractPartyFromPage(page);
+          // }
+
+          const extractedPartyPositionsFromPage = this.extractPartyPositionsFromPage(
+            page
+          );
+
+          if (extractedPartyPositionsFromPage) {
+            partyPositions.push(
+              ...extractedPartyPositionsFromPage.map(extractedPartyPosition => {
+                const partyPosition = new PartyPosition(extractedPartyPosition);
+                partyPosition.data_source = path.basename(filepath);
+                return partyPosition;
+              })
+            );
+          }
+        });
+
+        resolve({
+          positions: partyPositions,
+          source: path.basename(filepath)
+        });
+      });
+    });
+  }
+
   setup(app, path) {
     this.app = app;
   }
 
   create(params) {
+    let certifiedList;
+
     return new Promise((resolve, reject) => {
       if (!fs.existsSync(params.filepath)) {
         reject("File does not exist: " + params.filepath);
         return;
       }
-
-      this.extractTablesFromPDF(params.filepath).then(dataTables => {
-        CertifiedList.create({ positions: dataTables })
-          .then(certifiedList => {
-            resolve(certifiedList);
-          })
-          .catch(error => {
-            reject(error);
+      this.extractPartyPositionsFromCertifiedListPDF(params.filepath).then(
+        certifiedList => {
+          //console.log("certified list", certifiedList);
+          let importedList = new CertifiedList(certifiedList);
+          importedList.save(err => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(importedList);
+            }
           });
-      });
+        }
+      );
     });
   }
 }
@@ -178,7 +304,7 @@ module.exports = function() {
 
   const service = new Service(options);
 
-  service.setup(app, app.get("apiPath") + "/certified-list");
+  service.setup(app, app.get("apiPath") + "/certified-list", service);
 
   // Initialize our service with any options it requires
   app.use(app.get("apiPath") + "/certified-list", service, function updateData(
@@ -211,9 +337,6 @@ module.exports = function() {
   const certifiedListService = app.service(
     app.get("apiPath") + "/certified-list"
   );
-
-  //certifiedListService.setup(app);
-
   // Set up our before hooks
   certifiedListService.before(hooks.before);
 
