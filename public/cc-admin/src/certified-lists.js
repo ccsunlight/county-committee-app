@@ -15,7 +15,7 @@ import {
 import { ExportCSVButton } from "./ExportCSVButton";
 
 export const CertifiedListList = props => (
-  <List {...props} title="Imported Certified Lists">
+  <List {...props} title="Certified Lists">
     <Datagrid>
       <TextField source="id" />
       <TextField source="source" />
@@ -34,16 +34,21 @@ export const PartyPositionList = ({ record, props }) => {
       })
     : [];
 
-  return (
-    <Datagrid ids={ids} data={data} currentSort={{ id: "ASC" }}>
-      <TextField source="id" />
-      <TextField source="office" />
-      <TextField source="office_holder" />
-      <TextField source="assembly_district" />
-      <TextField source="electoral_district" />
-      <TextField source="tally" />
-    </Datagrid>
-  );
+  // Errors out if it trys to display without any data
+  if (ids.length) {
+    return (
+      <Datagrid ids={ids} data={data} currentSort={{ id: "ASC" }}>
+        <TextField label="id" source="id" />
+        <TextField source="office" />
+        <TextField source="office_holder" />
+        <TextField source="assembly_district" />
+        <TextField source="electoral_district" />
+        <TextField source="tally" />
+      </Datagrid>
+    );
+  } else {
+    return <div>Nothing yet</div>;
+  }
 };
 
 export const CertifiedListCreate = props => {
@@ -68,7 +73,7 @@ export const CertifiedListEdit = props => (
       <DisabledInput label="Id" source="id" />
       <ExportCSVButton props={props} />
       <TextField source="positions.length" label="Total Positions imported" />
-      <PartyPositionList title="Only first 100 rows shown" props={props} />
+      <PartyPositionList title="Only first 50 rows shown" props={props} />
     </SimpleForm>
   </Edit>
 );

@@ -2,8 +2,7 @@
 
 const assert = require("assert");
 const app = require("../../../src/app");
-const MOCK_CANDIDACY_LIST_FILEPATH =
-  "/usr/src/app/test/mocks/MockCandidacyListCitywidePartyPositions.pdf";
+
 const MOCK_CERTIFIED_LIST_FILEPATH =
   "/usr/src/app/test/mocks/KG_CCDEMLIST_100918.pdf";
 const MOCK_CERTIFIED_LIST_FILEPATH_TWO =
@@ -11,11 +10,6 @@ const MOCK_CERTIFIED_LIST_FILEPATH_TWO =
 
 const base64 = require("base64topdf");
 const moment = require("moment");
-
-// const FileAPI = require("file-api"),
-//   File = FileAPI.File,
-//   FileList = FileAPI.FileList,
-//   FileReader = FileAPI.FileReader;
 
 describe("Certified List Service", function() {
   this.timeout(10000);
@@ -133,26 +127,12 @@ describe("Certified List Service", function() {
     assert.ok(app.service(app.get("apiPath") + "/certified-list"));
   });
 
-  it("can extract tables from pdf", done => {
-    const CertifiedList = app.service(app.get("apiPath") + "/certified-list");
-
-    const certifiedListService = CertifiedList.create({
-      filepath: MOCK_CANDIDACY_LIST_FILEPATH
-    })
-      .then(dataTables => {
-        done();
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  });
-
   it("can export a csv", done => {
     const CertifiedListService = app.service(
       app.get("apiPath") + "/certified-list"
     );
     CertifiedListService.create({
-      filepath: MOCK_CANDIDACY_LIST_FILEPATH
+      filepath: MOCK_CERTIFIED_LIST_FILEPATH
     })
       .then(certifiedList => {
         CertifiedListService.generateCSV(certifiedList._id).then(
