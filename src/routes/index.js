@@ -5,10 +5,10 @@ const _ = require("lodash");
 const bb = require("bluebird");
 const co = bb.coroutine;
 const fs = bb.promisifyAll(require("fs"));
-
 const auth = require("feathers-authentication");
 const CountyCommitteeModel = require("../services/county-committee/county-committee-model");
 const partyCall = require("../services/party-call/party-call-model");
+
 const countyCommitteeMember = require("../services/county-committee-member/county-committee-member-model");
 const edGeometry = require("../services/edGeometry/edGeometry-model");
 const page = require("../services/page/page-model");
@@ -71,29 +71,26 @@ router.get(
 );
 
 /* GET home page. */
-router.get(
-  "/",
-  co(function*(req, res, next) {
-    // Caching the output of the cc breakdowns
-    // These don't change much
-    let countySeatBreakdowns = cache.get("county-committee-breakdowns");
+router.get("/", async function(req, res, next) {
+  // Caching the output of the cc breakdowns
+  // These don't change much
+  let countySeatBreakdowns = cache.get("county-committee-breakdowns");
 
-    if (!countySeatBreakdowns) {
-      countySeatBreakdowns = [
-        yield getCountyCommitteeBreakdown("Kings", "Democratic"),
-        yield getCountyCommitteeBreakdown("Queens", "Democratic"),
-        yield getCountyCommitteeBreakdown("New York", "Democratic"),
-        yield getCountyCommitteeBreakdown("Bronx", "Democratic"),
-        yield getCountyCommitteeBreakdown("Richmond", "Democratic")
-      ];
+  if (!countySeatBreakdowns) {
+    countySeatBreakdowns = [
+      await getCountyCommitteeBreakdown("Kings", "Democratic"),
+      await getCountyCommitteeBreakdown("Queens", "Democratic"),
+      await getCountyCommitteeBreakdown("New York", "Democratic"),
+      await getCountyCommitteeBreakdown("Bronx", "Democratic"),
+      await getCountyCommitteeBreakdown("Richmond", "Democratic")
+    ];
 
-      cache.set("county-committee-breakdowns", countySeatBreakdowns);
-    }
-    res.render("index", {
-      countySeatBreakdowns: countySeatBreakdowns
-    });
-  })
-);
+    cache.set("county-committee-breakdowns", countySeatBreakdowns);
+  }
+  res.render("index", {
+    countySeatBreakdowns: countySeatBreakdowns
+  });
+});
 
 router.get("/:county-:party-county-committee/ad/:ad", function(req, res, next) {
   // For map seats.
