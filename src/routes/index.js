@@ -1,34 +1,24 @@
 const express = require("express");
 const router = express.Router();
 const feathers = require("feathers");
-
 const _ = require("lodash");
 const bb = require("bluebird");
 const co = bb.coroutine;
 const fs = bb.promisifyAll(require("fs"));
-const rp = require("request-promise");
-const download = require("download");
-//const NodeGeocoder = require('node-geocoder');
-const serveStatic = require("feathers").static;
+
 const auth = require("feathers-authentication");
 const CountyCommitteeModel = require("../services/county-committee/county-committee-model");
-const TermModel = require("../services/term/term-model");
 const partyCall = require("../services/party-call/party-call-model");
-
 const countyCommitteeMember = require("../services/county-committee-member/county-committee-member-model");
 const edGeometry = require("../services/edGeometry/edGeometry-model");
 const page = require("../services/page/page-model");
 const newsModel = require("../services/news-link/news-link-model");
 const confirm = require("../services/invite/email-confirm");
-const User = require("../services/user/user-model");
 const Address = require("../services/address");
 const NodeCache = require("node-cache");
-
 const cache = new NodeCache({ stdTTL: 600 });
-
-const turf = require("turf");
-const unkinkPolygon = require("@turf/unkink-polygon");
 const RSS = require("rss");
+const getCountyCommitteeBreakdown = require("../utils/getCountyCommitteeBreakdown");
 
 // Prevents crawlers from cralwer not on production
 router.use("/robots.txt", function(req, res) {
@@ -40,17 +30,6 @@ router.use("/robots.txt", function(req, res) {
     res.send("User-agent: *\nDisallow: /");
   }
 });
-
-/*
-const googleGeocoderOptions = {
-    provider: 'google',
-    apiKey: 'AIzaSyBWT_tSznzz1oSNXAql54sSKGIAC4EyQGg',
-    httpAdapter: 'https',
-    formatter: null
-};
-
-const googleGeocoder = NodeGeocoder(googleGeocoderOptions);
-*/
 
 router.use("/invite/confirm/:confirm_code", function(req, res, next) {
   confirm.confirmUser(req.params.confirm_code, function(registeredUser) {
@@ -90,168 +69,6 @@ router.get(
     res.send("ok time to make a password");
   }
 );
-/*
-router.use('/invite/confirm/:confirm_code', function(req, res, next) {
-   
-    confirm.confirmUser(req.params.confirm_code, function(registeredUser) {
-        console.log('result', registeredUser);
-        req.body.email = registeredUser.email;
-        req.body.username = registeredUser.email;
-        req.body.password = registeredUser.password;
-
-        req.data = { strategy: 'local', email: registeredUser.email, password:registeredUser.password }
-        feathers().service('/authentication').create(req.data, { after: [next()]})
-    });
-
-});
-
-router.get('/invite/confirm/:confirm_code',auth.express.authenticate('local', { successRedirect: '/cc-admin/#/county-committee', failureRedirect: '/cc-admin/fail' }))
-*/
-
-// we need to update the db if there's nothing in it or if it's been more than a week
-const updateEdDb = co(function*() {
-  try {
-    const oneDayMS = 1000 * 60 * 60 * 24;
-    const oneWeekMS = oneDayMS * 7;
-
-    const expireTimeMS = Date.now() - oneWeekMS;
-
-    // Runs this job every day
-    setTimeout(updateEdDb, oneDayMS);
-
-    // get the first doc to check the date
-    const firstExpriedEdGeometryDoc = yield edGeometry.findOne({
-      createdAt: { $lt: expireTimeMS }
-    });
-
-    // If there is no expired geo documents,
-    // check that there are any geo documents at all
-    if (!firstExpriedEdGeometryDoc) {
-      const anyEdGeomtryDoc = yield edGeometry.findOne({});
-
-      // If there are already geo documents, don't proceed
-      // with import
-      if (anyEdGeomtryDoc) {
-        // console.log("No expired edgeometries found, exiting.");
-        return;
-      }
-    }
-
-    const saveTo = "downloads/Election_Districts.geojson";
-
-    try {
-      const geojsonFile = yield download(
-        "https://data.cityofnewyork.us/api/geospatial/h2n3-98hq?method=export&format=GeoJSON"
-      );
-      yield fs.writeFileAsync(saveTo, geojsonFile);
-    } catch (err) {
-      // if the download fails, just log it and fall back to whatever we already have
-      console.log("ED geojson download failed!");
-    }
-
-    const data = yield fs.readFileAsync(saveTo);
-
-    const parsed = yield bb.map(JSON.parse(data).features, x => {
-      try {
-        var poly = turf.multiPolygon(x.geometry.coordinates);
-        var unkinkedPolygon = unkinkPolygon(poly);
-
-        return {
-          ad: Number(x.properties.elect_dist.slice(0, 2)),
-          ed: Number(x.properties.elect_dist.slice(2)),
-          geometry: {
-            type: "MultiPolygon",
-            coordinates: x.geometry.coordinates
-          }
-        };
-      } catch (e) {
-        console.log(e);
-
-        return {
-          ad: Number(x.properties.elect_dist.slice(0, 2)),
-          ed: Number(x.properties.elect_dist.slice(2)),
-          geometry: {
-            type: "MultiPolygon",
-            coordinates: x.geometry.coordinates
-          },
-          kinked: true
-        };
-      }
-    });
-    const parsedRemovedKinked = parsed.filter(poly => !poly.kinked);
-
-    // Removes expired documents first
-    // @todo Refactor this to be more redundant
-    yield edGeometry.deleteMany({
-      createdAt: {
-        $lt: expireTimeMS
-      }
-    });
-
-    // inserts new documents.
-    yield edGeometry.insertMany(parsedRemovedKinked);
-
-    console.log("Updated ED geometry DB");
-  } catch (err) {
-    console.log(err);
-  }
-});
-updateEdDb();
-
-const getCountyCommitteeBreakdown = co(function*(county, party) {
-  // Lean not working with "findOne" due to custom hooks
-  // so need to use "find" instead.
-  let countyCommitteeResult = yield CountyCommitteeModel.find(
-    {
-      county: county,
-      party: party
-    },
-    "current_term_id _id"
-  )
-    .lean()
-    .exec();
-  const countyCommittee = countyCommitteeResult.pop();
-
-  let currentTerm = yield TermModel.findOne({
-    _id: countyCommittee.current_term_id
-  })
-    .lean()
-    .exec();
-
-  let numOfElected = yield countyCommitteeMember
-    .find({
-      term_id: countyCommittee.current_term_id,
-      entry_type: {
-        $in: ["Elected", "Uncontested"]
-      }
-    })
-    .count();
-
-  let numOfVacancies = yield countyCommitteeMember
-    .find({
-      office_holder: { $in: ["Vacancy", "None"] },
-      term_id: countyCommittee.current_term_id
-    })
-    .count();
-
-  let numOfAppointed = yield countyCommitteeMember
-    .find({
-      entry_type: "Appointed",
-      term_id: countyCommittee.current_term_id
-    })
-    .count();
-
-  return {
-    county: county,
-    party: party,
-    term_start_date: currentTerm.start_date,
-    term_end_date: currentTerm.end_date,
-    numOfSeats: numOfElected + numOfVacancies + numOfAppointed,
-    numOfElected: numOfElected,
-    numOfVacancies: numOfVacancies,
-    numOfAppointed: numOfAppointed
-  };
-});
 
 /* GET home page. */
 router.get(
@@ -277,34 +94,6 @@ router.get(
     });
   })
 );
-/*
-function* getCountySeatBreakdown(county) {
-
-
-
-    console.log(numOfSeats, numOfVacancies);
-
-    return {
-        county: county,
-        numOfSeats: numOfSeats - numOfVacancies,
-        numOfVacancies: numOfVacancies
-    }
-};
-
-const intersectQuery = (coordinates) => {
-    return {
-        geometry: {
-            '$geoIntersects': {
-                '$geometry': {
-                    // geojson expects its lat/long backwards (like long,lat)
-                    type: 'Point',
-                    coordinates: coordinates.reverse()
-                }
-            }
-        }
-    };
-};
-*/
 
 router.get("/:county-:party-county-committee/ad/:ad", function(req, res, next) {
   // For map seats.

@@ -212,8 +212,6 @@ module.exports = function() {
     app.get("apiPath") + "/candidacy-list"
   );
 
-  //candidacyListService.setup(app);
-
   // Set up our before hooks
   candidacyListService.before(hooks.before);
 

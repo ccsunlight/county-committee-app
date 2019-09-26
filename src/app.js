@@ -3,7 +3,6 @@
 const dotenv = require("dotenv").config();
 const path = require("path");
 const serveStatic = require("feathers").static;
-const favicon = require("serve-favicon");
 const compress = require("compression");
 const cors = require("cors");
 const feathers = require("feathers");
@@ -12,21 +11,19 @@ const globalHooks = require("./hooks");
 const hooks = require("feathers-hooks");
 const rest = require("feathers-rest");
 const bodyParser = require("body-parser");
-const socketio = require("feathers-socketio");
-const memory = require("feathers-memory");
 const local = require("feathers-authentication-local");
 const jwt = require("feathers-authentication-jwt");
 const auth = require("feathers-authentication");
 const errors = require("feathers-errors");
 const swagger = require("feathers-swagger");
 const slugify = require("slugify");
-// const forceSSL = require('express-force-ssl');
 const errorHandler = require("feathers-errors/handler");
 // const acl = require('feathers-acl');
 const middleware = require("./middleware");
 const services = require("./services");
 const routes = require("./routes");
 const hbs = require("hbs");
+const runEdGeometryCron = require("./utils/runEdGeometryCron");
 
 const paginate = require("handlebars-paginate");
 const app = feathers();
@@ -93,6 +90,7 @@ app.set("gmail_un", process.env.GMAIL_UN);
 app.set("gmail_pw", process.env.GMAIL_PW);
 
 const apiPath = app.get("apiPath");
+
 // Site access auth for demo purposes
 /*if (app.get('env') === 'production') {
   const basicAuth = require('basic-auth-connect');
@@ -145,8 +143,8 @@ app
   .configure(jwt(localConfig))
   .options("*", cors())
   .use(cors())
-  // Maps react diretory to be served from app.
   .use(
+    // Maps react directory to be served from cc-app.
     "/cc-admin/build/static",
     serveStatic(app.get("public") + "/cc-admin/build/static")
   )
@@ -234,6 +232,8 @@ app.service(apiPath + "/term").hooks({
     all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
   }
 });
+
+runEdGeometryCron();
 
 console.log("Starting env: ", app.get("env"));
 
