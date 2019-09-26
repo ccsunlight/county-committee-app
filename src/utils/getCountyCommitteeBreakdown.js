@@ -1,13 +1,13 @@
 const CountyCommitteeModel = require("../services/county-committee/county-committee-model");
-const CountyCommitteeMemberModel = require("../services/county-committee/county-committee-model");
+const CountyCommitteeMemberModel = require("../services/county-committee-member/county-committee-member-model");
 const TermModel = require("../services/term/term-model");
 const bb = require("bluebird");
 const co = bb.coroutine;
 
-module.exports = co(function*(county, party) {
+module.exports = async function(county, party) {
   // Lean not working with "findOne" due to custom hooks
   // so need to use "find" instead.
-  let countyCommitteeResult = yield CountyCommitteeModel.find(
+  let countyCommitteeResult = await CountyCommitteeModel.find(
     {
       county: county,
       party: party
@@ -18,25 +18,25 @@ module.exports = co(function*(county, party) {
     .exec();
   const countyCommittee = countyCommitteeResult.pop();
 
-  let currentTerm = yield TermModel.findOne({
+  let currentTerm = await TermModel.findOne({
     _id: countyCommittee.current_term_id
   })
     .lean()
     .exec();
 
-  let numOfElected = yield CountyCommitteeMemberModel.find({
+  let numOfElected = await CountyCommitteeMemberModel.find({
     term_id: countyCommittee.current_term_id,
     entry_type: {
       $in: ["Elected", "Uncontested"]
     }
   }).count();
 
-  let numOfVacancies = yield CountyCommitteeMemberModel.find({
+  let numOfVacancies = await CountyCommitteeMemberModel.find({
     office_holder: { $in: ["Vacancy", "None"] },
     term_id: countyCommittee.current_term_id
   }).count();
 
-  let numOfAppointed = yield CountyCommitteeMemberModel.find({
+  let numOfAppointed = await CountyCommitteeMemberModel.find({
     entry_type: "Appointed",
     term_id: countyCommittee.current_term_id
   }).count();
@@ -51,4 +51,4 @@ module.exports = co(function*(county, party) {
     numOfVacancies: numOfVacancies,
     numOfAppointed: numOfAppointed
   };
-});
+};
