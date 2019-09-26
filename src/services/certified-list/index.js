@@ -35,7 +35,7 @@ class Service extends FeathersMongoose.Service {
               assembly_district: position.assembly_district,
               electoral_district: position.electoral_district,
               ed_ad: position.ed_ad,
-              entry_type: position.ed_ad,
+              entry_type: position.entry_type,
               state: position.state,
               part: position.part,
               tally: position.tally,
@@ -325,7 +325,6 @@ module.exports = function() {
       res.send(res.data, options, function(err) {
         if (err) {
           next(err);
-        } else {
         }
       });
     } else {
@@ -337,6 +336,7 @@ module.exports = function() {
   const certifiedListService = app.service(
     app.get("apiPath") + "/certified-list"
   );
+
   // Set up our before hooks
   certifiedListService.before(hooks.before);
 

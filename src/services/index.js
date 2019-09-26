@@ -9,7 +9,6 @@ const invite = require("./invite");
 const edGeometry = require("./edGeometry");
 const countyCommitteeMember = require("./county-committee-member");
 const countyCommittee = require("./county-committee");
-const countyCommitteeArchive = require("./county-committee-archive");
 const actionLog = require("./action-log");
 const glossaryTerm = require("./glossary-term");
 const newsLink = require("./news-link");
@@ -43,7 +42,6 @@ module.exports = function() {
   app.configure(page);
   app.configure(countyCommitteeMember);
   app.configure(countyCommittee);
-  // app.configure(countyCommitteeArchive);
   app.configure(boeElectionResults);
   app.configure(edGeometry);
   app.configure(invite);
