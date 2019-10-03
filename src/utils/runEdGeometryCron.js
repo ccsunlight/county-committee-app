@@ -4,6 +4,7 @@ const turf = require("turf");
 const unkinkPolygon = require("@turf/unkink-polygon");
 const bb = require("bluebird");
 const co = bb.coroutine;
+const fs = require("fs");
 
 const runEdGeometryCron = co(function*() {
   try {
