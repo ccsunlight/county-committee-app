@@ -47,6 +47,10 @@ const importListSchema = new Schema(
   }
 );
 
+// Workaround for mongo error with admin
+// and sorting documents.
+importListSchema.index({ id: -1 });
+
 const importListModel = mongoose.model("import-list", importListSchema);
 
 module.exports = importListModel;

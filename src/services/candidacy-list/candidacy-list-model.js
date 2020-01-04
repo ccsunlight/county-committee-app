@@ -27,6 +27,10 @@ const candidacyListSchema = new Schema(
   }
 );
 
+// Workaround for mongo error with admin
+// and sorting documents.
+candidacyListSchema.index({ id: -1 });
+
 const candidacyListModel = mongoose.model(
   "candidacy-list",
   candidacyListSchema

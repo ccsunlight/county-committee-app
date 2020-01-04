@@ -29,9 +29,15 @@ const certifiedListSchema = new Schema(
   }
 );
 
+// Workaround for mongo error with admin
+// and sorting documents.
+certifiedListSchema.index({ id: -1 });
+
 const certifiedListModel = mongoose.model(
   "certified-list",
   certifiedListSchema
 );
+
+certifiedListModel.ensureIndexes();
 
 module.exports = certifiedListModel;
