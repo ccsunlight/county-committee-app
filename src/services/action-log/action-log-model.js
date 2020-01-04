@@ -37,6 +37,10 @@ const actionLogSchema = new Schema(
   }
 );
 
+// Workaround for mongo error with admin
+// and sorting documents.
+actionLogSchema.index({ createdAt: -1 });
+
 const actionLog = mongoose.model("action-log", actionLogSchema);
 
 module.exports = actionLog;
