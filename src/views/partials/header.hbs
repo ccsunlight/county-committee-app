@@ -1,9 +1,12 @@
 
 
   <header class="mdl-layout__header">
+
+    {{#if announcement}}
     <div class="mdl-layout__header-row announcement_bar">
-      <a href="https://web.enrboenyc.us/" target="_blank">6/25 Unofficial Primary <strong>Results ⇨</strong></a>
+      {{{announcement}}}
     </div>
+    {{/if}}
     <div class="mdl-layout__header-row">
 
      <a href="/" class="logo-link"><span class="mdl-layout-title"><img src="/images/logo-yellow.svg" height="48px" width="48px"> <span id="menu-logo-text">County Committee Sunlight Project</span></span></a>

@@ -15,6 +15,7 @@ const newsLink = require("./news-link");
 const authentication = require("./authentication");
 const user = require("./user");
 const page = require("./page");
+const block = require("./block");
 const address = require("./address");
 const term = require("./term");
 const enrollment = require("./enrollment");
@@ -40,6 +41,7 @@ module.exports = function() {
 
   app.configure(user);
   app.configure(page);
+  app.configure(block);
   app.configure(countyCommitteeMember);
   app.configure(countyCommittee);
   app.configure(boeElectionResults);

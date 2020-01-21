@@ -57,6 +57,8 @@ import {
   BOEElectionResultsEdit
 } from "./boe-election-results";
 
+import { BlockList, BlockCreate, BlockEdit } from "./blocks";
+
 import { NewsLinkList, NewsLinkCreate, NewsLinkEdit } from "./news-links";
 import { ActionLogList } from "./actionLog";
 import { ProfileList, ProfileEdit } from "./profile";
@@ -104,6 +106,16 @@ const App = () => (
       list={CertifiedListList}
       edit={CertifiedListEdit}
       create={CertifiedListCreate}
+      remove={Delete}
+    />
+
+    <Resource
+      name="block"
+      options={{ label: "Blocks" }}
+      icon={ActionLogIcon}
+      list={BlockList}
+      edit={BlockEdit}
+      create={BlockCreate}
       remove={Delete}
     />
 
