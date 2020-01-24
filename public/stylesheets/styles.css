@@ -292,7 +292,8 @@ h4 {
   text-transform: uppercase;
 }
 
-.announcement_bar a {
+.announcement_bar a,
+.announcement_bar p {
   text-decoration: none;
   display: inline-block;
   text-align: center;

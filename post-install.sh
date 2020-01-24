@@ -7,6 +7,8 @@
 # Runs data migrations
 npm run migrate;
 
+mkdir downloads;
+
 # Copy but don't overwrite if already existing
 cp -n ./public/cc-admin/.env_example ./public/cc-admin/.env
 
