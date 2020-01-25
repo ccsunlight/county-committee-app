@@ -23,8 +23,8 @@ services: # configuring each container
     ports:
       - "27017:27017"
     volumes: # data to map to the container
-      - "cc-db-test-data:/data/db"
+      - "cc-db:/data/db"
 
 volumes:
-  cc-db-test-data:
+  cc-db:
     external: true
