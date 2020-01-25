@@ -8,6 +8,7 @@ const fs = bb.promisifyAll(require("fs"));
 const auth = require("feathers-authentication");
 const CountyCommitteeModel = require("../services/county-committee/county-committee-model");
 const partyCall = require("../services/party-call/party-call-model");
+const BlockModel = require("../services/block/block-model");
 
 const countyCommitteeMember = require("../services/county-committee-member/county-committee-member-model");
 const edGeometry = require("../services/edGeometry/edGeometry-model");
@@ -72,6 +73,9 @@ router.get(
 
 /* GET home page. */
 router.get("/", async function(req, res, next) {
+  const announcement = await BlockModel.findOne({ alias: "announcement" });
+  const hero = await BlockModel.findOne({ alias: "hero" });
+
   // Caching the output of the cc breakdowns
   // These don't change much
   let countySeatBreakdowns = cache.get("county-committee-breakdowns");
@@ -88,6 +92,8 @@ router.get("/", async function(req, res, next) {
     cache.set("county-committee-breakdowns", countySeatBreakdowns);
   }
   res.render("index", {
+    announcement: announcement ? announcement.content : "",
+    hero: hero ? hero.content : "",
     countySeatBreakdowns: countySeatBreakdowns
   });
 });
