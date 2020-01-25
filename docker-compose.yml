@@ -22,9 +22,10 @@ services: # configuring each container
     image: mongo:3.6 # which image to pull, in this case latest
     ports:
       - "27017:27017"
-    volumes: # data to map to the container
+    volumes: # data to map to the container.
       - "cc-db:/data/db"
-
+    command: mongod --auth
+    
 volumes:
   cc-db:
     external: true
