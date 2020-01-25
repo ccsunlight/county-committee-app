@@ -18,14 +18,13 @@
 			<h6>County: {{county}} | Party: {{party}} | AD: {{ad}} | ED: {{ed}} | Term: {{dateFormat term.start_date "MM/YYYY"}} — {{dateFormat term.end_date "MM/YYYY"}}</h6>
 
 			
-			{{!-- {{#if partyPositionsToBeFilled}}
+			{{#if partyPositionsToBeFilled}}
 			<hr/>
 				<h3>Party Call</h3>
 
-				<p>Petitioning season for this County Committee starts <strong>February 26th</strong>. Below are the petitionable seats for the upcoming election:</p>
+				<p>Below are the petitionable seats for the upcoming election:</p>
 				{{> table members=partyPositionsToBeFilled}}
 
-				
 				<div class="detail-buttons">
 					<a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank" href="http://www.vote.nyc.ny.us/html/voters/maps.shtml">
 					ED/AD Maps
@@ -36,12 +35,11 @@
 					<a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank" href="/how-to-run-for-county-committee">
 					Learn how to petition!
 					</a>
-					<a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank" href="https://www.elections.ny.gov/NYSBOE/law/2019PoliticalCalendar.pdf">
+					<a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank" href="">
 					Political Calendar
 					</a>
 				</div>
 			{{/if}}
-			 --}}
 			<hr/>
 			<h3>Current County Committee Members</h3>
 			{{> table }}

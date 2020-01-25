@@ -57,6 +57,8 @@ import {
   BOEElectionResultsEdit
 } from "./boe-election-results";
 
+import { PartyCallList, PartyCallCreate, PartyCallEdit } from "./party-calls";
+
 import { BlockList, BlockCreate, BlockEdit } from "./blocks";
 
 import { NewsLinkList, NewsLinkCreate, NewsLinkEdit } from "./news-links";
@@ -158,13 +160,14 @@ const App = () => (
       remove={Delete}
     />
 
-    {/* <Resource
-      name="county-committee-archive"
-      options={{ label: "Archive" }}
-      list={CountyCommitteeArchiveList}
-      edit={CountyCommitteeArchiveEdit}
+    <Resource
+      name="party-call"
+      options={{ label: "Party Call" }}
+      list={PartyCallList}
+      edit={PartyCallEdit}
+      create={PartyCallCreate}
       remove={Delete}
-    /> */}
+    />
 
     <Resource
       name="profile"

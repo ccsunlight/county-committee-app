@@ -16,8 +16,8 @@ The data is stored in a local dockerized mongo and the entire image is backed up
 
 The app runs via docker but you'll have to install those two applications manually before starting.
 
-* Mongo DB 3.6
-* Node 10.16 with NPM
+- Mongo DB 3.6
+- Node 10.16 with NPM
 
 Docker creates containers with the specs below. You can try to use without docker, but
 if you can use docker, it will install and set everything
@@ -29,21 +29,21 @@ up automatically for you.
 
 The app will automatically install these itself if you have docker installed.
 
-* [Express](https://expressjs.com/)
-* [Feathers](https://feathersjs.com/)
-* [MongoDB](https://docs.mongodb.com/)
-* [Mongoose](http://mongoosejs.com/)
-* [Material Design Lite](https://getmdl.io)
-* [Gulp](https://gulpjs.com/)
-* [Admin On Rest](https://github.com/marmelab/admin-on-rest)
-* [ReactJS](https://reactjs.org/)
-* [Passport](http://www.passportjs.org/)
-* [Docker](https://www.docker.com/)
-* [PM2](http://pm2.keymetrics.io/)
-* [LetsEncrypt](https://letsencrypt.org/)
-* [NGINX](https://nginx.org/en/) - for reverse proxy for SSL on production
-* [PDF-To-Text Extract](https://github.com/nisaacson/pdf-text-extract)
-* [Google Maps API](https://developers.google.com/maps/documentation/javascript/)
+- [Express](https://expressjs.com/)
+- [Feathers](https://feathersjs.com/)
+- [MongoDB](https://docs.mongodb.com/)
+- [Mongoose](http://mongoosejs.com/)
+- [Material Design Lite](https://getmdl.io)
+- [Gulp](https://gulpjs.com/)
+- [Admin On Rest](https://github.com/marmelab/admin-on-rest)
+- [ReactJS](https://reactjs.org/)
+- [Passport](http://www.passportjs.org/)
+- [Docker](https://www.docker.com/)
+- [PM2](http://pm2.keymetrics.io/)
+- [LetsEncrypt](https://letsencrypt.org/)
+- [NGINX](https://nginx.org/en/) - for reverse proxy for SSL on production
+- [PDF-To-Text Extract](https://github.com/nisaacson/pdf-text-extract)
+- [Google Maps API](https://developers.google.com/maps/documentation/javascript/)
 
 ## Getting Started
 
@@ -56,33 +56,39 @@ Getting up and running is as easy as 1, 2, 3...10
 
 1.  `cd /your/app/path`
 
-1.  Spin up docker containers:
-
-Run:
+1) The first time we need to create the volume for the DB
 
 ```
-bash spinup-ssh.sh
+docker volume create --name=cc-db
+```
+
+5.  Spin up and ssh into docker container to run install scripts:
+
+6) SSH into container
+
+```
+bash docker-run-ssh.sh
 ```
 
 This will create three docker containers, one with mongo, the other with node and a persistent storage docker container.
 
-4.  You should see a prompt that looks like this:
+7.  You should see a prompt that looks like this:
 
 ```
 root@121fsfsw:/usr/src/app
 ```
 
-5.  Run
+8.  Run
 
 ```
-npm run install-app
+npm run install
 ```
 
-This will install the node dependancies. It's important the this is done inside the running app container otherwise there may be errors with bcrypt. (see troubleshooting below)
+This will install the node dependancies and runs migrations. It's important the this is done inside the running app container otherwise there may be errors with bcrypt. (see troubleshooting below)
 
 You will be prompted to record the superadmin login and pw. _You will not be given another opportunity to see this so make sure you write it down._
 
-6.  Start your app
+9.  Start your app
 
     ```
     npm start
@@ -92,13 +98,13 @@ alternatively you could run through PM2 with `./node_modules/.bin/pm2 start`, wh
 
 When the app starts for the first time it will run additional imports for the map geometry which will take a little while.
 
-7.  Go to your homepage
+10. Go to your homepage
     http://localhost
 
-8.  Try logging into the admin with the sadmin creds you saved before.
+11. Try logging into the admin with the sadmin creds you saved before.
     http://localhost/cc-admin/
 
-9.  Report any bugs in the issues section of the repo.
+12. Report any bugs in the issues section of the repo.
 
 ### Further notes
 
@@ -221,12 +227,12 @@ For more information on all the things you can do with Feathers visit [docs.feat
 
 **0.2.0**
 
-* Updating readme with dev instructions
-* Creating new branches
+- Updating readme with dev instructions
+- Creating new branches
 
 **0.1.0**
 
-* Initial release
+- Initial release
 
 ## License
 
