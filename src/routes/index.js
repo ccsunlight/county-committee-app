@@ -76,7 +76,6 @@ router.get("/", async function(req, res, next) {
   const announcement = await BlockModel.findOne({ alias: "announcement" });
   const hero = await BlockModel.findOne({ alias: "hero" });
 
-  console.log("announcement", announcement);
   // Caching the output of the cc breakdowns
   // These don't change much
   let countySeatBreakdowns = cache.get("county-committee-breakdowns");
