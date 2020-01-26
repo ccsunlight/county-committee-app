@@ -8,6 +8,8 @@ import {
   TextField,
   EditButton,
   DisabledInput,
+  BooleanInput,
+  SelectInput,
   SimpleForm,
   TextInput,
   DateInput
@@ -32,6 +34,21 @@ export const NewsLinkEdit = props => (
     <SimpleForm>
       <DisabledInput label="Id" source="id" />
       <TextInput source="title" />
+      <SelectInput
+        source="status"
+        choices={[
+          { id: "draft", name: "Draft" },
+          { id: "published", name: "Published" }
+        ]}
+      />
+      <BooleanInput
+        label="Social Autopost"
+        source="post_to_social"
+        options={{
+          hintText: "Will post to social on publish"
+        }}
+      />
+      <TextField label="Social Post Status" source="social_post_status" />
       <TextInput source="url" type="url" />
       <TextInput source="description" />
       <DateInput source="published_on" />
@@ -44,6 +61,13 @@ export const NewsLinkCreate = props => (
   <Create {...props}>
     <SimpleForm>
       <TextInput source="title" />
+      <BooleanInput
+        label="Social Autopost"
+        source="post_to_social"
+        options={{
+          hintText: "Will post to social on publish"
+        }}
+      />
       <TextInput
         source="url"
         type="url"
@@ -52,7 +76,6 @@ export const NewsLinkCreate = props => (
             "If you enter an article url and save it will fetch all the meta info."
         }}
       />
-
       <TextInput source="description" />
       <DateInput source="published_on" />
       <TextInput source="site_name" />
