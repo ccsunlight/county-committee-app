@@ -13,10 +13,16 @@ const newsLinkSchema = new Schema(
     status: {
       type: String,
       enum: ["draft", "published"],
-      default: "published"
+      default: "draft"
     },
     published_on: {
       type: Date
+    },
+    social_post_status: {
+      type: String
+    },
+    post_to_social: {
+      type: Boolean
     },
     title: {
       type: String

@@ -322,9 +322,9 @@ router.get(["/news", "/news/:pageNum"], function(req, res, next) {
     pageNum = 0;
   }
 
-  newsModel.count({}).then(function(count) {
+  newsModel.count({ status: "published" }).then(function(count) {
     newsModel
-      .find({})
+      .find({ status: "published" })
       .skip(perPage * pageNum)
       .limit(perPage)
       .sort({
