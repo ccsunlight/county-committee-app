@@ -56,55 +56,59 @@ Getting up and running is as easy as 1, 2, 3...10
 
 1.  `cd /your/app/path`
 
-1) The first time we need to create the volume for the DB
+1.  The first time we need to create the volume for the DB
 
-```
-docker volume create --name=cc-db
-```
+    ```
+    docker volume create --name=cc-db
+    ```
 
-5.  Spin up and ssh into docker container to run install scripts:
+1.  The first time you need to comment out this line in docker-compose.yml for local dev (Do NOT do this on any public facing apps!)
+    ```
+    # command: mongod --auth
+    ```
+1.  Spin up and ssh into docker container to run install scripts:
 
-6) SSH into container
+1.  SSH into container
 
-```
-bash docker-run-ssh.sh
-```
+    ```
+    bash docker-run-ssh.sh
+    ```
 
-This will create three docker containers, one with mongo, the other with node and a persistent storage docker container.
+    This will create three docker containers, one with mongo, the other with node and a persistent storage docker container.
 
-7.  You should see a prompt that looks like this:
+1.  You should see a prompt that looks like this:
 
-```
-root@121fsfsw:/usr/src/app
-```
+    ```
+    root@121fsfsw:/usr/src/app
+    ```
 
-8.  Run
+1.  Run
 
-```
-npm run install
-```
+    ```
+    npm run install
+    ```
 
-This will install the node dependancies and runs migrations. It's important the this is done inside the running app container otherwise there may be errors with bcrypt. (see troubleshooting below)
+    This will install the node dependancies and runs migrations. It's important the this is done inside the running app container otherwise there may be errors with bcrypt. (see troubleshooting below)
 
-You will be prompted to record the superadmin login and pw. _You will not be given another opportunity to see this so make sure you write it down._
+    You will be prompted to record the superadmin login and pw. _You will not be given another opportunity to see this so make sure you write it down._
 
-9.  Start your app
+1.  Start your app
 
     ```
     npm start
     ```
 
-alternatively you could run through PM2 with `./node_modules/.bin/pm2 start`, which is a process manager. For dev you may not want this.
+    Alternatively you could run through PM2 with `./node_modules/.bin/pm2 start`, which is a process manager. For dev you may not want this.
 
-When the app starts for the first time it will run additional imports for the map geometry which will take a little while.
+    When the app starts for the first time it will run additional imports for the map geometry which will take a little while.
 
-10. Go to your homepage
+1.  Go to your homepage
     http://localhost
 
-11. Try logging into the admin with the sadmin creds you saved before.
+1.  Try logging into the admin with the sadmin creds you saved before.
     http://localhost/cc-admin/
 
-12. Report any bugs in the issues section of the repo.
+1.  Report any bugs in the issues section of the repo.
 
 ### Further notes
 
