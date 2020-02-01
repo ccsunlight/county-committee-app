@@ -56,8 +56,8 @@ module.exports = function() {
   app.configure(term);
   app.configure(utils);
   app.configure(importList);
-
   app.configure(address);
+  app.configure(enrollment);
 
   //
   // Workaroud for disabling docs paths for admin entities.
