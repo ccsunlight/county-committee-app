@@ -18,6 +18,7 @@ const enrollmentSchema = new Schema(
     title: {
       type: String
     },
+    registeredAsOf: { type: Date },
     alias: {
       type: String
     },

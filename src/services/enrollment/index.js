@@ -4,13 +4,15 @@ const service = require("feathers-mongoose");
 const EnrollmentModel = require("./enrollment-model");
 const FeathersMongoose = require("feathers-mongoose");
 const hooks = require("./hooks");
+const moment = require("moment");
 
 const COLUMN_INDEX_MAP = {
   COUNTY: 0,
   "ELECTION DIST": 1,
   STATUS: 2,
   DEM: 3,
-  REP: 4
+  REP: 4,
+  DATE: 0
 };
 
 class Service extends FeathersMongoose.Service {
@@ -27,6 +29,21 @@ class Service extends FeathersMongoose.Service {
     const ed = ed_ad.substring(ed_ad.length - 3);
     const ad = ed_ad.substring(0, ed_ad.length - 3);
     return { ed, ad };
+  }
+
+  extractDateFromCSV(rows) {
+    let matches;
+    console.log("rows", rows);
+    for (let x = 0; x < rows.length; x++) {
+      matches = rows[x].match(/"Voters Registered as of\s(.+)"/);
+      console.log("matches", matches);
+      if (matches) {
+        const date = Date.parse(matches[1]);
+        console.log(date);
+        return moment(date);
+      }
+    }
+    return false;
   }
 
   extractDataFromRow(row) {

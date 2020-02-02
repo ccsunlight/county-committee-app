@@ -27,6 +27,17 @@ describe("Enrollment Service", () => {
     assert.equal(district.ad, 65);
   });
 
+  it("can extract date from CSV", () => {
+    const mockRows = [
+      `"Voters Registered as of November 1, 2019",,,,,,,,,,,,,`
+    ];
+    const enrollmentService = app.service(app.get("apiPath") + "/enrollment");
+    const date = enrollmentService.extractDateFromCSV(mockRows);
+    assert.equal(date.month(), 10);
+    assert.equal(date.date(), 1);
+    assert.equal(date.year(), 2019);
+  });
+
   it("can convert row to object", () => {
     const mockRow = `New York ,New York 65001,Active,526,160,3,1,2,3,22,0,1,285,"1,003"`;
     const enrollmentService = app.service(app.get("apiPath") + "/enrollment");
@@ -38,4 +49,6 @@ describe("Enrollment Service", () => {
     assert.equal(obj.dem, 526);
     assert.equal(obj.rep, 160);
   });
+
+  it("can extract rows from a CSV", () => {});
 });
