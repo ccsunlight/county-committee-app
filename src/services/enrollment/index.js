@@ -2,9 +2,12 @@
 
 const service = require("feathers-mongoose");
 const EnrollmentModel = require("./enrollment-model");
+const TermModel = require("../term/term-model");
 const FeathersMongoose = require("feathers-mongoose");
 const hooks = require("./hooks");
 const moment = require("moment");
+const fs = require("fs");
+const path = require("path");
 
 const COLUMN_INDEX_MAP = {
   COUNTY: 0,
@@ -17,30 +20,30 @@ const COLUMN_INDEX_MAP = {
 
 class Service extends FeathersMongoose.Service {
   extractCountyFromRow(row) {
-    const cells = row.split(",");
-    const output = cells[COLUMN_INDEX_MAP.COUNTY].trim();
+    const output = row[COLUMN_INDEX_MAP.COUNTY].trim();
     return output;
   }
 
   extractEDADFromRow(row) {
-    const cells = row.split(",");
-    const cell = cells[COLUMN_INDEX_MAP["ELECTION DIST"]].trim();
+    const cell = row[COLUMN_INDEX_MAP["ELECTION DIST"]].trim();
     const ed_ad = cell.split(" ").pop();
-    const ed = ed_ad.substring(ed_ad.length - 3);
-    const ad = ed_ad.substring(0, ed_ad.length - 3);
+    if (isNaN(ed_ad[0]) || isNaN(ed_ad[1])) {
+      return false;
+    }
+    const ed = parseInt(ed_ad.substring(ed_ad.length - 3), 10);
+    const ad = parseInt(ed_ad.substring(0, ed_ad.length - 3), 10);
     return { ed, ad };
   }
 
-  extractDateFromCSV(rows) {
+  extractDateFromRow(row) {
     let matches;
-    console.log("rows", rows);
-    for (let x = 0; x < rows.length; x++) {
-      matches = rows[x].match(/"Voters Registered as of\s(.+)"/);
-      console.log("matches", matches);
-      if (matches) {
-        const date = Date.parse(matches[1]);
-        console.log(date);
-        return moment(date);
+    for (let x = 0; x < row.length; x++) {
+      if (row[x]) {
+        matches = row[x].match(/Voters Registered as of\s(.+)/);
+        if (matches) {
+          const date = Date.parse(matches[1]);
+          return date;
+        }
       }
     }
     return false;
@@ -49,18 +52,87 @@ class Service extends FeathersMongoose.Service {
   extractDataFromRow(row) {
     const ed_ad = this.extractEDADFromRow(row);
     const county = this.extractCountyFromRow(row);
-    const cells = row.split(",");
 
     const obj = {
       electoral_district: ed_ad.ed,
       assembly_district: ed_ad.ad,
       county,
-      status: cells[COLUMN_INDEX_MAP.STATUS],
-      dem: cells[COLUMN_INDEX_MAP.DEM],
-      rep: cells[COLUMN_INDEX_MAP.REP]
+      status: row[COLUMN_INDEX_MAP.STATUS],
+      dem: row[COLUMN_INDEX_MAP.DEM].replace(",", ""), // strips out numeric comma
+      rep: row[COLUMN_INDEX_MAP.REP].replace(",", "")
     };
 
     return obj;
+  }
+
+  extractEnrollmentFromCSV(params) {
+    const { filepath, party, county, state, committee_id } = params;
+
+    var parse = require("csv-parse");
+    let date;
+    let enrollmentRecords = [];
+
+    return new Promise((resolve, reject) => {
+      fs.createReadStream(filepath)
+        .pipe(parse({ delimiter: "," }))
+        .on("data", (csvrow, foo) => {
+          // Date comes before data
+          if (!date) {
+            date = this.extractDateFromRow(csvrow);
+          } else {
+            let data = this.extractDataFromRow(csvrow);
+            if (data.electoral_district) {
+              enrollmentRecords.push({ ...data, date });
+            }
+          }
+        })
+        .on("end", () => {
+          resolve(enrollmentRecords);
+        })
+        .on("error", err => {
+          reject(err);
+        });
+    });
+  }
+  create(params) {
+    return new Promise((resolve, reject) => {
+      if (!fs.existsSync(params.filepath)) {
+        reject("File does not exist: " + params.filepath);
+        return;
+      }
+
+      // Needs to be associated explicitly with a term
+      TermModel.findOne({ _id: params.term_id }).then(term => {
+        term.populate();
+        if (!term) {
+          reject("Term does not exist");
+          return;
+        } else {
+          this.extractEnrollmentFromCSV({
+            ...params
+          }).then(async enrollmentRecords => {
+            // Removes all existing enrollments
+            // before creating new ones
+            // @todo find a cleaner way to do this.
+            await EnrollmentModel.remove({ term_id: params.term_id });
+
+            const enrollments = [];
+
+            for (let x = 0; x < enrollmentRecords.length; x++) {
+              const enrollment = new EnrollmentModel({
+                source: path.basename(params.filepath),
+                term_id: params.term_id,
+                ...enrollmentRecords[x]
+              });
+              await enrollment.save();
+              enrollments.push(enrollment);
+            }
+
+            resolve(enrollments);
+          });
+        }
+      });
+    });
   }
 }
 

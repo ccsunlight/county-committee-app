@@ -15,10 +15,19 @@ const enrollmentSchema = new Schema(
       enum: ["draft", "published"],
       default: "draft"
     },
-    title: {
-      type: String
+    dem: { type: Number, required: true },
+    rep: { type: Number, required: true },
+    status: { type: String, required: true },
+    electoral_district: { type: Number, required: true },
+    assembly_district: { type: Number, required: true },
+    county: { type: String, required: true },
+    date: { type: Date },
+    source: { type: String, required: true },
+    // committee_id: { type: "ObjectId", ref: "CountyCommittee", required: true },
+    term_id: {
+      type: "ObjectId",
+      ref: "term"
     },
-    registeredAsOf: { type: Date },
     alias: {
       type: String
     },
