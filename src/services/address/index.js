@@ -9,6 +9,7 @@ const rp = require("request-promise");
 const countyCommittee = require("../county-committee/county-committee-model");
 const countyCommitteeMember = require("../county-committee-member/county-committee-member-model");
 const partyCall = require("../party-call/party-call-model");
+const EnrollmentModel = require("../enrollment/enrollment-model");
 const Term = require("../term/term-model");
 const edGeometry = require("../edGeometry/edGeometry-model");
 const hooks = require("./hooks");
@@ -83,6 +84,14 @@ class Service {
         return committee._id;
       });
 
+      // const enrollment = yield EnrollmentModel.findOne({
+      //   assembly_district: ad,
+      //   electoral_district: ed,
+      //   term_id: { $in: upcomingTermIds }
+      // }).exec();
+
+      // console.log("enrollment", enrollment);
+
       // Get the current active terms for the user's party
 
       const currentTerms = yield Term.find({
@@ -103,7 +112,8 @@ class Service {
 
       let county = "",
         term,
-        partyPositionsToBeFilled;
+        partyPositionsToBeFilled,
+        enrollment;
 
       const memberData = yield bb.map(
         yourMembers,
@@ -131,6 +141,26 @@ class Service {
       });
 
       if (upcomingTermIds.length) {
+        enrollment = yield EnrollmentModel.findOne(
+          {
+            assembly_district: ad,
+            electoral_district: ed,
+            status: "Total"
+          },
+          null,
+          { sort: { date: -1 } }
+        ).exec();
+
+        if (enrollment) {
+          const SIG_REQ_PERCENTAGE = 0.03;
+          enrollment.demSignaturePercentage = Math.ceil(
+            enrollment.dem * SIG_REQ_PERCENTAGE
+          );
+          enrollment.repSignaturePercentage = Math.ceil(
+            enrollment.rep * SIG_REQ_PERCENTAGE
+          );
+        }
+
         const partyCallForEd = yield partyCall
           .findOne({
             term_id: { $in: upcomingTermIds },
@@ -172,6 +202,7 @@ class Service {
         members: memberData,
         partyPositionsToBeFilled: partyPositionsToBeFilled || [],
         party: party,
+        enrollment: enrollment,
         term: { ...term, party_call: null }
       };
 

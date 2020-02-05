@@ -23,11 +23,6 @@ const enrollmentSchema = new Schema(
     county: { type: String, required: true },
     date: { type: Date },
     source: { type: String, required: true },
-    // committee_id: { type: "ObjectId", ref: "CountyCommittee", required: true },
-    term_id: {
-      type: "ObjectId",
-      ref: "term"
-    },
     alias: {
       type: String
     },

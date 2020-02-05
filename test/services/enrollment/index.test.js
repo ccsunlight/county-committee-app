@@ -153,53 +153,51 @@ describe("Enrollment Service", () => {
     const filepath =
       "/usr/src/app/test/services/enrollment/NewYorkED_nov19 - NewED_nov19.csv";
     const enrollmentService = app.service(app.get("apiPath") + "/enrollment");
-    const enrollmentRecords = await enrollmentService.create({
-      filepath: filepath,
-      term_id: mock_term.id
+    const enrollmentRecord = await enrollmentService.create({
+      filepath: filepath
     });
 
-    enrollmentRecords.forEach(record => {
-      cleanupDBDocs.push(record);
-      assert(!isNaN(record.electoral_district));
-      assert(!isNaN(record.assembly_district));
-      assert(record.county === "New York");
-      assert.equal(Date.parse(record.date), "1572566400000");
-    });
+    assert(!isNaN(enrollmentRecord.electoral_district));
+    assert(!isNaN(enrollmentRecord.assembly_district));
+    assert(enrollmentRecord.county === "New York");
+    assert.equal(Date.parse(enrollmentRecord.date), "1572566400000");
   });
 
-  it("can upsert enrollment numbers to a term", async () => {
-    const filepath =
-      "/usr/src/app/test/services/enrollment/NewYorkED_nov19 - NewED_nov19.csv";
-    const enrollmentService = app.service(app.get("apiPath") + "/enrollment");
-    const enrollmentRecords = await enrollmentService.create({
-      filepath: filepath,
-      term_id: mock_term.id
-    });
+  // it("can upsert enrollment numbers to a term", async () => {
+  //   const filepath =
+  //     "/usr/src/app/test/services/enrollment/NewYorkED_nov19 - NewED_nov19.csv";
+  //   const enrollmentService = app.service(app.get("apiPath") + "/enrollment");
+  //   const enrollmentRecord = await enrollmentService.create({
+  //     filepath: filepath
+  //   });
+  //   assert(!isNaN(enrollmentRecord.electoral_district));
+  //   assert(!isNaN(enrollmentRecord.assembly_district));
+  //   assert(enrollmentRecord.county === "New York");
+  //   assert.equal(Date.parse(enrollmentRecord.date), "1572566400000");
+  //   enrollmentRecords.forEach(record => {
+  //     cleanupDBDocs.push(record);
+  //     assert(!isNaN(record.electoral_district));
+  //     assert(!isNaN(record.assembly_district));
+  //     assert(record.county === "New York");
+  //     assert.equal(Date.parse(record.date), "1572566400000");
+  //   });
 
-    enrollmentRecords.forEach(record => {
-      cleanupDBDocs.push(record);
-      assert(!isNaN(record.electoral_district));
-      assert(!isNaN(record.assembly_district));
-      assert(record.county === "New York");
-      assert.equal(Date.parse(record.date), "1572566400000");
-    });
+  //   const enrollmentRecordsTwo = await enrollmentService.create({
+  //     filepath: filepath,
+  //     term_id: mock_term.id
+  //   });
 
-    const enrollmentRecordsTwo = await enrollmentService.create({
-      filepath: filepath,
-      term_id: mock_term.id
-    });
+  //   enrollmentRecordsTwo.forEach(record => {
+  //     cleanupDBDocs.push(record);
+  //     assert(!isNaN(record.electoral_district));
+  //     assert(!isNaN(record.assembly_district));
+  //     assert(record.county === "New York");
+  //     assert.equal(Date.parse(record.date), "1572566400000");
+  //   });
 
-    enrollmentRecordsTwo.forEach(record => {
-      cleanupDBDocs.push(record);
-      assert(!isNaN(record.electoral_district));
-      assert(!isNaN(record.assembly_district));
-      assert(record.county === "New York");
-      assert.equal(Date.parse(record.date), "1572566400000");
-    });
-
-    const enrollmentsForTerm = await EntrollmentModel.find({
-      term_id: mock_term.id
-    });
-    assert.equal(enrollmentsForTerm.length, enrollmentRecords.length);
-  });
+  //   const enrollmentsForTerm = await EntrollmentModel.find({
+  //     term_id: mock_term.id
+  //   });
+  //   assert.equal(enrollmentsForTerm.length, enrollmentRecords.length);
+  // });
 });

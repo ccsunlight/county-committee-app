@@ -101,36 +101,36 @@ class Service extends FeathersMongoose.Service {
         return;
       }
 
-      // Needs to be associated explicitly with a term
-      TermModel.findOne({ _id: params.term_id }).then(term => {
-        term.populate();
-        if (!term) {
-          reject("Term does not exist");
-          return;
-        } else {
-          this.extractEnrollmentFromCSV({
-            ...params
-          }).then(async enrollmentRecords => {
-            // Removes all existing enrollments
-            // before creating new ones
-            // @todo find a cleaner way to do this.
-            await EnrollmentModel.remove({ term_id: params.term_id });
+      this.extractEnrollmentFromCSV({
+        ...params
+      }).then(async enrollmentRecords => {
+        const enrollments = [];
+        let enrollment;
 
-            const enrollments = [];
-
-            for (let x = 0; x < enrollmentRecords.length; x++) {
-              const enrollment = new EnrollmentModel({
-                source: path.basename(params.filepath),
-                term_id: params.term_id,
-                ...enrollmentRecords[x]
-              });
-              await enrollment.save();
-              enrollments.push(enrollment);
+        for (let x = 0; x < enrollmentRecords.length; x++) {
+          /**
+           * Each enrollment record has three documents
+           * "Active, Inactive and Total"
+           */
+          enrollment = await EnrollmentModel.findOneAndUpdate(
+            {
+              electoral_district: enrollmentRecords[x].electoral_district,
+              assembly_district: enrollmentRecords[x].assembly_district,
+              status: enrollmentRecords[x].status
+            },
+            {
+              source: path.basename(params.filepath),
+              ...enrollmentRecords[x]
+            },
+            {
+              new: true,
+              upsert: true
             }
-
-            resolve(enrollments);
-          });
+          );
+          enrollments.push(enrollment);
         }
+
+        resolve(enrollments.pop());
       });
     });
   }
