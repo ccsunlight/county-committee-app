@@ -7,7 +7,8 @@ const co = bb.coroutine;
 const fs = bb.promisifyAll(require("fs"));
 const auth = require("feathers-authentication");
 const CountyCommitteeModel = require("../services/county-committee/county-committee-model");
-const partyCall = require("../services/party-call/party-call-model");
+const PartyCallModel = require("../services/party-call/party-call-model");
+const EnrollmentModel = require("../services/enrollment/enrollment-model");
 const BlockModel = require("../services/block/block-model");
 
 const countyCommitteeMember = require("../services/county-committee-member/county-committee-member-model");
@@ -128,51 +129,49 @@ router.get("/:county-:party-county-committee/ad/:ad", function(req, res, next) {
         };
       });
       let partyPositionsToBeFilled;
-      const partyCallForEd = partyCall
-        .findOne({
-          positions: {
-            $elemMatch: {
-              assembly_district: req.params.ad,
-              party: { $regex: new RegExp(req.params.party, "i") }
-            }
-          },
-          isApproved: true
-        })
-        .then(partyCallForAd => {
-          if (partyCallForAd) {
-            let partyPositions = partyCallForAd.positions.filter(position => {
-              return position.assembly_district === parseInt(req.params.ad, 10);
-            });
-
-            if (partyPositions) {
-              partyPositionsToBeFilled = partyPositions.map(function(position) {
-                return {
-                  ED: position.electoral_district,
-                  office: position.office,
-                  term_begins: position.term_begins.toLocaleString("en-US", {
-                    year: "2-digit",
-                    month: "numeric",
-                    day: "numeric"
-                  }),
-                  entry_type: "Petitionable Position"
-                };
-              });
-            }
+      const partyCallForEd = PartyCallModel.findOne({
+        positions: {
+          $elemMatch: {
+            assembly_district: req.params.ad,
+            party: { $regex: new RegExp(req.params.party, "i") }
           }
+        },
+        isApproved: true
+      }).then(partyCallForAd => {
+        if (partyCallForAd) {
+          let partyPositions = partyCallForAd.positions.filter(position => {
+            return position.assembly_district === parseInt(req.params.ad, 10);
+          });
 
-          if (members.length) {
-            res.render("seats", {
-              ad: req.params.ad,
-              party: members[0].party,
-              members: members,
-              partyPositionsToBeFilled: partyPositionsToBeFilled || []
-            });
-          } else {
-            res.render("seats", {
-              error: "No data for this district."
+          if (partyPositions) {
+            partyPositionsToBeFilled = partyPositions.map(function(position) {
+              return {
+                ED: position.electoral_district,
+                office: position.office,
+                term_begins: position.term_begins.toLocaleString("en-US", {
+                  year: "2-digit",
+                  month: "numeric",
+                  day: "numeric"
+                }),
+                entry_type: "Petitionable Position"
+              };
             });
           }
-        });
+        }
+
+        if (members.length) {
+          res.render("seats", {
+            ad: req.params.ad,
+            party: members[0].party,
+            members: members,
+            partyPositionsToBeFilled: partyPositionsToBeFilled || []
+          });
+        } else {
+          res.render("seats", {
+            error: "No data for this district."
+          });
+        }
+      });
     });
 });
 
