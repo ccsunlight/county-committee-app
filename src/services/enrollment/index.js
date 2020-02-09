@@ -57,9 +57,10 @@ class Service extends FeathersMongoose.Service {
       electoral_district: ed_ad.ed,
       assembly_district: ed_ad.ad,
       county,
-      status: row[COLUMN_INDEX_MAP.STATUS],
-      dem: row[COLUMN_INDEX_MAP.DEM].replace(",", ""), // strips out numeric comma
-      rep: row[COLUMN_INDEX_MAP.REP].replace(",", "")
+      [row[COLUMN_INDEX_MAP.STATUS].toLowerCase()]: {
+        democrat: row[COLUMN_INDEX_MAP.DEM].replace(",", ""), // strips out numeric comma
+        republican: row[COLUMN_INDEX_MAP.REP].replace(",", "")
+      }
     };
 
     return obj;
@@ -75,7 +76,7 @@ class Service extends FeathersMongoose.Service {
     return new Promise((resolve, reject) => {
       fs.createReadStream(filepath)
         .pipe(parse({ delimiter: "," }))
-        .on("data", (csvrow, foo) => {
+        .on("data", csvrow => {
           // Date comes before data
           if (!date) {
             date = this.extractDateFromRow(csvrow);
@@ -115,8 +116,7 @@ class Service extends FeathersMongoose.Service {
           enrollment = await EnrollmentModel.findOneAndUpdate(
             {
               electoral_district: enrollmentRecords[x].electoral_district,
-              assembly_district: enrollmentRecords[x].assembly_district,
-              status: enrollmentRecords[x].status
+              assembly_district: enrollmentRecords[x].assembly_district
             },
             {
               source: path.basename(params.filepath),

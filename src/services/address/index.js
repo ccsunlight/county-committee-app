@@ -144,8 +144,7 @@ class Service {
         enrollment = yield EnrollmentModel.findOne(
           {
             assembly_district: ad,
-            electoral_district: ed,
-            status: "Total"
+            electoral_district: ed
           },
           null,
           { sort: { date: -1 } }
@@ -154,10 +153,10 @@ class Service {
         if (enrollment) {
           const SIG_REQ_PERCENTAGE = 0.03;
           enrollment.demSignaturePercentage = Math.ceil(
-            enrollment.dem * SIG_REQ_PERCENTAGE
+            enrollment.active.democrat * SIG_REQ_PERCENTAGE
           );
           enrollment.repSignaturePercentage = Math.ceil(
-            enrollment.rep * SIG_REQ_PERCENTAGE
+            enrollment.active.republican * SIG_REQ_PERCENTAGE
           );
         }
 

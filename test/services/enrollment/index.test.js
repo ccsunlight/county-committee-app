@@ -128,9 +128,9 @@ describe("Enrollment Service", () => {
     assert.equal(obj.county, "New York");
     assert.equal(obj.assembly_district, 65);
     assert.equal(obj.electoral_district, 1);
-    assert.equal(obj.status, "Active");
-    assert.equal(obj.dem, 526);
-    assert.equal(obj.rep, 160);
+    assert.equal(typeof obj.active, "object");
+    assert.equal(obj.active.democrat, 526);
+    assert.equal(obj.active.republican, 160);
   });
 
   it("can extract rows from a CSV", async () => {

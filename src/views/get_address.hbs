@@ -2,26 +2,22 @@
 <div class="mdl-card mdl-cell mdl-cell--8-col">
 	<div class="mdl-card__supporting-text" id="get_address_results">
 		<h3>Your local {{party}} Party seats for AD: {{ad}} / ED: {{ed}}</h3>
-
 		{{> disclaimer }}
-
 		<p class="disclaimer">
 			<strong>* Appointed members not yet available for this district. Members showing as "vacancy" may have members appointmented.</strong>
 		</p>
-
 		{{#if error}}
-
-		<h4><i class="material-icons">error_outline</i>  Sorry we do not have seat information for this district yet. Consider <a href="https://goo.gl/forms/BpeKaPz7rSa4hXdU2" target="_blank">volunteering</a> to help get this info!</h4>
+			<h4><i class="material-icons">error_outline</i>  Sorry we do not have seat information for this district yet. Consider <a href="https://goo.gl/forms/BpeKaPz7rSa4hXdU2" target="_blank">volunteering</a> to help get this info!</h4>
 		{{else}}
 			<h6>County: {{county}} | Party: {{party}} | AD: {{ad}} | ED: {{ed}} | Term: {{dateFormat term.start_date "MM/YYYY"}} — {{dateFormat term.end_date "MM/YYYY"}}</h6>
 			{{#if enrollment}}
 				{{#if_eq party 'Democratic'}}
-					<h6>Democratic voters: {{enrollment.dem}} | Approximate signatures required:  {{enrollment.demSignaturePercentage}} | As of {{dateFormat enrollment.date "MM/YYYY"}}</h6>
+					<h6>Active Democratic voters in ED: {{enrollment.active.democrat}} | Approximate signatures required*:  {{enrollment.demSignaturePercentage}}</h6>
 				{{/if_eq}}
-
 				{{#if_eq party 'Republican'}}
-					<h6>Republican voters: {{enrollment.rep}} | Approximate signatures required:  {{enrollment.repSignaturePercentage}} | As of {{dateFormat enrollment.date "MM/YYYY"}}</h6>
+					<h6>Active Republican voters in ED: {{enrollment.active.democrat}} | Approximate signatures required*:  {{enrollment.repSignaturePercentage}}</h6>
 				{{/if_eq}}
+						<p class="disclaimer">*  As of {{dateFormat enrollment.date "MM/YYYY"}}. Calculated by 3% of active registered members of party in ED. It's recommend to collect more signatures than required. See <a href="https://www.nysenate.gov/legislation/laws/ELN/6-136">§6-136</a></p>
 			{{/if}}
 			{{#if partyPositionsToBeFilled}}
 			<hr/>
@@ -48,7 +44,6 @@
 			<hr/>
 			<h3>Current County Committee Members</h3>
 			{{> table }}
-		
 		{{/if}}
 
 	</div>
