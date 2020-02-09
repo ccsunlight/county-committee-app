@@ -10,14 +10,14 @@ const Schema = mongoose.Schema;
 
 const enrollmentSchema = new Schema(
   {
-    status: {
-      type: String,
-      enum: ["draft", "published"],
-      default: "draft"
-    },
-    title: {
-      type: String
-    },
+    active: { democrat: { type: Number }, republican: { type: Number } },
+    inactive: { democrat: { type: Number }, republican: { type: Number } },
+    total: { democrat: { type: Number }, republican: { type: Number } },
+    electoral_district: { type: Number, required: true },
+    assembly_district: { type: Number, required: true },
+    county: { type: String, required: true },
+    date: { type: Date, required: true },
+    source: { type: String, required: true },
     alias: {
       type: String
     },
@@ -35,6 +35,8 @@ const enrollmentSchema = new Schema(
     timestamps: true
   }
 );
+
+enrollmentSchema.index({ electoral_district: 1, assembly_district: 1 });
 
 const enrollmentModel = mongoose.model("enrollment", enrollmentSchema);
 

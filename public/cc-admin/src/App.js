@@ -59,6 +59,12 @@ import {
 
 import { PartyCallList, PartyCallCreate, PartyCallEdit } from "./party-calls";
 
+import {
+  EnrollmentList,
+  EnrollmentCreate,
+  EnrollmentEdit
+} from "./enrollments";
+
 import { BlockList, BlockCreate, BlockEdit } from "./blocks";
 
 import { NewsLinkList, NewsLinkCreate, NewsLinkEdit } from "./news-links";
@@ -166,6 +172,16 @@ const App = () => (
       list={PartyCallList}
       edit={PartyCallEdit}
       create={PartyCallCreate}
+      remove={Delete}
+    />
+
+    <Resource
+      name="enrollment"
+      options={{ label: "Enrollment" }}
+      icon={ActionLogIcon}
+      list={EnrollmentList}
+      create={EnrollmentCreate}
+      edit={EnrollmentEdit}
       remove={Delete}
     />
 
