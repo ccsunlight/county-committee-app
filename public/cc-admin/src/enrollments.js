@@ -47,9 +47,14 @@ export const EnrollmentEdit = props => {
         <TextField source="source" />
         <TextField source="assembly_district" />
         <TextField source="electoral_district" />
-        <TextField source="dem" />
-        <TextField source="rep" />
-        <TextField source="date" />
+        <hr />
+        <TextField source="active.democrat" />
+        <TextField source="inactive.democrat" />
+        <TextField source="total.democrat" />
+        <hr />
+        <TextField source="active.republican" />
+        <TextField source="inactive.republican" />
+        <TextField source="total.republican" />
       </SimpleForm>
     </Edit>
   );
