@@ -202,6 +202,10 @@ district_key,County Committee
 77003,2
 ```
 
+### OCR
+
+https://www.pdftoexcelconverter.net/
+
 ### Creating County Committee
 
 @todo
