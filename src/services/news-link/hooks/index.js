@@ -65,7 +65,6 @@ exports.before = {
   ],
   update: [
     function(hook) {
-      console.log("hook", hook);
       delete hook.data.updatedAt;
       return hook;
     }
@@ -101,7 +100,41 @@ exports.after = {
   ],
   get: [],
   create: [globalHooks.logAction],
-  update: [globalHooks.logAction],
+  update: [
+    globalHooks.logAction,
+    function(hook) {
+      return new Promise(function(resolve, reject) {
+        if (
+          !hook.data.social_post_status &&
+          hook.data.post_to_social &&
+          hook.data.status === "published"
+        ) {
+          request({
+            url: process.env.SOCIAL_WEBHOOK,
+            method: "POST",
+            json: true,
+            body: {
+              title: hook.data.title,
+              url: hook.data.url,
+              key: process.env.SOCIAL_WEBHOOK_API_KEY
+            }
+          })
+            .then(response => {
+              const result = hook.service.patch(
+                { _id: hook.data._id },
+                { social_post_status: response.status }
+              );
+              resolve(hook);
+            })
+            .catch(err => {
+              reject(err);
+            });
+        } else {
+          resolve(hook);
+        }
+      });
+    }
+  ],
   patch: [globalHooks.logAction],
   remove: [globalHooks.logAction]
 };
