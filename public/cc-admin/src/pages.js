@@ -18,6 +18,11 @@ import {
 // import { checkUserCanEdit } from "./feathersAuthClient";
 import tinymce from "tinymce/tinymce";
 
+import "tinymce/plugins/lists";
+import "tinymce/plugins/link";
+import "tinymce/plugins/autolink";
+import "tinymce/plugins/preview";
+import "tinymce/plugins/code";
 import "tinymce/themes/modern/theme";
 import "tinymce/skins/lightgray/skin.min.css";
 
@@ -54,7 +59,16 @@ export const PageEdit = props => (
       />
       <TextInput source="title" />
       <TextInput source="alias" type="text" />
-      <TinyMCEInput source="content" config={{ height: "600", skin: false }} />
+      <TinyMCEInput
+        source="content"
+        config={{
+          height: "600",
+          skin: false,
+          plugins: "autolink link lists preview code",
+          toolbar:
+            "undo redo | bold italic link | alignleft aligncenter alignright | code"
+        }}
+      />
     </SimpleForm>
   </Edit>
 );
@@ -71,7 +85,16 @@ export const PageCreate = props => (
         ]}
       />
       <TextInput source="alias" type="text" />
-      <TinyMCEInput source="content" config={{ height: "600", skin: false }} />
+      <TinyMCEInput
+        source="content"
+        config={{
+          height: "600",
+          skin: false,
+          plugins: "autolink link lists preview code",
+          toolbar:
+            "undo redo | bold italic link | alignleft aligncenter alignright | code"
+        }}
+      />
     </SimpleForm>
   </Create>
 );
