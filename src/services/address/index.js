@@ -151,7 +151,7 @@ class Service {
         ).exec();
 
         if (enrollment) {
-          const SIG_REQ_PERCENTAGE = 0.03;
+          const SIG_REQ_PERCENTAGE = 0.03 * 0.3;
           enrollment.demSignaturePercentage = Math.ceil(
             enrollment.active.democrat * SIG_REQ_PERCENTAGE
           );
