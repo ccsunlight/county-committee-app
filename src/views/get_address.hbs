@@ -1,58 +1,74 @@
 <div class="mdl-grid">
-<div class="mdl-card mdl-cell mdl-cell--8-col">
-	<div class="mdl-card__supporting-text" id="get_address_results">
-		<h3>Your local {{party}} Party seats for AD: {{ad}} / ED: {{ed}}</h3>
-		{{> disclaimer }}
-		<p class="disclaimer">
-			<strong>* Appointed members not yet available for this district. Members showing as "vacancy" may have members appointmented.</strong>
-		</p>
-		{{#if error}}
-			<h4><i class="material-icons">error_outline</i>  Sorry we do not have seat information for this district yet. Consider <a href="https://goo.gl/forms/BpeKaPz7rSa4hXdU2" target="_blank">volunteering</a> to help get this info!</h4>
-		{{else}}
-			<h6>County: {{county}} | Party: {{party}} | AD: {{ad}} | ED: {{ed}} | Term: {{dateFormat term.start_date "MM/YYYY"}} — {{dateFormat term.end_date "MM/YYYY"}}</h6>
+	<div class="mdl-card mdl-cell mdl-cell--8-col">
+		<div class="mdl-card__supporting-text" id="get_address_results">
+			<h3>Your local {{party}} Party seats for AD: {{ad}} / ED: {{ed}}</h3>
+			{{> disclaimer }}
+			<p class="disclaimer">
+				<strong>* Appointed members not yet available for this district. Members showing as "vacancy" may have
+					members appointmented.</strong>
+			</p>
+			{{#if error}}
+			<h4><i class="material-icons">error_outline</i> Sorry we do not have seat information for this district yet.
+				Consider <a href="https://goo.gl/forms/BpeKaPz7rSa4hXdU2" target="_blank">volunteering</a> to help get
+				this info!</h4>
+			{{else}}
+			<h6>County: {{county}} | Party: {{party}} | AD: {{ad}} | ED: {{ed}} | Term:
+				{{dateFormat term.start_date "MM/YYYY"}} — {{dateFormat term.end_date "MM/YYYY"}}</h6>
 			{{#if enrollment}}
-				{{#if_eq party 'Democratic'}}
-					<h6>Active Democratic voters in ED: {{enrollment.active.democrat}} | Approximate signatures required*:  {{enrollment.demSignaturePercentage}}</h6>
-				{{/if_eq}}
-				{{#if_eq party 'Republican'}}
-					<h6>Active Republican voters in ED: {{enrollment.active.democrat}} | Approximate signatures required*:  {{enrollment.repSignaturePercentage}}</h6>
-				{{/if_eq}}
-						<p class="disclaimer">*  As of {{dateFormat enrollment.date "MM/YYYY"}}. Calculated by 3% of active registered members of party in ED. It's recommend to collect more signatures than required. See <a href="https://www.nysenate.gov/legislation/laws/ELN/6-136">§6-136</a></p>
+			{{#if_eq party 'Democratic'}}
+			<h6>Active Democratic voters in ED: {{enrollment.active.democrat}} | Approximate signatures required*:
+				{{enrollment.demSignaturePercentage}}</h6>
+			{{/if_eq}}
+			{{#if_eq party 'Republican'}}
+			<h6>Active Republican voters in ED: {{enrollment.active.democrat}} | Approximate signatures required*:
+				{{enrollment.repSignaturePercentage}}</h6>
+			{{/if_eq}}
+			<h6>* Governor Cuomo has signed an executive order reducing signature requirements due to
+				Corona Virus. <strong>All signature requirements are reduced to 30% of statutory requirement and
+					Petitioning will end 5PM, Tues 3/17</strong>.
+				Based off enrollment numbers as of {{dateFormat enrollment.date "MM/YYYY"}}.
+				Calculated by taking <strong>30% of </strong> 3% of active
+				registered members of party in ED. See <a
+					href="https://www.nysenate.gov/legislation/laws/ELN/6-136">§6-136</a></h6>
 			{{/if}}
 			{{#if partyPositionsToBeFilled}}
-			<hr/>
-				<h3>Party Call</h3>
+			<hr />
+			<h3>Party Call</h3>
 
-				<p>Below are the petitionable seats for the upcoming election:</p>
-				{{> table members=partyPositionsToBeFilled}}
+			<p>Below are the petitionable seats for the upcoming election:</p>
+			{{> table members=partyPositionsToBeFilled}}
 
-				<div class="detail-buttons">
-					<a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank" href="https://www.vote.nyc.ny.us/html/voters/maps.shtml">
+			<div class="detail-buttons">
+				<a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank"
+					href="https://www.vote.nyc.ny.us/html/voters/maps.shtml">
 					ED/AD Maps
-					</a>	
-					<a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank" href="https://www.vote.nyc.ny.us/html/forms/enrollment.shtml">
+				</a>
+				<a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank"
+					href="https://www.vote.nyc.ny.us/html/forms/enrollment.shtml">
 					Voter Enrollment
-					</a>
-					<a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank" href="https://bit.ly/3bXyPAa">
+				</a>
+				<a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank"
+					href="https://bit.ly/3bXyPAa">
 					Learn how to petition!
-					</a>
-					<a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank" href="https://www.elections.ny.gov/PoliticalCalendar.html">
+				</a>
+				<a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank"
+					href="https://www.elections.ny.gov/PoliticalCalendar.html">
 					Political Calendar
-					</a>
-				</div>
+				</a>
+			</div>
 			{{/if}}
-			<hr/>
+			<hr />
 			<h3>Current County Committee Members</h3>
 			{{> table }}
-		{{/if}}
+			{{/if}}
 
+		</div>
+		<div class="mdl-card__supporting-text">
+			<hr />
+			<h3>Assembly District</h3>
+			{{> gmap}}
+			{{> include_gmap_and_autocomplete}}
+		</div>
 	</div>
-	<div class="mdl-card__supporting-text">
-			<hr/>
-		<h3>Assembly District</h3>
-		{{> gmap}}
-		{{> include_gmap_and_autocomplete}}
-	</div>
-</div>
-{{> sidebar}}
+	{{> sidebar}}
 </div>
