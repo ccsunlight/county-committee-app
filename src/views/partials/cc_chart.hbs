@@ -1,73 +1,84 @@
 <div class="mdl-cell mdl-cell--6-col-desktop mdl-cell--6-col-tablet mdl-cell--12-col-phone">
-		<div class="mdl-grid cc-chart">
-			<div class="mdl-card mdl-cell mdl-cell--12-col mdl-shadow--2dp through mdl-shadow--16dp">
-			<h4>{{county}} County {{party}} Party</h4>
-			
-			<p><strong>Term:</strong> {{dateFormat term_start_date "MMM D, YYYY"}} — {{dateFormat term_end_date "MMM D, YYYY"}}</p>
-			<p><small>Source: NY BOE</small></p>
-			
-			<div class="chart-container"><canvas id="myChart-{{county}}"></canvas></div>
-			<p class="chart-fineprint">
-				<small>
-				{{#unless numOfAppointed }}
-				* Appointed member data is not yet available for this county, and therefore vacancies may have  members appointed.
-				{{/unless}}
-				</small>
-			</p>
-		</div>
-	</div>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
-<script src="/lib/Chart.PieceLabel.min.js"></script>
-<script>
-	(function() {
+  <div class="mdl-grid cc-chart">
+    <div class="mdl-card mdl-cell mdl-cell--12-col mdl-shadow--2dp through mdl-shadow--16dp">
+      <h4>{{county}} County {{party}} Party</h4>
 
-	var data = {
-		labels: [
-		"Vacant",
-		"Elected",
-		"Appointed"
-		],
-		datasets: [
-			{
-			label:"Vacant Seats",
-			data: [
-				{{numOfVacancies}}, {{numOfElected}},
-				{{numOfAppointed}}
-				],
-				fill:false,
-				backgroundColor: [
-					"#ebebeb",
-					"#40B69A",
-					"#FAA737"
-					],
-				hoverBackgroundColor: [
-					"#ebebeb",
-					"#40B69A",
-					"#FAA737"
-				]
+      <p><strong>Term:</strong> {{dateFormat term_start_date "MMM D, YYYY"}} —
+        {{dateFormat term_end_date "MMM D, YYYY"}}</p>
+      <p><small>Source: NY BOE</small></p>
+
+      <div class="chart-container"><canvas id="myChart-{{county}}"></canvas></div>
+      <p class="chart-fineprint">
+        <small>
+          {{#unless numOfAppointed }}
+          * Appointed member data is not yet available for this county, and therefore vacancies may have
+          members appointed.
+          {{/unless}}
+        </small>
+      </p>
+    </div>
+  </div>
+</div>
+  <script>
+    (function () {
+      var data = {
+        labels: [
+          "Vacant",
+          "Elected",
+          "Appointed"
+        ],
+        datasets: [
+          {
+            label: "Vacant Seats",
+            data: [{{ numOfVacancies }}, {{ numOfElected }}, {{ numOfAppointed }}], */
+
+    fill: false,
+      backgroundColor: [
+        "#ebebeb",
+        "#40B69A",
+        "#FAA737"
+      ],
+        hoverBackgroundColor: [
+          "#ebebeb",
+          "#40B69A",
+          "#FAA737"
+        ]
 			}
 		]
 	};
-	var myPieChart = new Chart(document.getElementById("myChart-{{county}}"),{
-		type: 'pie',
-		data: data,
-		options: {
-			pieceLabel: {
-			    render: function (args) {
-				    return args.value + ' ' + args.label;
-				  },
-			    fontSize: 14,
-			    fontColor: '#000'
-			},
-			title: {
+    var callback = () => {
+      var myPieChart = new Chart(document.getElementById("myChart-{{county}}"), {
+        type: 'pie',
+        data: data,
+        options: {
+          pieceLabel: {
+            render: function (args) {
+              return args.value + ' ' + args.label;
+            },
+            fontSize: 14,
+            fontColor: '#000'
+          },
+          title: {
             display: true,
-			responsive: true,
+            responsive: true,
 
             text: '{{county}} County Committee Vacancies',
 
-       	 }
+          }
         }
-	});
-	})();
-</script>
+      });
+
+
+      // Handler when the DOM is fully loaded
+    };
+
+    if (
+      document.readyState === "complete" ||
+      (document.readyState !== "loading" && !document.documentElement.doScroll)
+    ) {
+      callback();
+    } else {
+      document.addEventListener("DOMContentLoaded", callback);
+    }
+	}) ();
+  </script>

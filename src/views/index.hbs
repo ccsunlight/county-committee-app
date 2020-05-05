@@ -1,22 +1,27 @@
 <div class="mdl-layout__tab-panel is-active" id="overview">
 	<div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--12-col-tablet mdl-cell--12-col-phone">
 		<div class="mdl-grid mdl-cell--12-col-tablet mdl-cell--12-col-phone">
-			
-		
-		{{#if hero}}
+
+
+			{{#if hero}}
 			<div class="mdl-grid mdl-cell--12-col-tablet mdl-cell--12-col-phone">
 				{{{hero}}}
-			</div> 
-
-		{{else}}
-
-			 <div class="mdl-cell mdl-cell--12-col">
-				<h3 class="splash-text">We are a group of citizens shedding light on <a href="#membership"><span class="light-green">local political party membership</span></a> in New York, <a href="https://ccsunlight.org/what-is-a-county-committee" target="_blank"><span class="light-green">why they matter</span></a>, and <a href="https://ccsunlight.org/how-to-run-for-county-committee" target="_blank"><span class="light-green">how to get involved.</span></a></h3>
 			</div>
 
-		{{/if}}
+			{{else}}
 
-		
+			<div class="mdl-cell mdl-cell--12-col">
+				<h3 class="splash-text">We are a group of citizens shedding light on <a href="#membership"><span
+							class="light-green">local political party membership</span></a> in New York, <a
+						href="https://ccsunlight.org/what-is-a-county-committee" target="_blank"><span
+							class="light-green">why they matter</span></a>, and <a
+						href="https://ccsunlight.org/how-to-run-for-county-committee" target="_blank"><span
+							class="light-green">how to get involved.</span></a></h3>
+			</div>
+
+			{{/if}}
+
+
 			<div class="mdl-cell--12-col">
 				<div class="mdl-cell mdl-cell--12-col">
 					{{> addressform}}
@@ -24,59 +29,69 @@
 				</div>
 			</div>
 		</div>
-			
+
 	</div>
 	<div class="mdl-grid mdl-cell--12-col-tablet mdl-cell--12-col-phone">
 		<div class="mdl-card mdl-cell mdl-cell--6-col">
-		  <div class="mdl-card__title">
-		    <h2 class="mdl-card__title-text">The Ins & Outs of the County Committee System</h2>
-		  </div>
-		  <div class="mdl-card__media">
-		    <iframe class="youtube-vid" src="https://www.youtube.com/embed/57cTlsRpG1o" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-		  </div>
-		  <div class="mdl-card__supporting-text">
-		    Ben Yee, Secretary of the Manhattan Democratic County Committee sat down with CC Sunlight's David Moore give an overview of how the county committee works.
-		  </div>
-		  <div class="mdl-card__actions">
-		    <a href="https://www.youtube.com/channel/UCfDfyE40BmcyFTe4rEPXxbg/featured" target="_blank">More videos</a>
-		  </div>
+			<div class="mdl-card__title">
+				<h2 class="mdl-card__title-text">The Ins & Outs of the County Committee System</h2>
+			</div>
+			<div class="mdl-card__media">
+				{{> video embed_code="57cTlsRpG1o" title="The Ins & Outs of the County Committee System"}}
+			</div>
+			<div class="mdl-card__supporting-text">
+				Ben Yee, Secretary of the Manhattan Democratic County Committee sat down with CC Sunlight's David Moore
+				give an overview of how the county committee works.
+			</div>
+			<div class="mdl-card__actions">
+				<a href="https://www.youtube.com/channel/UCfDfyE40BmcyFTe4rEPXxbg/featured" target="_blank">More
+					videos</a>
+			</div>
 		</div>
 		<div class="mdl-card mdl-cell mdl-cell--6-col">
-		  <div class="mdl-card__title">
-		    <h2 class="mdl-card__title-text">Why County Committee Matters</h2>
-		  </div>
-		  <div class="mdl-card__media">
-		    <iframe class="youtube-vid" src="https://www.youtube.com/embed/XAYfbdNTvcY" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-		  </div>
-		  <div class="mdl-card__supporting-text">
-		    Long time organizers Donnie & JoAnn Whitehead along with Oster Bryan sat down with CC Sunlight's David Moore during our hackathon last month and broke down why count committee matters.
-		  </div>
-		  <div class="mdl-card__actions">
-		    <a href="https://www.youtube.com/channel/UCfDfyE40BmcyFTe4rEPXxbg/featured" target="_blank">More videos</a>
-		  </div>
+			<div class="mdl-card__title">
+				<h2 class="mdl-card__title-text">Why County Committee Matters</h2>
+			</div>
+			<div class="mdl-card__media">
+				{{> video embed_code="XAYfbdNTvcY" title="Why County Committee Matters"}}
+
+			</div>
+			<div class="mdl-card__supporting-text">
+				Long time organizers Donnie & JoAnn Whitehead along with Oster Bryan sat down with CC Sunlight's David
+				Moore during our hackathon last month and broke down why count committee matters.
+			</div>
+			<div class="mdl-card__actions">
+				<a href="https://www.youtube.com/channel/UCfDfyE40BmcyFTe4rEPXxbg/featured" target="_blank">More
+					videos</a>
+			</div>
 		</div>
-	<div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--12-col-tablet mdl-cell--12-col-phone" id="membership">
-		<div class="mdl-card__supporting-text"><h3>County Committee Data</h3>
-			{{> disclaimer }}
-			<p><small>Source: <a target="_blank" href="https://drive.google.com/drive/folders/1ywVUYMEJ2VesG_rJWHBaRJ5cr_yNwww-?usp=sharing
+		<div class="mdl-card mdl-cell mdl-cell--12-col-desktop mdl-cell--12-col-tablet mdl-cell--12-col-phone"
+			id="membership">
+			<div class="mdl-card__supporting-text">
+				<h3>County Committee Data</h3>
+				{{> disclaimer }}
+				<p><small>Source: <a target="_blank" href="https://drive.google.com/drive/folders/1ywVUYMEJ2VesG_rJWHBaRJ5cr_yNwww-?usp=sharing
 ">NY BOE documents</a></small></p>
 
-			
+
+			</div>
+
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
+			<script src="/lib/Chart.PieceLabel.min.js"></script>
+
+			<div class="mdl-grid mdl-cell--12-col-tablet mdl-cell--12-col-phone">
+
+				{{> cc_chart countySeatBreakdowns.[0]}}
+				{{> cc_chart countySeatBreakdowns.[1]}}
+
+
+				{{> cc_chart countySeatBreakdowns.[2]}}
+				{{> cc_chart countySeatBreakdowns.[3]}}
+
+				{{> cc_chart countySeatBreakdowns.[4]}}
+
+			</div>
+
 		</div>
-
-		<div class="mdl-grid mdl-cell--12-col-tablet mdl-cell--12-col-phone">
-			
-			{{> cc_chart countySeatBreakdowns.[0]}}
-			{{> cc_chart countySeatBreakdowns.[1]}}
-		
-			
-			{{> cc_chart countySeatBreakdowns.[2]}}
-			{{> cc_chart countySeatBreakdowns.[3]}}
-	
-			{{> cc_chart countySeatBreakdowns.[4]}}
-
-		</div>
-
-	</div>
 	</div>
 </div>
