@@ -19,12 +19,14 @@ body {
   font-family: "Open Sans", sans-serif;
   margin: 0;
   padding: 0;
+  font-display: swap;
 }
 h1,
 h2,
 h3 {
   font-family: "Roboto Slab", serif;
   color: #009688;
+  font-display: swap;
 }
 h4 {
   font-weight: 700;
