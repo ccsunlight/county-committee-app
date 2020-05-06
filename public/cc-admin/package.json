@@ -25,8 +25,7 @@
     "react-dom": "^15.5.4",
     "react-if": "^2.1.0",
     "react-mde": "^7.0.3",
-    "start": "^5.1.0",
-    "yarnpkg": "^0.15.1"
+    "start": "^5.1.0"
   },
   "devDependencies": {
     "react-scripts": "^1.0.7"
