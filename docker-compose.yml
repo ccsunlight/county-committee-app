@@ -14,7 +14,7 @@ services: # configuring each container
     ports:
       - "25:25"
       - "587:587"
-      - "4000:80"
+      - "4000:4000"
       - "465:465"
     depends_on:
       - cc-mongo
@@ -24,8 +24,20 @@ services: # configuring each container
       - "27017:27017"
     volumes: # data to map to the container.
       - "cc-db:/data/db"
-    command: mongod --auth
-    
+    command: mongod # --auth
+  db:
+    image: postgres
+    ports:
+      - "49153:5432"
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+  
 volumes:
   cc-db:
     external: true

@@ -380,13 +380,20 @@ router.get(
       queryParams.status = "published";
     }
 
-    page.findOne(queryParams).then(function(data) {
-      if (data) {
-        res.render("page", data);
-      } else {
-        next();
-      }
-    });
+    page
+      .findOne({
+        where: {
+          ...queryParams
+        }
+      })
+      .then(function(data) {
+        // @todo is there a cleaner way to get these values
+        if (data) {
+          res.render("page", data.dataValues);
+        } else {
+          next();
+        }
+      });
   })
 );
 

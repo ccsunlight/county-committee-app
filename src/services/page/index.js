@@ -1,6 +1,6 @@
 "use strict";
 
-const service = require("feathers-mongoose");
+const service = require("feathers-sequelize");
 const page = require("./page-model");
 const hooks = require("./hooks");
 

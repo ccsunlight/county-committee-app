@@ -9,6 +9,8 @@ const https = require("https");
 const appDir = path.dirname(require.main.filename);
 //const SMTPServer = require('smtp-server').SMTPServer;
 
+console.log("PORT", port);
+
 const server = app.listen(port);
 
 /*

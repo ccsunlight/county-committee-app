@@ -77,6 +77,12 @@ hbs.registerHelper("map_members", function(members) {
 
 app.configure(configuration(path.join(__dirname, "..")));
 
+// const sequelize = new Sequelize("sequelize", "", "", {
+//   dialect: "postgres",
+//   storage: path.join(__dirname, "db.sqlite"),
+//   logging: false
+// });
+
 // Load DB settings
 // MONGODB_URL overrides
 app.set("mongodb", process.env.MONGODB_URL); // ? process.env.MONGODB_URL : "mongodb://" + process.env.DB_USER + ":" + process.env.DB_PASS + '@' + process.env.DB_HOST + ':' + process.env.DB_PORT + '/' + process.env.DB_NAME);

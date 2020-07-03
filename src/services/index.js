@@ -23,6 +23,7 @@ const importList = require("./import-list");
 const boeElectionResults = require("./boe-election-results");
 
 const mongoose = require("mongoose");
+const foo = require("./foo");
 
 // Mongoose promise lib is deprecated.
 mongoose.Promise = global.Promise;
@@ -58,6 +59,7 @@ module.exports = function() {
   app.configure(importList);
   app.configure(address);
   app.configure(enrollment);
+  app.configure(foo);
 
   //
   // Workaroud for disabling docs paths for admin entities.
