@@ -242,8 +242,14 @@ For more information on all the things you can do with Feathers visit [docs.feat
 
 - Initial release
 
+# To Do
+
+- Fix action logger for postgres
+- Convert UUIDs to integer
+- Migrate all existing models to postgress
+
 ## License
 
-Copyright (c) 2016
+Copyright (c) 2018
 
 Licensed under the [MIT license](LICENSE).

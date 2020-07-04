@@ -1,4 +1,4 @@
 
 . .env
 
-./node_modules/.bin/migrate --autosync -d "${MONGODB_URL}" up 
+./node_modules/.bin/migrate --md ./migrations-legacy --autosync -d "${MONGODB_URL}" up 

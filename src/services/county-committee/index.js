@@ -1,9 +1,7 @@
 "use strict";
 
-const service = require("feathers-mongoose");
+const service = require("feathers-sequelize");
 const CountyCommittee = require("./county-committee-model");
-const CountyCommitteeMember = require("../county-committee-member/county-committee-member-model");
-
 const hooks = require("./hooks");
 const mongoose = require("mongoose");
 
@@ -11,7 +9,7 @@ module.exports = function() {
   const app = this;
 
   const options = {
-    Model: CountyCommittee,
+    Model: CountyCommittee(app.get("sequelizeClient")),
     paginate: {
       default: 10,
       max: app.get("api").defaultItemLimit
