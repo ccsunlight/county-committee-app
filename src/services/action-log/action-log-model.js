@@ -1,46 +1,55 @@
 "use strict";
 
-// county-committee-model.js - A mongoose model
-//
-// See http://mongoosejs.com/docs/models.html
-// for more of what you can do here.
-
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-
-const actionLogSchema = new Schema(
-  {
-    createdAt: {
-      type: Date,
-      default: Date.now
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now
-    },
-    level: {
-      type: String
-    },
-    message: {
-      type: String
-    },
-    meta: { type: Schema.Types.Mixed }
+const Sequelize = require("sequelize");
+const DataTypes = Sequelize.DataTypes;
+const ActionLogSchema = {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true
   },
-  {
-    toObject: {
-      virtuals: true
-    },
-    toJSON: {
-      virtuals: true
-    },
-    timestamps: true
+  level: {
+    type: DataTypes.STRING
+  },
+  message: {
+    type: DataTypes.STRING
+  },
+  meta: { type: DataTypes.JSONB },
+  createdAt: {
+    type: DataTypes.DATE
+  },
+  updatedAt: {
+    type: DataTypes.DATE
+  },
+  mongo_id: {
+    type: DataTypes.STRING,
+    unique: true
   }
-);
+};
 
-// Workaround for mongo error with admin
-// and sorting documents.
-actionLogSchema.index({ createdAt: -1 });
+function ActionLogModel(sequelizeClient) {
+  const model = sequelizeClient.define(
+    "action-logs",
+    { ...ActionLogSchema },
+    {
+      toObject: {
+        virtuals: true
+      },
+      toJSON: {
+        virtuals: true
+      },
+      timestamps: true,
+      freezeTableName: true
+    }
+  );
 
-const actionLog = mongoose.model("action-log", actionLogSchema);
+  return model;
+}
 
-module.exports = actionLog;
+// const fooModel = sequelize.model("foo", fooSchema);
+module.exports = ActionLogModel;
+module.exports.ActionLogSchema = ActionLogSchema;
+
+// // Workaround for mongo error with admin
+// // and sorting documents.
+// actionLogSchema.index({ createdAt: -1 });

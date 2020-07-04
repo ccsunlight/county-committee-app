@@ -29,7 +29,7 @@
     "test:watch": "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/enrollment/*.test.js'",
     "test": "mocha  --inspect=0.0.0.0 --recursive --exit --bail test/services/**/*.test.js",
     "precommit": "lint-staged",
-    "format": "prettier",
+    "format": "prettier 'src/**/*.js' --write",
     "jshint": "jshint src/. test/. --config",
     "prettier-watch": "onchange '**/*.{js,json,css,md}' -- prettier --write {{changed}}"
   },
@@ -162,6 +162,7 @@
     "mocha": "^5.1.1",
     "mocha-osx-reporter": "^0.1.2",
     "nodemon": "^1.19.1",
-    "onchange": "^3.3.0"
+    "onchange": "^3.3.0",
+    "sequelize-cli": "^6.1.0"
   }
 }

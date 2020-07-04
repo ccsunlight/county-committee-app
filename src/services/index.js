@@ -3,7 +3,6 @@
 const certifiedList = require("./certified-list");
 const candidacyList = require("./candidacy-list");
 const partyCall = require("./party-call");
-
 const utils = require("./utils");
 const invite = require("./invite");
 const edGeometry = require("./edGeometry");
@@ -21,9 +20,8 @@ const term = require("./term");
 const enrollment = require("./enrollment");
 const importList = require("./import-list");
 const boeElectionResults = require("./boe-election-results");
-
 const mongoose = require("mongoose");
-const foo = require("./foo");
+const Sequelize = require("sequelize");
 
 // Mongoose promise lib is deprecated.
 mongoose.Promise = global.Promise;
@@ -37,9 +35,7 @@ module.exports = function() {
   };
   mongoose.connection.close();
   mongoose.connect(app.get("mongodb"), options);
-
   // app.configure(authentication);
-
   app.configure(user);
   app.configure(page);
   app.configure(block);
@@ -59,7 +55,6 @@ module.exports = function() {
   app.configure(importList);
   app.configure(address);
   app.configure(enrollment);
-  app.configure(foo);
 
   //
   // Workaroud for disabling docs paths for admin entities.

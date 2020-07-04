@@ -110,8 +110,7 @@ class Service extends FeathersMongoose.Service {
     let officeColumnStartIndex;
 
     return new Promise((resolve, reject) => {
-      fs
-        .createReadStream(filepath)
+      fs.createReadStream(filepath)
         .pipe(parse({ delimiter: "," }))
         .on("data", csvrow => {
           let ed_ad;

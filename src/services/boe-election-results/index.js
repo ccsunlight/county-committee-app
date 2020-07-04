@@ -169,9 +169,7 @@ module.exports = function() {
       if (req.query.format === "csv") {
         res.setHeader(
           "Content-disposition",
-          `attachment; filename=boe-election-results-${
-            req.params.__feathersId
-          }.csv`
+          `attachment; filename=boe-election-results-${req.params.__feathersId}.csv`
         );
         res.setHeader("Content-type", "text/plain");
 

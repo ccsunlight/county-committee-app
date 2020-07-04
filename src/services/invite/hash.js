@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = hasher;
 
-var _bcryptjs = require('bcryptjs');
+var _bcryptjs = require("bcryptjs");
 
 var _bcryptjs2 = _interopRequireDefault(_bcryptjs);
 
@@ -30,4 +30,4 @@ function hasher(password) {
     });
   });
 }
-module.exports = exports['default'];
+module.exports = exports["default"];

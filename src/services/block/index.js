@@ -1,14 +1,16 @@
 "use strict";
 
-const service = require("feathers-mongoose");
-const homepage = require("./block-model");
+const service = require("feathers-sequelize");
+const BlockModel = require("./block-model");
 const hooks = require("./hooks");
 
 module.exports = function() {
   const app = this;
 
+  const sequelizeClient = app.get("sequelizeClient");
+
   const options = {
-    Model: homepage,
+    Model: new BlockModel(sequelizeClient),
     paginate: {
       default: 10,
       max: 25

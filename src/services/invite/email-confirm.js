@@ -1,47 +1,47 @@
-const user = require('../user/user-model');
-const invite = require('./invite-model');
-const mongoose = require('mongoose');
-const nev = require('email-verification')(mongoose);
-const bcrypt = require('bcrypt');
-const local = require('feathers-authentication-local');
+const user = require("../user/user-model");
+const invite = require("./invite-model");
+const mongoose = require("mongoose");
+const nev = require("email-verification")(mongoose);
+const bcrypt = require("bcrypt");
+const local = require("feathers-authentication-local");
 
 // @todo this is super hacky. Gotta clean this up at some point.
 let tempModelGenerated = false;
 
 function nevInit(verifyMailOptions, callback) {
-  const app = require('../../app.js');
+  const app = require("../../app.js");
 
-  let protocol = 'http://';
+  let protocol = "http://";
 
-  if (app.get('env') === 'production') {
-    protocol = 'https://';
+  if (app.get("env") === "production") {
+    protocol = "https://";
   }
 
   let nevOptions = {
-    verificationURL: protocol + app.get('host') + '/invite/confirm/${URL}',
+    verificationURL: protocol + app.get("host") + "/invite/confirm/${URL}",
     URLLength: 48,
     persistentUserModel: user,
     tempUserModel: invite,
-    tempUserCollection: 'temporary_users',
-    emailFieldName: 'email',
+    tempUserCollection: "temporary_users",
+    emailFieldName: "email",
     hashingFunction: null,
-    passwordFieldName: 'password',
-    URLFieldName: 'GENERATED_VERIFYING_URL',
+    passwordFieldName: "password",
+    URLFieldName: "GENERATED_VERIFYING_URL",
     expirationTime: 86400 * 7,
     transportOptions: {
-      service: 'Gmail',
+      service: "Gmail",
       auth: {
-        user: app.get('gmail_un'),
-        pass: app.get('gmail_pw')
+        user: app.get("gmail_un"),
+        pass: app.get("gmail_pw")
       }
     },
     verifyMailOptions: verifyMailOptions,
     shouldSendConfirmation: true,
     confirmMailOptions: {
-      from: 'County Committee Sunlight Project <' + app.get('gmail_un') + '>',
-      subject: 'Successfully verified!',
-      html: '<p>Your account has been successfully verified.</p>',
-      text: 'Your account has been successfully verified.'
+      from: "County Committee Sunlight Project <" + app.get("gmail_un") + ">",
+      subject: "Successfully verified!",
+      html: "<p>Your account has been successfully verified.</p>",
+      text: "Your account has been successfully verified."
     }
   };
 
@@ -66,21 +66,21 @@ function sendInvite(data, password_for_email, callback) {
   let newUser = new invite(data);
 
   // saved!
-  const app = require('../../app.js');
+  const app = require("../../app.js");
 
   nevInit(
     {
-      from: 'County Committee Sunlight Project <' + app.get('gmail_un') + '>',
-      subject: 'Confirm your account',
+      from: "County Committee Sunlight Project <" + app.get("gmail_un") + ">",
+      subject: "Confirm your account",
       html:
         '<p>Please verify your account by clicking <a href="${URL}">this link</a>. If you are unable to do so, copy and ' +
-        'paste the following link into your browser and using your login details below:</p><p>${URL}</p><p>username: ' +
+        "paste the following link into your browser and using your login details below:</p><p>${URL}</p><p>username: " +
         data.email +
-        '</p><p>pw: ' +
+        "</p><p>pw: " +
         password_for_email +
-        '</p>',
+        "</p>",
       text:
-        'Please verify your account by clicking the following link, or by copying and pasting it into your browser: ${URL}'
+        "Please verify your account by clicking the following link, or by copying and pasting it into your browser: ${URL}"
     },
     function() {
       nev.createTempUser(newUser, function(
@@ -90,26 +90,26 @@ function sendInvite(data, password_for_email, callback) {
       ) {
         // some sort of error
         if (err) {
-          console.log('error creating user', err);
+          console.log("error creating user", err);
           callback(err);
         }
         // handle error...
 
         // user already exists in persistent collection...
         if (existingPersistentUser) {
-          callback('User exists already');
+          callback("User exists already");
         }
         // handle user's existence... violently.
 
         // a new user
         if (newTempUser) {
-          var URL = newTempUser['GENERATED_VERIFYING_URL'];
+          var URL = newTempUser["GENERATED_VERIFYING_URL"];
           nev.sendVerificationEmail(newTempUser.email, URL, function(
             err,
             info
           ) {
             if (err) {
-              console.log('error sending verification email', err);
+              console.log("error sending verification email", err);
             }
             // handle error...
             callback(err, newTempUser);
@@ -118,7 +118,7 @@ function sendInvite(data, password_for_email, callback) {
 
           // user already exists in temporary collection...
         } else {
-          console.log('no temp user', existingPersistentUser, newTempUser);
+          console.log("no temp user", existingPersistentUser, newTempUser);
           //callback('no temp user');
           /*   var URL = newUser[nev.options.URLFieldName];
                   nev.sendVerificationEmail(newUser.email, URL, function(err, info) {
@@ -149,13 +149,13 @@ function confirmUser(url, callback) {
     if (user) {
       // optional
       //
-      nev.sendConfirmationEmail(user['email_field_name'], function(err, info) {
+      nev.sendConfirmationEmail(user["email_field_name"], function(err, info) {
         // redirect to their profile...
       });
 
       callback(user);
     } else {
-      callback('nope');
+      callback("nope");
     }
     // redirect to sign-up
   });

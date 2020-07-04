@@ -1,14 +1,16 @@
 "use strict";
 
-const service = require("feathers-mongoose");
-const actionLog = require("./action-log-model");
+const service = require("feathers-sequelize");
+const ActionLogModel = require("./action-log-model");
 const hooks = require("./hooks");
 
 module.exports = function() {
   const app = this;
 
+  const sequelizeClient = app.get("sequelizeClient");
+
   const options = {
-    Model: actionLog,
+    Model: new ActionLogModel(sequelizeClient),
     paginate: {
       default: 10,
       max: 25

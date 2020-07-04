@@ -7,8 +7,10 @@ const hooks = require("./hooks");
 module.exports = function() {
   const app = this;
 
+  const sequelizeClient = app.get("sequelizeClient");
+
   const options = {
-    Model: page,
+    Model: new page(sequelizeClient),
     paginate: {
       default: 10,
       max: 25

@@ -24,9 +24,23 @@ const services = require("./services");
 const routes = require("./routes");
 const hbs = require("hbs");
 const runEdGeometryCron = require("./utils/runEdGeometryCron");
-
+const sequelize = require("sequelize");
 const paginate = require("handlebars-paginate");
 const app = feathers();
+
+const sequelizeClient = new sequelize(
+  process.env.PG_NAME,
+  process.env.PG_USERNAME,
+  process.env.PG_PASSWORD,
+  {
+    dialect: "postgres",
+    host: process.env.PG_HOST,
+    port: process.env.PG_PORT,
+    logging: false
+  }
+);
+
+app.set("sequelizeClient", sequelizeClient);
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
@@ -76,12 +90,6 @@ hbs.registerHelper("map_members", function(members) {
 });
 
 app.configure(configuration(path.join(__dirname, "..")));
-
-// const sequelize = new Sequelize("sequelize", "", "", {
-//   dialect: "postgres",
-//   storage: path.join(__dirname, "db.sqlite"),
-//   logging: false
-// });
 
 // Load DB settings
 // MONGODB_URL overrides

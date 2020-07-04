@@ -13,7 +13,7 @@ const BlockModel = require("../services/block/block-model");
 
 const countyCommitteeMember = require("../services/county-committee-member/county-committee-member-model");
 const edGeometry = require("../services/edGeometry/edGeometry-model");
-const page = require("../services/page/page-model");
+const PageModel = require("../services/page/page-model");
 const newsModel = require("../services/news-link/news-link-model");
 const confirm = require("../services/invite/email-confirm");
 const Address = require("../services/address");
@@ -74,8 +74,14 @@ router.get(
 
 /* GET home page. */
 router.get("/", async function(req, res, next) {
-  const announcement = await BlockModel.findOne({ alias: "announcement" });
-  const hero = await BlockModel.findOne({ alias: "hero" });
+  const blockModel = new BlockModel(req.app.get("sequelizeClient"));
+
+  const announcement = await blockModel.findOne({
+    where: { alias: "announcement" }
+  });
+  const hero = await blockModel.findOne({
+    where: { alias: "hero" }
+  });
 
   // Caching the output of the cc breakdowns
   // These don't change much
@@ -93,8 +99,8 @@ router.get("/", async function(req, res, next) {
     cache.set("county-committee-breakdowns", countySeatBreakdowns);
   }
   res.render("index", {
-    announcement: announcement ? announcement.content : "",
-    hero: hero ? hero.content : "",
+    announcement: announcement ? announcement.dataValues.content : "",
+    hero: hero ? hero.dataValues.content : "",
     countySeatBreakdowns: countySeatBreakdowns
   });
 });
@@ -379,6 +385,8 @@ router.get(
     if (req.query.preview !== "1") {
       queryParams.status = "published";
     }
+
+    const page = PageModel(req.app.get("sequelizeClient"));
 
     page
       .findOne({

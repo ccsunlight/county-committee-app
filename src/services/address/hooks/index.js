@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-const globalHooks = require('../../../hooks');
-const hooks = require('feathers-hooks');
-const CacheMap = require('@feathers-plus/cache');
-const { cache } = require('feathers-hooks-common');
+const globalHooks = require("../../../hooks");
+const hooks = require("feathers-hooks");
+const CacheMap = require("@feathers-plus/cache");
+const { cache } = require("feathers-hooks-common");
 
 var cacheMap = CacheMap({
   max: 10000,
@@ -13,7 +13,7 @@ var cacheMap = CacheMap({
 exports.before = {
   all: [],
   find: [],
-  get: [cache(cacheMap, 'address')],
+  get: [cache(cacheMap, "address")],
   create: [],
   update: [],
   patch: [],
@@ -23,7 +23,7 @@ exports.before = {
 exports.after = {
   all: [],
   find: [],
-  get: [cache(cacheMap, 'address')],
+  get: [cache(cacheMap, "address")],
   create: [],
   update: [],
   patch: [],

@@ -8,8 +8,6 @@
 
 const util = require("util");
 const winston = require("winston");
-const app = this;
-
 const user = require("../services/user/user-model");
 
 require("winston-mongodb");
@@ -32,15 +30,16 @@ var MongooseLogger = (winston.transports.MongooseLogger = function(options) {
 util.inherits(MongooseLogger, winston.Transport);
 let LogModel = require("../services/action-log/action-log-model");
 MongooseLogger.prototype.log = function(level, message, metadata, callback) {
-  var entry = new LogModel({
-    level: level,
-    message: message,
-    meta: metadata
-  });
-
-  entry.save(function(err) {
-    return callback(err, true);
-  });
+  // @todo convert to postgres
+  // let Log = new LogModel(app.get("sequelizeClient"));
+  // var entry = new Log({
+  //   level: level,
+  //   message: message,
+  //   meta: metadata
+  // });
+  // entry.save(function(err) {
+  //   return callback(err, true);
+  // });
 };
 
 const logger = new winston.Logger({

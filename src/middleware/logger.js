@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const winston = require('winston');
+const winston = require("winston");
 
 module.exports = function(app) {
   // Add a logger to our app object for convenience
@@ -8,7 +8,7 @@ module.exports = function(app) {
 
   return function(error, req, res, next) {
     if (error) {
-      const message = `${error.code ? `(${error.code}) ` : ''}Route: ${
+      const message = `${error.code ? `(${error.code}) ` : ""}Route: ${
         req.url
       } - ${error.message}`;
 

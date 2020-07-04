@@ -166,7 +166,6 @@ countyCommitteeSchema.virtual("current_term", {
   justOne: true
 });
 
-
 countyCommitteeSchema.virtual("upcoming_term", {
   ref: "term",
   localField: "upcoming_term_id",
