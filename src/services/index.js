@@ -36,7 +36,6 @@ module.exports = function() {
   };
   mongoose.connection.close();
   mongoose.connect(app.get("mongodb"), options);
-
   // app.configure(authentication);
 
   app.configure(user);

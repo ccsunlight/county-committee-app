@@ -2,6 +2,13 @@
 
 > App for ccsunlight.org
 
+## To do
+
+- feat: parser for district part mappings
+- fix: importer not returning CSV validation result message in admin
+- data: Add part to cc lists
+- refactor: to postgres
+
 ## About
 
 This project uses [Feathers](http://feathersjs.com). An open source web framework for building modern real-time applications.
