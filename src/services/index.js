@@ -21,6 +21,7 @@ const term = require("./term");
 const enrollment = require("./enrollment");
 const importList = require("./import-list");
 const boeElectionResults = require("./boe-election-results");
+const adPartMap = require("./ad-part-map");
 
 const mongoose = require("mongoose");
 
@@ -57,6 +58,7 @@ module.exports = function() {
   app.configure(importList);
   app.configure(address);
   app.configure(enrollment);
+  app.configure(adPartMap);
 
   //
   // Workaroud for disabling docs paths for admin entities.

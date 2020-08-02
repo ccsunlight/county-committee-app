@@ -13,19 +13,23 @@ const TermModel = require("../../../src/services/term/term-model");
 const MemberModel = require("../../../src/services/county-committee-member/county-committee-member-model");
 const CertifiedListModel = require("../../../src/services/certified-list/certified-list-model");
 
+const MOCK_CSV_FILE_PATH = path.join(
+  __dirname,
+  "./mocks/Manhattan Party Call Part Mapping.csv"
+);
+
 const cerfied_list_path = "/usr/src/app/test/mocks/CertifiedList.mock.pdf";
 const termMock = require("../../mocks/term.mock.json");
 const ccMock = require("../../mocks/county-committee.mock.json");
 const mongoose = require("mongoose");
 
-describe.only("ED AD Part Service Service", function() {
+describe("ED AD Part Service Service", function() {
   let TermService, CertifiedListService;
   let county_committee;
 
   const cleanupDBDocs = [];
   let ccService, ccMemberService;
   let mock_term, mock_county_committee, mock_county_committee_member;
-
   /**
    * Sets up the database
    */
@@ -54,8 +58,6 @@ describe.only("ED AD Part Service Service", function() {
         mock_county_committee = county_committee;
         cleanupDBDocs.push(mock_county_committee);
 
-        // Import a Manhattan CC
-
         term.save(async function(err) {
           mock_term = term;
           cleanupDBDocs.push(mock_term);
@@ -74,6 +76,7 @@ describe.only("ED AD Part Service Service", function() {
             const row = ccRows[x];
             const member = await ccMemberService.create({
               committee: mock_county_committee._id,
+              term_id: mock_term._id,
               party: row.party,
               petition_number: row.petition_number,
               office: row.office,
@@ -104,101 +107,48 @@ describe.only("ED AD Part Service Service", function() {
     console.log("Test records cleaned", cleanupDBDocs.length);
   });
 
-  it("can read an ED AD Part CSV", async () => {
-    const mockEDADPartMapCSV = fs.readFileSync(
-      path.join(__dirname, "./mocks/Manhattan Party Call Part Mapping.csv"),
-      "utf-8"
+  it("registered the import-list service", () => {
+    assert.ok(app.service(app.get("apiPath") + "/ad-part-map"));
+  });
+
+  it("can create an AD part map", async () => {
+    const ADPartMapService = app.service(app.get("apiPath") + "/ad-part-map");
+
+    const adPartMap = await ADPartMapService.create({
+      filepath: MOCK_CSV_FILE_PATH,
+      term_id: mock_term._id
+    });
+
+    cleanupDBDocs.push(adPartMap);
+
+    assert.equal(adPartMap.status, "Draft");
+    assert.ok(Array.isArray(adPartMap.partMappings));
+    assert.equal(adPartMap.partMappings.length, 1249);
+  });
+
+  it("can publish an AD part map", async () => {
+    const ADPartMapService = app.service(app.get("apiPath") + "/ad-part-map");
+
+    const adPartMap = await ADPartMapService.create({
+      filepath: MOCK_CSV_FILE_PATH,
+      term_id: mock_term._id
+    });
+
+    cleanupDBDocs.push(adPartMap);
+
+    const adPartMapUpdated = await ADPartMapService.patch(adPartMap._id, {
+      published: true
+    });
+
+    assert.equal(adPartMapUpdated.status, "Completed");
+
+    const failedMappings = adPartMapUpdated.partMappings.filter(
+      partMapping => partMapping.status === "Failed"
     );
 
-    const parsedEDADPartMapRowCSV = await parse(mockEDADPartMapCSV, {
-      columns: true,
-      skip_empty_lines: true
-    });
-
-    const EDADPartMap = parsedEDADPartMapRowCSV.map(row => {
-      const denormalizedEDs = row.ED.split(",")
-        .filter(elem => elem.length > 0) // Filters out trailing comma elements.
-        .map(edsForADPart => {
-          if (edsForADPart.indexOf("-") > -1) {
-            /**
-             * For values x-y.Splits them and then adds all the numbers
-             * in the range.
-             */
-            const edBounds = edsForADPart.split("-");
-            const edsInRange = [];
-            for (
-              let x = Number(edBounds[0].trim());
-              x <= Number(edBounds[1].trim());
-              x++
-            ) {
-              edsInRange.push(x);
-            }
-            return edsInRange;
-          } else {
-            return Number(edsForADPart.trim());
-          }
-        });
-
-      row.EDs = denormalizedEDs.reduce((accumulator, ed) => {
-        if (Array.isArray(ed)) {
-          accumulator.push(...ed);
-        } else {
-          accumulator.push(ed);
-        }
-        return accumulator;
-      }, []);
-
-      return row;
-    });
-
-    const reducedEDADPartMap = EDADPartMap.reduce((accumulator, partMap) => {
-      for (let x = 0; x < partMap.EDs.length; x++) {
-        accumulator.push({
-          assembly_district: Number(partMap.AD),
-          electoral_district: partMap.EDs[x],
-          part: partMap.PART
-        });
-      }
-      return accumulator;
-    }, []);
-
-    const failedUpdates = [];
-
-    for (let i = 0; i < reducedEDADPartMap.length; i++) {
-      const result = await MemberModel.update(
-        {
-          committee: mock_county_committee,
-          assembly_district: reducedEDADPartMap[i].assembly_district,
-          electoral_district: reducedEDADPartMap[i].electoral_district
-        },
-        { $set: { part: reducedEDADPartMap[i].part } },
-        { multi: true }
-      );
-      if (result.n === 0) {
-        failedUpdates.push(reducedEDADPartMap[i]);
-      }
-    }
-
-    const updatedMembersMissingParts = await MemberModel.find({
-      committee: mock_county_committee,
-      part: ""
-    });
-
-    const results = { unmappedEDs: failedUpdates, updatedMembersMissingParts };
-
-    // @todo
-    // - Test that no unmappedEDs match EDs with outparts
-    // - Figure out what to do with results that have individual failurs
-    // - Move this to service
-    // console.log(results);
-    assert.ok(results.unmappedEDs);
-    assert.ok(results.updatedMembersMissingParts);
-
-    // csv
-    //   .writeToPath(path.resolve(__dirname, "./mocks", "tmp.csv"), output)
-    //   .on("error", err => console.error(err))
-    //   .on("finish", () => {
-    //     done();
-    //   });
+    assert.equal(
+      failedMappings.length,
+      adPartMapUpdated.importResults.failedUpdates.length
+    );
   });
 });
