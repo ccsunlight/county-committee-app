@@ -21,7 +21,8 @@ const adPartMap = new Schema(
       ref: "term"
     },
     approved: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     status: {
       type: String,
@@ -29,7 +30,26 @@ const adPartMap = new Schema(
       default: "Draft"
     },
     importResults: {
-      type: Object
+      totalCount: {
+        type: Number,
+        default: 0
+      },
+      unmappedTermMembersCount: {
+        type: Number,
+        default: 0
+      },
+      failedCount: {
+        type: Number,
+        default: 0
+      },
+      pendingCount: {
+        type: Number,
+        default: 0
+      },
+      successCount: {
+        type: Number,
+        default: 0
+      }
     },
     partMappings: [
       {

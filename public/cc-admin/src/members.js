@@ -64,6 +64,16 @@ export const MemberEdit = props => (
       <TextInput source="entry_type" />
       <TextInput source="electoral_district" />
       <TextInput source="assembly_district" />
+      <SelectInput
+        source="part"
+        choices={[
+          { id: "", name: "None" },
+          { id: "A", name: "A" },
+          { id: "B", name: "B" },
+          { id: "C", name: "C" },
+          { id: "D", name: "D" }
+        ]}
+      />
     </SimpleForm>
   </Edit>
 );
@@ -75,6 +85,16 @@ export const MemberCreate = props => (
       <TextInput source="entry_type" />
       <TextInput source="electoral_district" />
       <TextInput source="assembly_district" />
+      <SelectInput
+        source="part"
+        choices={[
+          { id: "", name: "None" },
+          { id: "A", name: "A" },
+          { id: "B", name: "B" },
+          { id: "C", name: "C" },
+          { id: "D", name: "D" }
+        ]}
+      />
     </SimpleForm>
   </Create>
 );

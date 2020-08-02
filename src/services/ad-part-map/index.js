@@ -9,9 +9,11 @@ const fs = require("fs");
 const path = require("path");
 const parse = require("csv-parse/lib/sync");
 
+const SERVICE_SLUG = "ad-part-map";
+
 class Service extends FeathersMongoose.Service {
-  async create(data, params) {
-    const { filepath, term_id } = data;
+  async create(params) {
+    const { filepath, term_id } = params;
 
     if (!fs.existsSync(filepath)) {
       throw new Error(`File does not exist: ${filepath}`);
@@ -81,18 +83,25 @@ class Service extends FeathersMongoose.Service {
 
     return adPartMap;
   }
+  async update(id, data, params) {
+    return this.patch(id, data, params);
+  }
 
   async patch(id, data, params) {
     const failedUpdates = [];
 
     const { approved } = data;
 
-    if (approved === true) {
-      throw Error(`Invalid status update: ${status}`);
+    if (approved !== true) {
+      throw Error(`Invalid status update: approved ${approved}`);
     }
 
     const adPartMap = await ADPartMapModel.findOne({ _id: id });
     const { partMappings } = adPartMap;
+
+    let successCount = 0,
+      failedCount = 0,
+      totalCount = partMappings.length;
 
     for (let i = 0; i < partMappings.length; i++) {
       // Goes through each part mapping and updates appropriate
@@ -109,19 +118,29 @@ class Service extends FeathersMongoose.Service {
       if (result.n === 0) {
         failedUpdates.push(partMappings[i]);
         partMappings[i].status = "Failed";
+        failedCount++;
       } else {
         partMappings[i].status = "Success";
+        successCount++;
       }
     }
 
-    const unmappedEDs = await MemberModel.find({
+    const unmappedTermMembersCount = await MemberModel.find({
       term_id: adPartMap.term_id,
       part: ""
-    });
+    }).count();
 
-    adPartMap.importResults = { failedUpdates, unmappedEDs };
+    adPartMap.importResults = {
+      pendingCount: totalCount - failedCount - successCount,
+      failedCount,
+      successCount,
+      totalCount,
+      unmappedTermMembersCount
+    };
     adPartMap.partMappings = [...partMappings];
     adPartMap.status = "Completed";
+    adPartMap.approved = true;
+
     await adPartMap.save();
 
     return adPartMap;
@@ -142,7 +161,7 @@ module.exports = function() {
 
   const service = new Service(options);
   // Initialize our service with any options it requires
-  app.use(app.get("apiPath") + "/ad-part-map", service, function updateData(
+  app.use(app.get("apiPath") + "/" + SERVICE_SLUG, service, function updateData(
     req,
     res,
     next
@@ -169,10 +188,10 @@ module.exports = function() {
   });
 
   // Get our initialize service to that we can bind hooks
-  const termService = app.service(app.get("apiPath") + "/term");
+  const adPartMapService = app.service(app.get("apiPath") + "/" + SERVICE_SLUG);
   // Set up our before hooks
-  termService.before(hooks.before);
+  adPartMapService.before(hooks.before);
 
   // Set up our after hooks
-  termService.after(hooks.after);
+  adPartMapService.after(hooks.after);
 };

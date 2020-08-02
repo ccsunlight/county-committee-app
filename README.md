@@ -2,10 +2,14 @@
 
 > App for ccsunlight.org
 
+## Changelog
+
+- feat: parser for district part mappings
+
 ## To do
 
-- todo: CSV file not found when uploaded to part map service
-- feat: parser for district part mappings
+- feat: User can see what part their ED is.
+- bug: Part mapping can be applied if already approved
 - fix: importer not returning CSV validation result message in admin
 - data: Add part to cc lists
 - refactor: to postgres

@@ -6,9 +6,6 @@
  * @return {Object} The modified hook context
  */
 module.exports = function saveJSONDataToCSV(context) {
-  console.log("HAS OWN PROP", context.data.hasOwnProperty("file_data"));
-
-  console.log("HAS OWN PROP", context.data);
   if (context.data.hasOwnProperty("file_data")) {
     let csvBase64DataObject = context.data.file_data.pop();
     if (csvBase64DataObject) {

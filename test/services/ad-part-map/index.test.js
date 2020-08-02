@@ -24,6 +24,7 @@ const ccMock = require("../../mocks/county-committee.mock.json");
 const mongoose = require("mongoose");
 
 describe("ED AD Part Service Service", function() {
+  this.timeout(10000);
   let TermService, CertifiedListService;
   let county_committee;
 
@@ -137,7 +138,7 @@ describe("ED AD Part Service Service", function() {
     cleanupDBDocs.push(adPartMap);
 
     const adPartMapUpdated = await ADPartMapService.patch(adPartMap._id, {
-      published: true
+      approved: true
     });
 
     assert.equal(adPartMapUpdated.status, "Completed");
@@ -146,9 +147,32 @@ describe("ED AD Part Service Service", function() {
       partMapping => partMapping.status === "Failed"
     );
 
+    const successMappings = adPartMapUpdated.partMappings.filter(
+      partMapping => partMapping.status === "Success"
+    );
+
+    const pendingMappings = adPartMapUpdated.partMappings.filter(
+      partMapping => partMapping.status === "Pending"
+    );
+
     assert.equal(
       failedMappings.length,
-      adPartMapUpdated.importResults.failedUpdates.length
+      adPartMapUpdated.importResults.failedCount
+    );
+
+    assert.equal(
+      successMappings.length,
+      adPartMapUpdated.importResults.successCount
+    );
+
+    assert.equal(
+      successMappings.length + pendingMappings.length + failedMappings.length,
+      adPartMapUpdated.importResults.totalCount
+    );
+
+    assert.equal(
+      pendingMappings.length,
+      adPartMapUpdated.importResults.pendingCount
     );
   });
 });

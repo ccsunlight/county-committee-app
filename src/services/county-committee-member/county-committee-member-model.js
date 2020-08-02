@@ -34,7 +34,7 @@ const countyCommitteeMemberSchema = new Schema(
     },
     part: {
       type: String,
-      part: ["A", "B", "C", "D"],
+      part: ["", "A", "B", "C", "D"],
       default: "",
       required: false
     },

@@ -14,9 +14,10 @@ import {
   SimpleForm,
   FunctionField,
   FileInput,
-  FileField
+  FileField,
+  BooleanInput
 } from "admin-on-rest";
-import { ExportCSVButton } from "./ExportCSVButton";
+import { Card, CardHeader } from "material-ui/Card";
 import moment from "moment";
 /**
  * @deprecated
@@ -46,20 +47,45 @@ export const ADPartMapList = props => (
   </List>
 );
 
+const InfoCard = ({ title, subtitle }) => (
+  <Card>
+    <CardHeader title={title} subtitle={subtitle} />
+    {/* <CardActions style={{ textAlign: "right" }}>
+      <FlatButton
+        label={translate("pos.dashboard.welcome.aor_button")}
+        icon={<HomeIcon />}
+        href="https://marmelab.com/admin-on-rest/"
+      />
+      <FlatButton
+        label={translate("pos.dashboard.welcome.demo_button")}
+        icon={<CodeIcon />}
+        href="https://github.com/marmelab/admin-on-rest-demo"
+      />
+    </CardActions> */}
+  </Card>
+);
+
 export const PartMappingsList = ({ record, props }) => {
   let data = {};
 
-  const ids = record.positions
-    ? record.positions.slice(0, 50).map(position => {
-        data[position._id] = position;
-        return position._id;
-      })
+  const ids = record.partMappings
+    ? record.partMappings
+        .filter(
+          partMapping =>
+            partMapping.status === "Failed" || partMapping.status === "Pending"
+        )
+        .slice(0, 50)
+        .map(partMapping => {
+          data[partMapping._id] = partMapping;
+          return partMapping._id;
+        })
     : [];
   if (ids.length > 0) {
     return (
       <Datagrid ids={ids} data={data} currentSort={{ _id: "ASC" }}>
         <TextField source="_id" />
         <TextField source="status" />
+        <TextField source="part" />
         <TextField source="assembly_district" />
         <TextField source="electoral_district" />
       </Datagrid>
@@ -75,10 +101,10 @@ export const PartMappingsList = ({ record, props }) => {
 
 export const ADPartMapEdit = props => {
   return (
-    <Edit title={"Import list members"} {...props}>
+    <Edit title={"AD Part Mappings"} {...props}>
       <SimpleForm>
         <DisabledInput label="Id" source="id" />
-        <ExportCSVButton props={props} />
+        <BooleanInput source="approved" label="Approved" />
         <ReferenceInput
           label="Committee Term"
           source="term_id"
@@ -99,6 +125,15 @@ export const ADPartMapEdit = props => {
             }
           />
         </ReferenceInput>
+        <InfoCard title={"Part Mappings"} subtitle={"The imported mappings"} />
+        <TextField source="importResults.successCount" label="Success Count" />
+        <TextField source="importResults.failedCount" label="Failed Count" />
+        <TextField source="importResults.pendingCount" label="Pending Count" />
+        <TextField source="importResults.totalCount" label="Total Count" />
+        <TextField
+          source="importResults.unmappedTermMembersCount"
+          label="Remaing Unmapped Members Count"
+        />
         <PartMappingsList props={props} />
       </SimpleForm>
     </Edit>

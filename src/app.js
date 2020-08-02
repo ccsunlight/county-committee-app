@@ -221,6 +221,12 @@ app.service(apiPath + "/import-list").hooks({
   }
 });
 
+app.service(apiPath + "/ad-part-map").hooks({
+  before: {
+    all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
+  }
+});
+
 app.service(apiPath + "/certified-list").hooks({
   before: {
     all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
