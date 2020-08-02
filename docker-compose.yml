@@ -25,7 +25,7 @@ services: # configuring each container
       - "27017:27017"
     volumes: # data to map to the container.
       - "cc-db:/data/db"
-    command: mongod --auth
+    command: mongod
     
 volumes:
   cc-db:

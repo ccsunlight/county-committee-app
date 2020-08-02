@@ -4,6 +4,7 @@
 
 ## To do
 
+- todo: CSV file not found when uploaded to part map service
 - feat: parser for district part mappings
 - fix: importer not returning CSV validation result message in admin
 - data: Add part to cc lists

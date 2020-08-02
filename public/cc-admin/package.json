@@ -30,7 +30,7 @@
   "devDependencies": {
     "react-scripts": "^1.0.7"
   },
-  "proxy": "http://localhost:4000",
+  "proxy": "http://host.docker.internal:4000",
   "browserslist": [
     ">0.2%"
   ],
