@@ -220,6 +220,7 @@ router.get("/get_address", function(req, res, next) {
                 return {
                   co: singleEdCoords,
                   ed: doc.ed,
+                  part: doc.part,
                   ns: numOfSeats,
                   nf: numOfFilledSeats,
                   party: party

@@ -13,7 +13,6 @@ const countyCommitteeMemberSchema = new Schema(
     petition_number: {
       type: Number
     },
-
     office: {
       type: String,
       required: true
@@ -44,7 +43,8 @@ const countyCommitteeMemberSchema = new Schema(
     },
     sex: {
       type: String,
-      enum: ["Male", "Female", "Undefined"]
+      enum: ["Male", "Female", "Undefined"],
+      default: null
     },
     electoral_district: {
       type: Number,

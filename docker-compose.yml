@@ -20,7 +20,7 @@ services: # configuring each container
     depends_on:
       - cc-mongo
   cc-mongo: 
-    image: mongo:3.6 # which image to pull, in this case latest
+    image: mongo:3.6
     ports:
       - "27017:27017"
     volumes: # data to map to the container.

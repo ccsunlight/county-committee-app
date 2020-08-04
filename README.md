@@ -5,10 +5,11 @@
 ## Changelog
 
 - feat: parser for district part mappings
+- feat: User can see what part their ED is.
 
 ## To do
 
-- feat: User can see what part their ED is.
+- bug: cc member cannont save. sex: `null` is not a valid enum value for path `sex`.
 - bug: Part mapping can be applied if already approved
 - fix: importer not returning CSV validation result message in admin
 - data: Add part to cc lists

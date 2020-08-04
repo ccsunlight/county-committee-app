@@ -66,6 +66,7 @@ hbs.registerHelper("map_members", function(members) {
     return {
       ad: member.assembly_district,
       ed: member.electoral_district,
+      part: member.part,
       office: member.office,
       entry_type: member.entry_type,
       office_holder: member.office_holder,
