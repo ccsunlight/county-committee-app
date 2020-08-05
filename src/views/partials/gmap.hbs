@@ -13,71 +13,77 @@
 
 	function initGoogleMap() {
 		map = new google.maps.Map(document.getElementById('map'), {
-			center: { lat: {{lat}}, lng: {{long}} },
+			center: {
+				lat: {{ lat }},
+				lng: {{ long }} 
+			},
 			zoom: 13,
 			scrollwheel: false
 		});
 
-		infoWindow = new google.maps.InfoWindow;
+	infoWindow = new google.maps.InfoWindow;
 
-		new google.maps.Marker({
-			position: { lat: {{lat}}, lng: {{long}} },
-			map: map
+	new google.maps.Marker({
+		position: { lat: {{ lat }}, lng: {{ long }} },
+		map: map
 		});
 
-		// need to use this because the scope is screwy
-		var makePolygon = function(paths, color, contentString) {
-			new google.maps.Polygon({
-				paths: paths,
-				strokeColor: 333333,
-				strokeOpacity: 0.9,
-				strokeWeight: 1,
-				fillColor: color,
-				fillOpacity: 0.8,
-				map: map
-			})
-			.addListener('click', function(event) {
+	// need to use this because the scope is screwy
+	var makePolygon = function (paths, color, contentString) {
+		new google.maps.Polygon({
+			paths: paths,
+			strokeColor: 333333,
+			strokeOpacity: 0.9,
+			strokeWeight: 1,
+			fillColor: color,
+			fillOpacity: 0.8,
+			map: map
+		})
+			.addListener('click', function (event) {
 				infoWindow.setContent(contentString);
 				infoWindow.setPosition(event.latLng);
 
 				infoWindow.open(map);
 			});
-		};
+	};
 
-		var cleanedAllGeomDocsInAd = {{{cleanedAllGeomDocsInAd}}};
-		var filledColor = (party === 'Democratic') ? '#1874CD' : '#ff0000';
-		var partiallyFilledColor = (party === 'Democratic') ? '#cae1ff' : '#ff8080';
-		var vacantColor = '#efefef';
-		var nodataColor = '#40b69a';
-		_.forEach(cleanedAllGeomDocsInAd, function(doc) {
-			var coordinates = doc.co;
-			var ed = doc.ed;
-			var numOfSeats = doc.ns;
-			var numOfFilledSeats = doc.nf;
+	var cleanedAllGeomDocsInAd = {{{ cleanedAllGeomDocsInAd }}};
+	var filledColor = (party === 'Democratic') ? '#1874CD' : '#ff0000';
+	var partiallyFilledColor = (party === 'Democratic') ? '#cae1ff' : '#ff8080';
+	var vacantColor = '#efefef';
+	var nodataColor = '#40b69a';
+	_.forEach(cleanedAllGeomDocsInAd, function (doc) {
+		var coordinates = doc.co;
+		var ed = doc.ed;
+		var ad = doc.ad;
+		var numOfSeats = doc.ns;
+		var numOfFilledSeats = doc.nf;
+		var part = doc.part ? doc.part : 'Part Z';
 
-			var infoStringStart = 'Election District: ' + ed + '<br />';
-			var infoString, color;
+		var infoStringStart = 'Election District: ' + ed + '<br/>Assembly Distrcit: ' + ad + ' ' + part + '<br /> ';
 
-			if (numOfSeats === 0) {
-				infoString = infoStringStart + 'This district is newly created after the last election.';
-				color = nodataColor;
+		var infoString, color;
+
+		if (numOfSeats === 0) {
+			infoString = infoStringStart + 'This district is newly created after the last election.';
+			color = nodataColor;
+		}
+		else {
+
+			if (numOfFilledSeats == numOfSeats) {
+				color = filledColor;
+			} else if (numOfFilledSeats > 0 && numOfFilledSeats < numOfSeats) {
+				color = partiallyFilledColor;
+			} else {
+				color = vacantColor;
 			}
-			else {
 
-				if (numOfFilledSeats == numOfSeats) {
-					color = filledColor;
-				} else if (numOfFilledSeats > 0 && numOfFilledSeats < numOfSeats) {
-					color = partiallyFilledColor;
-				} else {
-					color = vacantColor;
-				}
-
-				infoString = infoStringStart + 'Filled seats: ' + numOfFilledSeats + '<br />Vacant seats:' + (numOfSeats - numOfFilledSeats);
-			}
+			infoString = infoStringStart + 'Filled seats: ' + numOfFilledSeats + '<br />Vacant seats:' + (numOfSeats - numOfFilledSeats);
+		}
 
 
-			makePolygon(doc.co, color, infoString);
-		});
+		makePolygon(doc.co, color, infoString);
+	});
 
 	}
 </script>
