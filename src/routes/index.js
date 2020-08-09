@@ -193,9 +193,9 @@ router.get("/get_address", function(req, res, next) {
 
             const cleanedAllGeomDocsInAd = yield bb.map(
               allGeomDocsInAd,
-              co(function*(doc) {
+              co(function*(edGeoDoc) {
                 const singleEdCoords = yield bb.map(
-                  doc.geometry.coordinates[0][0],
+                  edGeoDoc.geometry.coordinates[0][0],
                   oneCoord => {
                     return {
                       lat: oneCoord[1],
@@ -206,10 +206,17 @@ router.get("/get_address", function(req, res, next) {
 
                 // For map seats.
                 const memberDocs = yield countyCommitteeMember.find({
-                  assembly_district: doc.ad,
-                  electoral_district: doc.ed,
+                  assembly_district: edGeoDoc.ad,
+                  electoral_district: edGeoDoc.ed,
                   term_id: addressDistrictData.term._id
                 });
+
+                let part;
+
+                if (memberDocs.length > 0) {
+                  part = memberDocs[0].part;
+                }
+
                 const filledDocs = _.filter(
                   memberDocs,
                   x => x.office_holder !== "Vacancy"
@@ -219,8 +226,9 @@ router.get("/get_address", function(req, res, next) {
 
                 return {
                   co: singleEdCoords,
-                  ed: doc.ed,
-                  part: doc.part,
+                  ed: edGeoDoc.ed,
+                  ad: edGeoDoc.ad,
+                  part: part,
                   ns: numOfSeats,
                   nf: numOfFilledSeats,
                   party: party
