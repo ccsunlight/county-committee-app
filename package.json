@@ -26,8 +26,8 @@
     "migrate": "bash ./init-migration.sh",
     "install-pdf-lib": "apt-get -y update && apt-get -y install poppler-utils",
     "cert": "node cert/gene rate-cert.js",
-    "test:watch": "nodemon  --inspect=0.0.0.0 --exec 'mocha --recursive --bail test/services/enrollment/*.test.js'",
-    "test": "mocha  --inspect=0.0.0.0 --recursive --exit --bail test/services/**/*.test.js",
+    "test:watch": "nodemon --exec 'mocha --recursive --bail test/**/*.test.js'",
+    "test": "mocha --inspect=0.0.0.0 --recursive --exit --bail test/services/**/*.test.js",
     "precommit": "lint-staged",
     "format": "prettier",
     "jshint": "jshint src/. test/. --config",
@@ -53,6 +53,7 @@
     "not op_mini all"
   ],
   "dependencies": {
+    "@fast-csv/format": "^4.3.1",
     "@feathers-plus/cache": "^1.4.0",
     "@feathersjs/authentication-oauth2": "^1.0.3",
     "@turf/unkink-polygon": "^5.1.5",

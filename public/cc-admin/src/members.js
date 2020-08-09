@@ -60,10 +60,67 @@ export const MemberEdit = props => (
   <Edit title={<MemberTitle />} {...props}>
     <SimpleForm>
       <DisabledInput label="Id" source="id" />
+      <TextInput source="office" />
       <TextInput source="office_holder" />
+      <TextInput source="data_source" />
       <TextInput source="entry_type" />
       <TextInput source="electoral_district" />
       <TextInput source="assembly_district" />
+      <SelectInput
+        source="part"
+        choices={[
+          { id: "", name: "" },
+          { id: "A", name: "A" },
+          { id: "B", name: "B" },
+          { id: "C", name: "C" },
+          { id: "D", name: "D" }
+        ]}
+      />
+      <SelectInput
+        source="sex"
+        choices={[
+          { id: "", name: "" },
+          { id: "Male", name: "Male" },
+          { id: "Female", name: "Female" }
+        ]}
+      />
+      <TextInput source="state" />
+      <TextInput source="county" />
+      <TextInput source="address" />
+      <ReferenceInput
+        label="Committee"
+        source="committee"
+        reference="county-committee"
+        perPage={100}
+      >
+        <SelectInput
+          optionText={
+            <FunctionField
+              label="Committees"
+              render={committee => `${committee.county} + ${committee.party}`}
+            />
+          }
+        />
+      </ReferenceInput>
+      <ReferenceInput
+        label="Term"
+        source="term_id"
+        reference="term"
+        perPage={100}
+      >
+        <SelectInput
+          optionText={
+            <FunctionField
+              label="Terms"
+              render={term =>
+                `${term.committee.county} + ${term.committee.party} ${moment(
+                  term.start_date
+                ).format("ll")} to ${moment(term.end_date).format("ll")}`
+              }
+            />
+          }
+        />
+      </ReferenceInput>
     </SimpleForm>
   </Edit>
 );
@@ -71,10 +128,68 @@ export const MemberEdit = props => (
 export const MemberCreate = props => (
   <Create {...props}>
     <SimpleForm>
+      <DisabledInput label="Id" source="id" />
+      <TextInput source="office" />
       <TextInput source="office_holder" />
+      <TextInput source="data_source" />
       <TextInput source="entry_type" />
       <TextInput source="electoral_district" />
       <TextInput source="assembly_district" />
+      <SelectInput
+        source="part"
+        choices={[
+          { id: "", name: "" },
+          { id: "A", name: "A" },
+          { id: "B", name: "B" },
+          { id: "C", name: "C" },
+          { id: "D", name: "D" }
+        ]}
+      />
+      <SelectInput
+        source="sex"
+        choices={[
+          { id: "", name: "" },
+          { id: "Male", name: "Male" },
+          { id: "Female", name: "Female" }
+        ]}
+      />
+      <TextInput source="state" />
+      <TextInput source="county" />
+      <TextInput source="address" />
+      <ReferenceInput
+        label="Committee"
+        source="committee"
+        reference="county-committee"
+        perPage={100}
+      >
+        <SelectInput
+          optionText={
+            <FunctionField
+              label="Committees"
+              render={committee => `${committee.county} + ${committee.party}`}
+            />
+          }
+        />
+      </ReferenceInput>
+      <ReferenceInput
+        label="Term"
+        source="term_id"
+        reference="term"
+        perPage={100}
+      >
+        <SelectInput
+          optionText={
+            <FunctionField
+              label="Terms"
+              render={term =>
+                `${term.committee.county} + ${term.committee.party} ${moment(
+                  term.start_date
+                ).format("ll")} to ${moment(term.end_date).format("ll")}`
+              }
+            />
+          }
+        />
+      </ReferenceInput>
     </SimpleForm>
   </Create>
 );

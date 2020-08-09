@@ -5,21 +5,14 @@ import {
   Edit,
   Create,
   Datagrid,
-  ReferenceField,
   TextField,
-  DateInput,
-  DateField,
   EditButton,
   DisabledInput,
-  ReferenceInput,
-  SelectInput,
   SimpleForm,
-  FunctionField,
   FileInput,
   FileField
 } from "admin-on-rest";
-import { ExportCSVButton } from "./ExportCSVButton";
-import moment from "moment";
+
 /**
  * @deprecated
  * @param {@} props

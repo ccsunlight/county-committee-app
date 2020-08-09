@@ -13,7 +13,6 @@ const countyCommitteeMemberSchema = new Schema(
     petition_number: {
       type: Number
     },
-
     office: {
       type: String,
       required: true
@@ -34,8 +33,8 @@ const countyCommitteeMemberSchema = new Schema(
     },
     part: {
       type: String,
-      part: ["A", "B", "C", "D"],
-      default: "",
+      part: [null, "A", "B", "C", "D"],
+      default: null,
       required: false
     },
     ed_ad: {
@@ -44,7 +43,8 @@ const countyCommitteeMemberSchema = new Schema(
     },
     sex: {
       type: String,
-      enum: ["Male", "Female", "Undefined"]
+      enum: ["Male", "Female", null],
+      default: null
     },
     electoral_district: {
       type: Number,
@@ -120,7 +120,7 @@ const countyCommitteeMemberSchema = new Schema(
     },
     data_source: {
       type: String,
-      required: true
+      required: false
     },
     import_list_id: {
       type: Schema.Types.ObjectId,

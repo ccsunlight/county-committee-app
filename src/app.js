@@ -66,6 +66,7 @@ hbs.registerHelper("map_members", function(members) {
     return {
       ad: member.assembly_district,
       ed: member.electoral_district,
+      part: member.part,
       office: member.office,
       entry_type: member.entry_type,
       office_holder: member.office_holder,
@@ -216,6 +217,12 @@ app.service(apiPath + "/county-committee-member").hooks({
 });
 
 app.service(apiPath + "/import-list").hooks({
+  before: {
+    all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
+  }
+});
+
+app.service(apiPath + "/ad-part-map").hooks({
   before: {
     all: [local.hooks.hashPassword(), auth.hooks.authenticate("jwt")]
   }

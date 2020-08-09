@@ -2,6 +2,19 @@
 
 > App for ccsunlight.org
 
+## Changelog
+
+- feat: parser for district part mappings
+- feat: User can see what part their ED is.
+- fix: cc member cannont save. sex: `null` is not a valid enum value for path `sex`.
+- data: Add part to cc lists
+
+## To do
+
+- bug: Part mapping can be applied if already approved
+- fix: importer not returning CSV validation result message in admin
+- refactor: to postgres
+
 ## About
 
 This project uses [Feathers](http://feathersjs.com). An open source web framework for building modern real-time applications.

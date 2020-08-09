@@ -112,6 +112,7 @@ class Service {
 
       let county = "",
         term,
+        part,
         partyPositionsToBeFilled,
         enrollment;
 
@@ -120,6 +121,9 @@ class Service {
         co(function*(member) {
           if (!county) {
             county = member.county;
+          }
+          if (!part) {
+            part = member.part;
           }
           if (!term) {
             term = yield Term.findOne({
@@ -197,6 +201,7 @@ class Service {
         long: long,
         ad: ad,
         ed: ed,
+        part: part,
         county: county,
         members: memberData,
         partyPositionsToBeFilled: partyPositionsToBeFilled || [],
