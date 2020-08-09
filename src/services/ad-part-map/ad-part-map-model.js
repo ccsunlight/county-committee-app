@@ -1,21 +1,11 @@
 "use strict";
 
-// term-model.js - A mongoose model
-//
-// See http://mongoosejs.com/docs/models.html
-// for more of what you can do here.
-
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-
-// term_id: mock_term._id,
-// assembly_district: reducedEDADPartMap[i].assembly_district,
-// electoral_district: reducedEDADPartMap[i].electoral_district
 
 const adPartMap = new Schema(
   {
     source: { type: String, required: true },
-    // committee_id: { type: "ObjectId", ref: "CountyCommittee", required: true },
     term_id: {
       type: "ObjectId",
       ref: "term"

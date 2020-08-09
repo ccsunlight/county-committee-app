@@ -9,11 +9,7 @@ const converter = require("json-2-csv");
 const saveJSONDataToCSV = require("../../../utils/saveJSONDataToCSV");
 
 exports.before = {
-  all: [
-    // auth.verifyToken(),
-    // auth.populateUser(),
-    // auth.restrictToAuthenticated()
-  ],
+  all: [],
   find: [],
   get: [],
   create: [saveJSONDataToCSV],
