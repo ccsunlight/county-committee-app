@@ -4,6 +4,13 @@
 	}
 </style>
 
+<p>
+	Different colors represent different "parts". A part is a subdivided group of EDs in an AD labeled A,B,C or D. EDs with a lighter opacity indicate vacant seats present. 
+</p>
+<p>
+	Whether a county committee has parts, and what EDs belong to which parts are determined by the executive committee of each CC before each term election.  
+</p>
+
 <div id="map" class="mdl-card mdl-cell mdl-cell--12-col"></div>
 
 <script>
@@ -13,71 +20,96 @@
 
 	function initGoogleMap() {
 		map = new google.maps.Map(document.getElementById('map'), {
-			center: { lat: {{lat}}, lng: {{long}} },
+			center: {
+				lat: {{ lat }},
+				lng: {{ long }} 
+			},
 			zoom: 13,
 			scrollwheel: false
 		});
 
-		infoWindow = new google.maps.InfoWindow;
+	infoWindow = new google.maps.InfoWindow;
 
-		new google.maps.Marker({
-			position: { lat: {{lat}}, lng: {{long}} },
-			map: map
+	new google.maps.Marker({
+		position: { lat: {{ lat }}, lng: {{ long }} },
+		map: map
 		});
 
-		// need to use this because the scope is screwy
-		var makePolygon = function(paths, color, contentString) {
-			new google.maps.Polygon({
-				paths: paths,
-				strokeColor: 333333,
-				strokeOpacity: 0.9,
-				strokeWeight: 1,
-				fillColor: color,
-				fillOpacity: 0.8,
-				map: map
-			})
-			.addListener('click', function(event) {
+	// need to use this because the scope is screwy
+	var makePolygon = function (paths, color, contentString, fillOpacity = 0.8) {
+		new google.maps.Polygon({
+			paths: paths,
+			strokeColor: 333333,
+			strokeOpacity: 0.9,
+			strokeWeight: 1,
+			fillColor: color,
+			fillOpacity,
+			map: map
+		})
+			.addListener('click', function (event) {
 				infoWindow.setContent(contentString);
 				infoWindow.setPosition(event.latLng);
 
 				infoWindow.open(map);
 			});
-		};
+	};
 
-		var cleanedAllGeomDocsInAd = {{{cleanedAllGeomDocsInAd}}};
-		var filledColor = (party === 'Democratic') ? '#1874CD' : '#ff0000';
-		var partiallyFilledColor = (party === 'Democratic') ? '#cae1ff' : '#ff8080';
-		var vacantColor = '#efefef';
-		var nodataColor = '#40b69a';
-		_.forEach(cleanedAllGeomDocsInAd, function(doc) {
-			var coordinates = doc.co;
-			var ed = doc.ed;
-			var numOfSeats = doc.ns;
-			var numOfFilledSeats = doc.nf;
+	var cleanedAllGeomDocsInAd = {{{ cleanedAllGeomDocsInAd }}};
+	
+	const democraticPartColorScheme = {
+		"A": "#277da1", 
+		"B": "#003459", 
+		"C": "#83e377", 
+		"D": "#00a8e8"
+	};
 
-			var infoStringStart = 'Election District: ' + ed + '<br />';
-			var infoString, color;
+	const republicanPartColorScheme = {
+		"A": "#6a040f", 
+		"B": "#9d0208", 
+		"C": "#dc2f02", 
+		"D": "#d00000"
+	};
 
-			if (numOfSeats === 0) {
-				infoString = infoStringStart + 'This district is newly created after the last election.';
-				color = nodataColor;
+	const partColorScheme = party === 'Republican' ? republicanPartColorScheme : democraticPartColorScheme
+
+	var nodataColor = '#e9ff70';
+	_.forEach(cleanedAllGeomDocsInAd, function (doc) {
+		var coordinates = doc.co;
+		var ed = doc.ed;
+		var ad = doc.ad;
+		var numOfSeats = doc.ns;
+		var numOfFilledSeats = doc.nf;
+		let fillOpacity = 0.8;
+		var part = doc.part ? doc.part : '';
+
+		var infoStringStart = 'Election District: ' + ed + '<br/>Assembly Distrcit: ' + ad + ' ' + part + '<br /> ';
+
+		let infoString, color;
+
+		// Set color to the right part scheme otherwise default to 
+		// whatever is the A scheme
+		color = partColorScheme[doc.part ? doc.part : 'A'];
+
+		if (numOfSeats === 0) {
+			infoString = infoStringStart + 'This district has no data which could indicate it is newly created for the upcoming election.';
+			color = nodataColor;
+		}
+		else {
+
+			if (numOfFilledSeats == numOfSeats) {
+				fillOpacity = 1;
+			} else if (numOfFilledSeats > 0 && numOfFilledSeats < numOfSeats) {
+				fillOpacity = .8;
+			} else {
+				fillOpacity = .25;
 			}
-			else {
 
-				if (numOfFilledSeats == numOfSeats) {
-					color = filledColor;
-				} else if (numOfFilledSeats > 0 && numOfFilledSeats < numOfSeats) {
-					color = partiallyFilledColor;
-				} else {
-					color = vacantColor;
-				}
-
-				infoString = infoStringStart + 'Filled seats: ' + numOfFilledSeats + '<br />Vacant seats:' + (numOfSeats - numOfFilledSeats);
-			}
+			infoString = infoStringStart + 'Filled seats: ' + numOfFilledSeats + '<br />Vacant seats:' + (numOfSeats - numOfFilledSeats);
+		}
 
 
-			makePolygon(doc.co, color, infoString);
-		});
+		makePolygon(doc.co, color, infoString, fillOpacity);
+	});
 
 	}
 </script>

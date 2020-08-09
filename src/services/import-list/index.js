@@ -146,8 +146,6 @@ class Service extends FeathersMongoose.Service {
   }
 
   extractDataFromCSV(filepath) {
-    const rs = fs.createReadStream(filepath);
-
     const rows = parse(fs.readFileSync(filepath, { encoding: "utf-8" }), {
       columns: true,
       skip_empty_lines: true

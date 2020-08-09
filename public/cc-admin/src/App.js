@@ -74,6 +74,8 @@ import { InviteList, InviteCreate } from "./invites";
 
 import Menu from "./Menu";
 
+import { ADPartMapList, ADPartMapCreate, ADPartMapEdit } from "./ad-part-maps";
+
 // import authClient from './authClient';
 
 const authClientOptions = {
@@ -172,6 +174,16 @@ const App = () => (
       list={PartyCallList}
       edit={PartyCallEdit}
       create={PartyCallCreate}
+      remove={Delete}
+    />
+
+    <Resource
+      name="ad-part-map"
+      options={{ label: "AD Part Map" }}
+      icon={ActionLogIcon}
+      list={ADPartMapList}
+      create={ADPartMapCreate}
+      edit={ADPartMapEdit}
       remove={Delete}
     />
 
