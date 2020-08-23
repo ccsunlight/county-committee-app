@@ -96,6 +96,7 @@
     "file-api": "^0.10.4",
     "filereader": "^0.10.3",
     "generate-password": "^1.4.2",
+    "got": "^11.5.2",
     "greenlock-express": "^2.0.11",
     "handlebars-dateformat": "^1.1.1",
     "handlebars-paginate": "^0.1.0",
