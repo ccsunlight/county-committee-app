@@ -13,6 +13,7 @@ const metascraper = require("metascraper")([
   require("metascraper-url")()
 ]);
 const request = require("request-promise");
+const got = require("got");
 
 exports.before = {
   all: [],
@@ -20,19 +21,11 @@ exports.before = {
   get: [],
   create: [
     function(hook) {
-      return new Promise(function(fulfill, reject) {
-        request(hook.data.url).then(html => {
-          metascraper({ url: hook.data.url, html })
+      return new Promise(async function(resolve, reject) {
+        try {
+          const response = await got(hook.data.url);
+          metascraper({ url: hook.data.url, html: response.body })
             .then(function(metadata) {
-              // {
-              //   "author": "Ellen Huet",
-              //   "date": "2016-05-24T18:00:03.894Z",
-              //   "description": "The HR startups go to war.",
-              //   "image": "https://assets.bwbx.io/images/users/iqjWHBFdfxIU/ioh_yWEn8gHo/v1/-1x-1.jpg",
-              //   "publisher": "Bloomberg.com",
-              //   "title": "As Zenefits Stumbles, Gusto Goes Head-On by Selling Insurance"
-              // }
-
               if (metadata.title) {
                 hook.data.title = metadata.title;
               }
@@ -52,14 +45,14 @@ exports.before = {
               if (metadata.date) {
                 hook.data.published_on = metadata.date;
               }
-
-              fulfill(hook);
+              resolve(hook);
             })
             .catch(e => {
-              console.log(e);
-              reject(hook);
+              resolve(hook);
             });
-        });
+        } catch (e) {
+          resolve(hook);
+        }
       });
     }
   ],
