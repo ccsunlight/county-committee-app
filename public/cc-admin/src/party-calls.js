@@ -83,6 +83,7 @@ export const PartyCallEdit = props => {
           label="Committee Term"
           source="term_id"
           reference="term"
+          perPage={200}
         >
           <SelectInput
             optionText={
@@ -113,6 +114,7 @@ export const PartyCallCreate = props => {
           label="Committee Term"
           source="term_id"
           reference="term"
+          perPage={200}
         >
           <SelectInput
             optionText={
