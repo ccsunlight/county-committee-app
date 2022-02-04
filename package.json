@@ -154,7 +154,7 @@
     "x-ray": "^2.3.3"
   },
   "devDependencies": {
-    "fast-csv": "^2.4.1",
+    "fast-csv": "^4.3.6",
     "fast-xml-parser": "^3.12.20",
     "jshint": "^2.10.2",
     "mocha": "^5.1.1",
