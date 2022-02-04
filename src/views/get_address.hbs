@@ -16,20 +16,15 @@
 				{{dateFormat term.start_date "MM/YYYY"}} — {{dateFormat term.end_date "MM/YYYY"}}</h6>
 			{{#if enrollment}}
 			{{#if_eq party 'Democratic'}}
-			<h6>Active Democratic voters in ED: {{enrollment.active.democrat}} | Approximate signatures required*:
+
+      <h6>Maps have been recently changed due to redistictricting for 2022. Updates to maps on site pending. Please check back later.</h6>
+			{{!-- <h6>Active Democratic voters in ED: {{enrollment.active.democrat}} | Approximate signatures required*:
 				{{enrollment.demSignaturePercentage}}</h6>
 			{{/if_eq}}
 			{{#if_eq party 'Republican'}}
 			<h6>Active Republican voters in ED: {{enrollment.active.democrat}} | Approximate signatures required*:
-				{{enrollment.repSignaturePercentage}}</h6>
+				{{enrollment.repSignaturePercentage}}</h6> --}}
 			{{/if_eq}}
-			<h6>* Governor Cuomo has signed an executive order reducing signature requirements due to
-				Corona Virus. <strong>All signature requirements are reduced to 30% of statutory requirement and
-					Petitioning will end 5PM, Tues 3/17</strong>.
-				Based off enrollment numbers as of {{dateFormat enrollment.date "MM/YYYY"}}.
-				Calculated by taking <strong>30% of </strong> 3% of active
-				registered members of party in ED. See <a
-					href="https://www.nysenate.gov/legislation/laws/ELN/6-136">§6-136</a></h6>
 			{{/if}}
 			{{#if partyPositionsToBeFilled}}
 			<hr />
