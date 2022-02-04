@@ -22,7 +22,7 @@
     "postinstall": "bash ./post-install.sh",
     "dev": "nodemon  --inspect=0.0.0.0 -e js,json,hbs src/",
     "start": "node --inspect=0.0.0.0 src/",
-    "build-admin": "cd public/cc-admin && npm install --no-bin-links && npm install -g -Y react-scripts  && npm run build",
+    "build-admin": "cd public/cc-admin && npm install --no-bin-links && npm install -g -Y react-scripts@4.0.3 && npm run build",
     "migrate": "bash ./init-migration.sh",
     "install-pdf-lib": "apt-get -y update && apt-get -y install poppler-utils",
     "cert": "node cert/gene rate-cert.js",
