@@ -32,20 +32,6 @@ function* getCountySeatBreakdown(county) {
   };
 }
 
-const intersectQuery = coordinates => {
-  return {
-    geometry: {
-      $geoIntersects: {
-        $geometry: {
-          // geojson expects its lat/long backwards (like long,lat)
-          type: "Point",
-          coordinates: coordinates.reverse()
-        }
-      }
-    }
-  };
-};
-
 class Service {
   constructor(options) {
     this.options = options || {};
@@ -58,6 +44,11 @@ class Service {
   get(address, params = {}) {
     const party = params.party || "Democratic";
 
+    const currentCountyCommitteeMapRelease = this.options
+      .currentCountyCommitteeMapRelease;
+    const upcomingCountyCommitteeMapRelease = this.options
+      .upcomingCountyCommitteeMapRelease;
+
     const get_address = co(function*(address) {
       const data = yield googleGeocoder.geocode(address);
 
@@ -68,15 +59,50 @@ class Service {
       }
 
       const [lat, long] = [data[0].latitude, data[0].longitude];
-      const yourGeomDoc = yield edGeometry.findOne(intersectQuery([lat, long]));
+      const currentCCGeomDoc = yield edGeometry.findOne({
+        geometry: {
+          $geoIntersects: {
+            $geometry: {
+              // geojson expects its lat/long backwards (like long,lat)
+              type: "Point",
+              coordinates: [long, lat]
+            }
+          }
+        },
+        release: currentCountyCommitteeMapRelease
+      });
 
-      if (!yourGeomDoc) {
+      const upcomingCCGeomDoc = yield edGeometry.findOne({
+        geometry: {
+          $geoIntersects: {
+            $geometry: {
+              type: "Point",
+              coordinates: [long, lat]
+            }
+          }
+        },
+        release: upcomingCountyCommitteeMapRelease
+      });
+
+      if (!currentCCGeomDoc || !upcomingCCGeomDoc) {
         throw new Error(
-          "Invalid or out of bounds address provided. Non NYC addresses are not yet available."
+          `Invalid or out of bounds address provided. Non NYC addresses are not yet available. Map Release ${release}`
         );
       }
 
-      const [ad, ed] = [yourGeomDoc.ad, yourGeomDoc.ed];
+      const [legacyCCAD, legacyCCED] = [
+        currentCCGeomDoc.ad,
+        currentCCGeomDoc.ed
+      ];
+
+      const [upcomingCCAD, upcomingCCED] = [
+        upcomingCCGeomDoc.ad,
+        upcomingCCGeomDoc.ed
+      ];
+
+      console.log(
+        `DISTRICT INFO LEGACY AD/ED: ${legacyCCAD}/${legacyCCED} NEW: AD/ED: ${upcomingCCAD}/${upcomingCCED} `
+      );
 
       // Get the party committees for the specfied party
       const partyCommittees = yield countyCommittee.find({ party: party });
@@ -104,9 +130,10 @@ class Service {
       });
 
       // Gets members who match the ed and ad and are in an active term
+      // NOTE: CC Members go by last district map which has been redrawn 2022.
       const yourMembers = yield countyCommitteeMember.find({
-        assembly_district: ad,
-        electoral_district: ed,
+        assembly_district: legacyCCAD,
+        electoral_district: legacyCCED,
         term_id: { $in: currentTermIds }
       });
 
@@ -147,15 +174,15 @@ class Service {
       if (upcomingTermIds.length) {
         enrollment = yield EnrollmentModel.findOne(
           {
-            assembly_district: ad,
-            electoral_district: ed
+            assembly_district: upcomingCCAD,
+            electoral_district: upcomingCCED
           },
           null,
           { sort: { date: -1 } }
         ).exec();
 
         if (enrollment) {
-          const SIG_REQ_PERCENTAGE = 0.03 * 0.3;
+          const SIG_REQ_PERCENTAGE = 0.05 * 0.3;
           enrollment.demSignaturePercentage = Math.ceil(
             enrollment.active.democrat * SIG_REQ_PERCENTAGE
           );
@@ -169,8 +196,8 @@ class Service {
             term_id: { $in: upcomingTermIds },
             positions: {
               $elemMatch: {
-                assembly_district: ad,
-                electoral_district: ed
+                assembly_district: upcomingCCAD,
+                electoral_district: upcomingCCED
               }
             }
           })
@@ -179,8 +206,8 @@ class Service {
         if (partyCallForEd) {
           let partyPositions = partyCallForEd.positions.filter(position => {
             return (
-              position.assembly_district === ad &&
-              position.electoral_district === ed
+              position.assembly_district === upcomingCCAD &&
+              position.electoral_district === upcomingCCED
             );
           });
 
@@ -199,8 +226,10 @@ class Service {
         address: address,
         lat: lat,
         long: long,
-        ad: ad,
-        ed: ed,
+        ad: upcomingCCAD,
+        ed: upcomingCCED,
+        legacyAD: legacyCCAD,
+        legacyED: legacyCCED,
         part: part,
         county: county,
         members: memberData,
@@ -242,7 +271,10 @@ class Service {
 module.exports = function() {
   const app = this;
 
-  const service = new Service();
+  const service = new Service({
+    upcomingCountyCommitteeMapRelease: app.get("edGeometry").release,
+    currentCountyCommitteeMapRelease: app.get("edGeometry").legacyRelease
+  });
 
   service.id = "fullAddress";
   service.docs = {

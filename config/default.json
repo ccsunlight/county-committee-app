@@ -78,5 +78,11 @@
         "authenticated": false
       }
     }
-  ]
+  ],
+  "edGeometry": {
+    "importOnStart": "ED_GEOMETRY_IMPORT_ON_START",
+    "release": "ED_GEOMETRY_RELEASE",
+    "geojsonFileUrl": "ED_GEOMETRY_GEOJSON_FILE_URL",
+    "legacyRelease": "ED_GEOMETRY_LEGACY_RELEASE"
+  }
 }

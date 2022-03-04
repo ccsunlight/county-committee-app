@@ -5,10 +5,10 @@
 </style>
 
 <p>
-	Different colors represent different "parts". A part is a subdivided group of EDs in an AD labeled A,B,C or D. EDs with a lighter opacity indicate vacant seats present. 
+	Different colors represent different "parts". A part is a subdivided group of EDs in an AD labeled A,B,C or D. EDs with a lighter opacity indicate vacant seats present.
 </p>
 <p>
-	Whether a county committee has parts, and what EDs belong to which parts are determined by the executive committee of each CC before each term election.  
+	Whether a county committee has parts, and what EDs belong to which parts are determined by the executive committee of each CC before each term election.
 </p>
 
 <div id="map" class="mdl-card mdl-cell mdl-cell--12-col"></div>
@@ -22,7 +22,7 @@
 		map = new google.maps.Map(document.getElementById('map'), {
 			center: {
 				lat: {{ lat }},
-				lng: {{ long }} 
+				lng: {{ long }}
 			},
 			zoom: 13,
 			scrollwheel: false
@@ -55,18 +55,18 @@
 	};
 
 	var cleanedAllGeomDocsInAd = {{{ cleanedAllGeomDocsInAd }}};
-	
+
 	const democraticPartColorScheme = {
-		"A": "#277da1", 
-		"B": "#003459", 
-		"C": "#83e377", 
+		"A": "#277da1",
+		"B": "#003459",
+		"C": "#83e377",
 		"D": "#00a8e8"
 	};
 
 	const republicanPartColorScheme = {
-		"A": "#6a040f", 
-		"B": "#9d0208", 
-		"C": "#dc2f02", 
+		"A": "#6a040f",
+		"B": "#9d0208",
+		"C": "#dc2f02",
 		"D": "#d00000"
 	};
 
@@ -78,7 +78,8 @@
 		var ed = doc.ed;
 		var ad = doc.ad;
 		var numOfSeats = doc.ns;
-		var numOfFilledSeats = doc.nf;
+    var numOfFilledSeats = 0;
+		{{!-- var numOfFilledSeats = doc.nf; --}}
 		let fillOpacity = 0.8;
 		var part = doc.part ? doc.part : '';
 
@@ -86,7 +87,7 @@
 
 		let infoString, color;
 
-		// Set color to the right part scheme otherwise default to 
+		// Set color to the right part scheme otherwise default to
 		// whatever is the A scheme
 		color = partColorScheme[doc.part ? doc.part : 'A'];
 

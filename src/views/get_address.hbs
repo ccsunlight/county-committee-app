@@ -1,7 +1,11 @@
 <div class="mdl-grid">
 	<div class="mdl-card mdl-cell mdl-cell--8-col">
 		<div class="mdl-card__supporting-text" id="get_address_results">
-			<h3>Your local {{party}} Party seats for<br />AD: {{ad}}{{#if part}} Part {{part}}{{/if}} / ED: {{ed}} NOTE: These EDs will change for next election </h3>
+			<h3>Your local {{party}} Party seats for<br />AD: {{ad}}{{#if part}} Part {{part}}{{/if}} / ED: {{ed}} </h3>
+
+      <p class="diclaimer" style="color: red" >
+        NOTE: All EDs and ADs have recently changed due to statewide redistricting. The map below reflects new district maps. The current county committee members reflect old district maps.
+      </p>
 			{{> disclaimer }}
 			<p class="disclaimer">
 				<strong>* Appointed members not yet available for this district. Members showing as "vacancy" may have
@@ -12,18 +16,18 @@
 				Consider <a href="https://goo.gl/forms/BpeKaPz7rSa4hXdU2" target="_blank">volunteering</a> to help get
 				this info!</h4>
 			{{else}}
-			{{!-- <h6>County: {{county}} | Party: {{party}} | AD: {{ad}} | ED: {{ed}} | Term:
-				{{dateFormat term.start_date "MM/YYYY"}} — {{dateFormat term.end_date "MM/YYYY"}}</h6> --}}
+			 <h6>County: {{county}} | Party: {{party}} | AD: {{ad}} | ED: {{ed}} | Term:
+				{{dateFormat term.start_date "MM/YYYY"}} — {{dateFormat term.end_date "MM/YYYY"}}</h6>
 			{{#if enrollment}}
 			{{#if_eq party 'Democratic'}}
 
       <h6>Maps have been recently changed due to redistictricting for 2022. Updates to maps on site pending. Please check back later.</h6>
-			{{!-- <h6>Active Democratic voters in ED: {{enrollment.active.democrat}} | Approximate signatures required*:
+		  <h6>Active Democratic voters in ED: {{enrollment.active.democrat}} | Approximate signatures required*:
 				{{enrollment.demSignaturePercentage}}</h6>
 			{{/if_eq}}
 			{{#if_eq party 'Republican'}}
 			<h6>Active Republican voters in ED: {{enrollment.active.democrat}} | Approximate signatures required*:
-				{{enrollment.repSignaturePercentage}}</h6> --}}
+				{{enrollment.repSignaturePercentage}}</h6>
 			{{/if_eq}}
 			{{/if}}
 			{{#if partyPositionsToBeFilled}}
@@ -54,16 +58,19 @@
 			{{/if}}
 			<hr />
 			<h3>Current County Committee Members</h3>
+
+	    <h6>LEGACY | AD: {{legacyAD}} | ED: {{legacyED}} | THIS IS NO LONGER YOUR AD/ED</h6>
 			{{> table }}
 			{{/if}}
 
 		</div>
-		{{!-- <div class="mdl-card__supporting-text">
+    <div class="mdl-card__supporting-text">
 			<hr />
-			<h3>Assembly District</h3>
+			<h3>Assembly District Party Call Map</h3>
+      <h6>This district represents the party call for the new map released February 2022.</h6>
 			{{> gmap}}
 			{{> include_gmap_and_autocomplete}}
-		</div> --}}
+		</div>
 	</div>
 	{{> sidebar}}
 </div>

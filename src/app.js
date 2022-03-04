@@ -23,7 +23,7 @@ const middleware = require("./middleware");
 const services = require("./services");
 const routes = require("./routes");
 const hbs = require("hbs");
-const runEdGeometryCron = require("./utils/runEdGeometryCron");
+const importEDGeometryGeoJSON = require("./utils/importEDGeometryGeoJSON");
 
 const paginate = require("handlebars-paginate");
 const app = feathers();
@@ -116,12 +116,12 @@ app
   .use(compress())
   .configure(rest())
   /* .configure(acl(aclConfig, {
-         denyNotAllowed: false,             // deny all routes without "allow" rules 
-         adminRoles: ['admin'],  // need for owner rule 
+         denyNotAllowed: false,             // deny all routes without "allow" rules
+         adminRoles: ['admin'],  // need for owner rule
          baseUrl: 'http://' + app.get('host'),
          jwt: {
-           secret: 'supersecret',           // Default is 'Authorization' 
-           options: {}                     // options for 'jsonwebtoken' lib 
+           secret: 'supersecret',           // Default is 'Authorization'
+           options: {}                     // options for 'jsonwebtoken' lib
          }
        })) */
   .configure(hooks())
@@ -240,7 +240,15 @@ app.service(apiPath + "/term").hooks({
   }
 });
 
-runEdGeometryCron();
+if (app.get("edGeometry").importOnStart === "true") {
+  console.log("Importing ED Geomtry GeoJSON");
+  importEDGeometryGeoJSON({
+    release: app.get("edGeometry").release,
+    geojsonFileUrl: app.get("edGeometry").geojsonFileUrl
+  });
+} else {
+  console.log("ED Geomtry GeoJSON import on start disabled. Skipping");
+}
 
 console.log("Starting env: ", app.get("env"));
 

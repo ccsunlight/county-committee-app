@@ -17,6 +17,7 @@ const edGeometrySchema = new Schema(
       type: { type: String, default: "MultiPolygon" },
       coordinates: { type: Array, required: true }
     },
+    release: { type: String, default: false },
     kinked: { type: Boolean, default: false },
     createdAt: { type: Number, default: Date.now }
   },

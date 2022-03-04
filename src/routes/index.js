@@ -21,6 +21,7 @@ const NodeCache = require("node-cache");
 const cache = new NodeCache({ stdTTL: 600 });
 const RSS = require("rss");
 const getCountyCommitteeBreakdown = require("../utils/getCountyCommitteeBreakdown");
+const app = require("../app");
 
 // Prevents crawlers from cralwer not on production
 router.use("/robots.txt", function(req, res) {
@@ -180,7 +181,10 @@ router.get("/get_address", function(req, res, next) {
     // For legacy urls set to Democratic
     const party = req.query.party || "Democratic";
 
-    let addressSvc = new Address.Service();
+    let addressSvc = new Address.Service({
+      upcomingCountyCommitteeMapRelease: req.app.get("edGeometry").release,
+      currentCountyCommitteeMapRelease: req.app.get("edGeometry").legacyRelease
+    });
     addressSvc
       .get(req.query.address, { party: party })
       .then(
@@ -188,7 +192,8 @@ router.get("/get_address", function(req, res, next) {
           if (addressDistrictData.ad) {
             // @todo move this to feathers map service.
             const allGeomDocsInAd = yield edGeometry.find({
-              ad: addressDistrictData.ad
+              ad: addressDistrictData.ad,
+              release: req.app.get("edGeometry").release
             });
 
             const cleanedAllGeomDocsInAd = yield bb.map(
@@ -229,8 +234,10 @@ router.get("/get_address", function(req, res, next) {
                   ed: edGeoDoc.ed,
                   ad: edGeoDoc.ad,
                   part: part,
-                  ns: numOfSeats,
-                  nf: numOfFilledSeats,
+                  // ns: numOfSeats,
+                  // nf: numOfFilledSeats,
+                  ns: addressDistrictData.partyPositionsToBeFilled.length,
+                  nf: 0,
                   party: party
                 };
               })
