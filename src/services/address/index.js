@@ -52,6 +52,12 @@ class Service {
     const get_address = co(function*(address) {
       const data = yield googleGeocoder.geocode(address);
 
+      console.log(
+        "data",
+        upcomingCountyCommitteeMapRelease,
+        currentCountyCommitteeMapRelease
+      );
+
       if (data.length === 0) {
         throw new Error(
           "Invalid or out of bounds address provided. Non NYC addresses are not yet available."
@@ -84,9 +90,17 @@ class Service {
         release: upcomingCountyCommitteeMapRelease
       });
 
-      if (!currentCCGeomDoc || !upcomingCCGeomDoc) {
+      console.log("currentCCGeomDoc", currentCCGeomDoc, upcomingCCGeomDoc);
+
+      if (!currentCCGeomDoc) {
         throw new Error(
-          `Invalid or out of bounds address provided. Non NYC addresses are not yet available. Map Release ${release}`
+          `Invalid or out of bounds address provided. Non NYC addresses are not yet available. Current Map Release ${currentCCGeomDoc}`
+        );
+      }
+
+      if (!upcomingCCGeomDoc) {
+        throw new Error(
+          `Invalid or out of bounds address provided. Non NYC addresses are not yet available. Upcoming Map Release ${upcomingCCGeomDoc}`
         );
       }
 
