@@ -183,7 +183,13 @@ router.get("/get_address", function(req, res, next) {
 
     let addressSvc = new Address.Service({
       upcomingCountyCommitteeMapRelease: req.app.get("edGeometry").release,
-      currentCountyCommitteeMapRelease: req.app.get("edGeometry").legacyRelease
+      currentCountyCommitteeMapRelease: req.app.get("edGeometry").legacyRelease,
+      googleGeocoderOptions: {
+        provider: "google",
+        apiKey: req.app.get("googleMapsApiKey"),
+        httpAdapter: "https",
+        formatter: null
+      }
     });
     addressSvc
       .get(req.query.address, { party: party })

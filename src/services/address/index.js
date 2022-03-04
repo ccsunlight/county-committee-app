@@ -15,15 +15,6 @@ const edGeometry = require("../edGeometry/edGeometry-model");
 const hooks = require("./hooks");
 const NodeGeocoder = require("node-geocoder");
 
-const googleGeocoderOptions = {
-  provider: "google",
-  apiKey: "AIzaSyBWT_tSznzz1oSNXAql54sSKGIAC4EyQGg",
-  httpAdapter: "https",
-  formatter: null
-};
-
-const googleGeocoder = NodeGeocoder(googleGeocoderOptions);
-
 function* getCountySeatBreakdown(county) {
   return {
     county: county,
@@ -35,6 +26,7 @@ function* getCountySeatBreakdown(county) {
 class Service {
   constructor(options) {
     this.options = options || {};
+    this.googleGeocoder = NodeGeocoder(this.options.googleGeocoderOptions);
   }
 
   find(params) {
@@ -48,6 +40,8 @@ class Service {
       .currentCountyCommitteeMapRelease;
     const upcomingCountyCommitteeMapRelease = this.options
       .upcomingCountyCommitteeMapRelease;
+
+    const googleGeocoder = this.googleGeocoder;
 
     const get_address = co(function*(address) {
       const data = yield googleGeocoder.geocode(address);
@@ -287,7 +281,13 @@ module.exports = function() {
 
   const service = new Service({
     upcomingCountyCommitteeMapRelease: app.get("edGeometry").release,
-    currentCountyCommitteeMapRelease: app.get("edGeometry").legacyRelease
+    currentCountyCommitteeMapRelease: app.get("edGeometry").legacyRelease,
+    googleGeocoderOptions: {
+      provider: "google",
+      apiKey: app.get("googleMapsApiKey"),
+      httpAdapter: "https",
+      formatter: null
+    }
   });
 
   service.id = "fullAddress";
