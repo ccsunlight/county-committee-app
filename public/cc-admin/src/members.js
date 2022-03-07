@@ -91,7 +91,7 @@ export const MemberEdit = props => (
         label="Committee"
         source="committee"
         reference="county-committee"
-        perPage={100}
+        perPage={200}
       >
         <SelectInput
           optionText={
@@ -106,7 +106,7 @@ export const MemberEdit = props => (
         label="Term"
         source="term_id"
         reference="term"
-        perPage={100}
+        perPage={200}
       >
         <SelectInput
           optionText={
@@ -160,7 +160,7 @@ export const MemberCreate = props => (
         label="Committee"
         source="committee"
         reference="county-committee"
-        perPage={100}
+        perPage={200}
       >
         <SelectInput
           optionText={
@@ -175,7 +175,7 @@ export const MemberCreate = props => (
         label="Term"
         source="term_id"
         reference="term"
-        perPage={100}
+        perPage={200}
       >
         <SelectInput
           optionText={

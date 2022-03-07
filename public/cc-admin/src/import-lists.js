@@ -180,6 +180,7 @@ export const ImportListEdit = props => {
             validate={required}
             source="term_id"
             reference="term"
+            perPage={200}
           >
             <SelectInput
               optionText={
@@ -309,6 +310,7 @@ export const ImportListCreate = props => {
             label="Committee Term"
             source="term_id"
             reference="term"
+            perPage={200}
           >
             <SelectInput
               optionText={

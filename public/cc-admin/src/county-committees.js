@@ -75,6 +75,7 @@ export const CountyCommitteeEdit = props => (
         label="Current Term"
         source="current_term_id"
         reference="term"
+        perPage={200}
         filter={{ committee_id: props.match.params.id }}
         allowEmpty
       >
@@ -95,6 +96,7 @@ export const CountyCommitteeEdit = props => (
         label="Upcoming Term"
         source="upcoming_term_id"
         reference="term"
+        perPage={200}
         filter={{ committee_id: props.match.params.id }}
         allowEmpty
       >
