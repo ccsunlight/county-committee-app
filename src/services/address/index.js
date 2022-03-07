@@ -14,6 +14,7 @@ const Term = require("../term/term-model");
 const edGeometry = require("../edGeometry/edGeometry-model");
 const hooks = require("./hooks");
 const NodeGeocoder = require("node-geocoder");
+const ADPartMapModel = require("../ad-part-map/ad-part-map-model");
 
 function* getCountySeatBreakdown(county) {
   return {
@@ -220,10 +221,38 @@ class Service {
           });
 
           if (partyPositions) {
+            let adPart = "";
+
+            // Check for part mapping
+            const adPartMapping = yield ADPartMapModel.findOne({
+              term_id: { $in: upcomingTermIds },
+              partMappings: {
+                $elemMatch: {
+                  assembly_district: upcomingCCAD,
+                  electoral_district: upcomingCCED
+                }
+              }
+            }).exec();
+
+            if (adPartMapping) {
+              let partMapping = adPartMapping.partMappings.find(partMapping => {
+                return (
+                  partMapping.assembly_district === upcomingCCAD &&
+                  partMapping.electoral_district === upcomingCCED
+                );
+              });
+
+              if (partMapping) {
+                // There should be on
+                adPart = partMapping.part;
+              }
+            }
+
             partyPositionsToBeFilled = partyPositions.map(function(position) {
               return {
                 office: position.office,
-                entry_type: "Petitionable Position"
+                entry_type: "Petitionable Position",
+                part: adPart
               };
             });
           }
