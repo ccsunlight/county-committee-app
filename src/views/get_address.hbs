@@ -7,10 +7,7 @@
         NOTE: All EDs and ADs have recently changed due to statewide redistricting. The map below reflects new district maps. The current county committee members reflect old district maps.
       </p>
 			{{> disclaimer }}
-			<p class="disclaimer">
-				<strong>* Appointed members not yet available for this district. Members showing as "vacancy" may have
-					members appointmented.</strong>
-			</p>
+
 			{{#if error}}
 			<h4><i class="material-icons">error_outline</i> Sorry we do not have seat information for this district yet.
 				Consider <a href="https://goo.gl/forms/BpeKaPz7rSa4hXdU2" target="_blank">volunteering</a> to help get
@@ -21,7 +18,6 @@
 			{{#if enrollment}}
 			{{#if_eq party 'Democratic'}}
 
-      <h6>Maps have been recently changed due to redistictricting for 2022. Updates to maps on site pending. Please check back later.</h6>
 		  <h6>Active Democratic voters in ED: {{enrollment.active.democrat}} | Approximate signatures required*:
 				{{enrollment.demSignaturePercentage}}</h6>
 			{{/if_eq}}
