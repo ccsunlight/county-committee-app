@@ -59,7 +59,7 @@
     "@turf/unkink-polygon": "^5.1.5",
     "admin-lte-express": "^1.4.2",
     "aor-permissions": "^1.0.2",
-    "async": "^2.6.1",
+    "async": "^2.6.4",
     "base64topdf": "^1.1.8",
     "basic-auth-connect": "^1.0.0",
     "bcrypt": "^3.0.0",
