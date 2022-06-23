@@ -104,7 +104,7 @@
     "html-table-to-json": "^0.4.0",
     "husky": "^0.14.3",
     "js-beautify": "^1.7.5",
-    "jsdom": "^15.1.1",
+    "jsdom": "^16.5.0",
     "json-2-csv": "^3.5.5",
     "json2csv": "^3.11.5",
     "lint-staged": "^7.3.0",
