@@ -1,78 +1,79 @@
 <div class="mdl-grid">
-	<div class="mdl-card mdl-cell mdl-cell--8-col">
-		<div class="mdl-card__supporting-text" id="get_address_results">
-			<h3>Your local {{party}} Party seats for<br />AD: {{ad}}{{#if part}} Part {{part}}{{/if}} / ED: {{ed}} </h3>
+  <div class="mdl-card mdl-cell mdl-cell--8-col">
+    <div class="mdl-card__supporting-text" id="get_address_results">
+      <h3>Your local {{party}} Party seats for<br />AD: {{ad}}{{#if part}} Part {{part}}{{/if}} / ED: {{ed}} </h3>
 
-      <p class="diclaimer" style="color: red" >
-        NOTE: All EDs and ADs have recently changed due to statewide redistricting. The map below reflects new district maps. The current county committee members reflect old district maps.
+      <p class="diclaimer" style="color: red">
+        NOTE: All EDs and ADs have recently changed due to statewide redistricting. The map below reflects new district
+        maps. The current county committee members reflect old district maps.
       </p>
-			{{> disclaimer }}
+      {{> disclaimer }}
 
-			{{#if error}}
-			<h4><i class="material-icons">error_outline</i> Sorry we do not have seat information for this district yet.
-				Consider <a href="https://goo.gl/forms/BpeKaPz7rSa4hXdU2" target="_blank">volunteering</a> to help get
-				this info!</h4>
-			{{else}}
-			 <h6>County: {{county}} | Party: {{party}} | AD: {{ad}} | ED: {{ed}} | Term:
-				{{dateFormat term.start_date "MM/YYYY"}} — {{dateFormat term.end_date "MM/YYYY"}}</h6>
-			{{#if enrollment}}
-			{{#if_eq party 'Democratic'}}
+      {{#if error}}
+      <h4><i class="material-icons">error_outline</i> Sorry we do not have seat information for this district yet.
+        Consider <a href="https://goo.gl/forms/BpeKaPz7rSa4hXdU2" target="_blank">volunteering</a> to help get
+        this info!</h4>
+      {{else}}
+      <h6>County: {{county}} | Party: {{party}} | AD: {{ad}} | ED: {{ed}} | Term:
+        {{dateFormat term.start_date "MM/YYYY"}} — {{dateFormat term.end_date "MM/YYYY"}}</h6>
+      {{#if enrollment}}
+      {{#if_eq party 'Democratic'}}
 
-		  <h6>Active Democratic voters in ED: {{enrollment.active.democrat}} | Approximate signatures required*:
-				{{enrollment.demSignaturePercentage}}</h6>
-			{{/if_eq}}
-			{{#if_eq party 'Republican'}}
-			<h6>Active Republican voters in ED: {{enrollment.active.republican}} | Approximate signatures required*:
-				{{enrollment.repSignaturePercentage}}</h6>
-
-
-			{{/if_eq}}
-
-      <p>*5% of the active enrolled voters of the political party. <a href="https://www.nysenate.gov/legislation/laws/ELN/6-136" target="_blank">§6-136</a></p>
-			{{/if}}
+      <h6>Active Democratic voters in ED: {{enrollment.active.democrat}} | Approximate signatures required*:
+        {{enrollment.demSignaturePercentage}}</h6>
+      {{/if_eq}}
+      {{#if_eq party 'Republican'}}
+      <h6>Active Republican voters in ED: {{enrollment.active.republican}} | Approximate signatures required*:
+        {{enrollment.repSignaturePercentage}}</h6>
 
 
-			{{#if partyPositionsToBeFilled}}
-			<hr />
-			<h3>Party Call</h3>
+      {{/if_eq}}
 
-			<p>Below are the petitionable seats for the upcoming election:</p>
-			{{> table members=partyPositionsToBeFilled}}
+      <p>*5% of the active enrolled voters of the political party. <a
+          href="https://www.nysenate.gov/legislation/laws/ELN/6-136" target="_blank">§6-136</a></p>
+      {{/if}}
 
-			<div class="detail-buttons">
-				<a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank"
-					href="https://www.vote.nyc/page/nyc-district-maps">
-					ED/AD Maps
-				</a>
-				<a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank"
-					href="https://www.elections.ny.gov/2022EnrollmentED.html">
-					Voter Enrollment
-				</a>
-				<a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank"
-					href="https://bit.ly/3bXyPAa">
-					Learn how to petition!
-				</a>
-				<a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank"
-					href="https://www.elections.ny.gov/PoliticalCalendar.html">
-					Political Calendar
-				</a>
-			</div>
-			{{/if}}
-			<hr />
-			<h3>Current County Committee Members</h3>
 
-	    <h6>LEGACY | AD: {{legacyAD}} | ED: {{legacyED}} | THIS IS NO LONGER YOUR AD/ED</h6>
-			{{> table }}
-			{{/if}}
+      {{#if partyPositionsToBeFilled}}
+      <hr />
+      <h3>Party Call</h3>
 
-		</div>
+      <p>Below are the petitionable seats for the upcoming election:</p>
+      {{> table members=partyPositionsToBeFilled}}
+
+      <div class="detail-buttons">
+        <a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank"
+          href="https://www.vote.nyc/page/nyc-district-maps">
+          ED/AD Maps
+        </a>
+        <a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank"
+          href="https://www.elections.ny.gov/2022EnrollmentED.html">
+          Voter Enrollment
+        </a>
+        <a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank"
+          href="https://bit.ly/3bXyPAa">
+          Learn how to petition!
+        </a>
+        <a class="mdl-button mdl-button mdl-button--raised mdl-button--colored" target="_blank"
+          href="https://www.elections.ny.gov/PoliticalCalendar.html">
+          Political Calendar
+        </a>
+      </div>
+      {{/if}}
+      <hr />
+      <h3>Current County Committee Members</h3>
+      <h6>AD: {{ad}} | ED: {{ed}}</h6>
+      {{> table }}
+      {{/if}}
+
+    </div>
     <div class="mdl-card__supporting-text">
-			<hr />
-			<h3>Assembly District Party Call Map</h3>
+      <hr />
+      <h3>Assembly District Party Call Map</h3>
       <h6>This district represents the party call for the new map released February 2022.</h6>
-			{{> gmap}}
-			{{> include_gmap_and_autocomplete}}
-		</div>
-	</div>
-	{{> sidebar}}
+      {{> gmap}}
+      {{> include_gmap_and_autocomplete}}
+    </div>
+  </div>
+  {{> sidebar}}
 </div>
