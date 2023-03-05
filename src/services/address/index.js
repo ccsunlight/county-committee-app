@@ -85,7 +85,7 @@ class Service {
         release: upcomingCountyCommitteeMapRelease
       });
 
-      console.log("currentCCGeomDoc", currentCCGeomDoc, upcomingCCGeomDoc);
+      console.log("currentCCGeomDoc", currentCCGeomDoc);
 
       if (!currentCCGeomDoc) {
         throw new Error(
@@ -310,7 +310,7 @@ module.exports = function() {
 
   const service = new Service({
     upcomingCountyCommitteeMapRelease: app.get("edGeometry").release,
-    currentCountyCommitteeMapRelease: app.get("edGeometry").legacyRelease,
+    currentCountyCommitteeMapRelease: app.get("edGeometry").release,
     googleGeocoderOptions: {
       provider: "google",
       apiKey: app.get("googleMapsApiKey"),
