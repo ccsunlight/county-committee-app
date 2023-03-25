@@ -53,13 +53,13 @@ class Service extends FeathersMongoose.Service {
     }
   }
 
-  extractCountyFromPage(page) {
-    var match = page.match(/IN THE CITY OF NEW YORK\s+(.+), .+Party/);
+  // extractCountyFromPage(page) {
+  //   var match = page.match(/IN THE CITY OF NEW YORK\s+(.+), .+Party/);
 
-    if (match) {
-      return match[1];
-    }
-  }
+  //   if (match) {
+  //     return match[1];
+  //   }
+  // }
 
   extractPartyPositionsFromPage(page) {
     var rows = page.match(/(.+)/g);
@@ -69,6 +69,7 @@ class Service extends FeathersMongoose.Service {
 
     var headerRowIndex = rows.findIndex(this.isPartyPositionTableHeaderRow);
     var footerRowIndex = rows.findIndex(this.isPartyPositionTableFooterRow);
+
     if (headerRowIndex > 0 && footerRowIndex > 0) {
       var partyPositionRows = rows.slice(headerRowIndex + 1, footerRowIndex);
 
@@ -106,7 +107,7 @@ class Service extends FeathersMongoose.Service {
    * @return {[type]}     [description]
    */
   isPartyPositionTableHeaderRow(row) {
-    return /Tally\s+Entry Type/.test(row);
+    return /Address\s+Tally/.test(row);
   }
 
   /**
@@ -181,6 +182,7 @@ class Service extends FeathersMongoose.Service {
     if (/\d+\/\d+/.test(rowFields[0])) {
       party_position.ed_ad = rowFields.shift();
       var ed_ad = party_position.ed_ad.split("/");
+
       party_position.electoral_district = parseInt(ed_ad[0], 10);
       party_position.assembly_district = parseInt(ed_ad[1], 10);
     } else {
@@ -197,6 +199,7 @@ class Service extends FeathersMongoose.Service {
 
       //if (/NY/.test(rowFields[0])) {
       party_position.address = rowFields.shift();
+
       //} else {
       //    throw 'Address Field Not Valid. ' + rowFields[0] + ' Row: ' + row;
       //}
@@ -275,7 +278,6 @@ class Service extends FeathersMongoose.Service {
       }
       this.extractPartyPositionsFromCertifiedListPDF(params.filepath).then(
         certifiedList => {
-          //console.log("certified list", certifiedList);
           let importedList = new CertifiedList(certifiedList);
           importedList.save(err => {
             if (err) {
