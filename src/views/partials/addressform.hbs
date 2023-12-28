@@ -1,38 +1,8 @@
 
 	
 <div id="lookup">
-		<h2>County Committee Lookup</h2>
-		<form class="search-form" method="GET" action="/get_address" target="_top">
-			<div class="mdl-textfield mdl-js-textfield">
-			 <input id="autocomplete" class="mdl-textfield__input" type="address" placeholder="Enter your address" id="address" name="address" value="{{address}}"/>
-			  
-				{{#if error}}
-			
-			 	 <span class="mdl-textfield__error" style="visibility: visible;">{{error}}</span>
-			  		{{/if}}
+		<h2>Run for County Committee</h2>
 
-
-		  	</div>
-
-
-		  <button class="address-button mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-button--right" act>
-		  Lookup
-		  </button>
-		  <fieldset id="party-choice-fieldset">
-			 <input type="radio" id="party-choice-1" name="party" value="Democratic" checked>
-     				 <label for="party-choice-1">Democratic</label>
-     		<input type="radio" id="party-choice-2" name="party" value="Republican">
-					<label for="party-choice-2">Republican</label>
-				</fieldset>
-		  </form>
-
-		<script>
-		function initAutocomplete() {
-			var options = {
-				componentRestrictions: {country: 'us'}
-			};
-			var autocomplete = new google.maps.places.Autocomplete((document.getElementById('autocomplete')), options);
-		}
-		</script>
-
+   <h3><A HREF="https://www.repmyblock.org/ccsunlight">Follow this link if you you are interested in running for County Committee</A></h3>
+  
 </div>
