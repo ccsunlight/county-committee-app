@@ -117,7 +117,7 @@
     "metascraper-publisher": "^5.6.5",
     "metascraper-title": "^5.6.5",
     "metascraper-url": "^5.6.5",
-    "migrate-mongoose": "^3.2.2",
+    "migrate-mongoose": "^4.0.0",
     "moment": "^2.22.2",
     "mongoose": "^4.9.1",
     "mongoose-autopopulate": "^0.9.0",
