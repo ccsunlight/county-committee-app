@@ -108,7 +108,7 @@
     "json-2-csv": "^3.5.5",
     "json2csv": "^3.11.5",
     "lint-staged": "^7.3.0",
-    "metascraper": "^4.8.5",
+    "metascraper": "^5.2.0",
     "metascraper-author": "^5.6.5",
     "metascraper-date": "^5.6.5",
     "metascraper-description": "^5.6.5",
